@@ -1,0 +1,18 @@
+# npm
+node_modules
+npm-shrinkwrap.json
+*.log
+*.gz
+
+# Coveralls
+.nyc_output
+coverage
+
+# Benchmarking
+benchmarks/graphs
+
+# env variables
+.env
+
+# ignore additional files using core.excludesFile
+# https://git-scm.com/docs/gitignore
