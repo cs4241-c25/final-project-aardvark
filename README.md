@@ -3,6 +3,7 @@
 ## To run the app:
 
 npm ci
+
 npm run dev
 
 # Final Project
