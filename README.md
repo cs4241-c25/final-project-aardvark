@@ -2,8 +2,7 @@
 
 ## To run the app:
 
-npm ci
-
+npm install
 npm run dev
 
 # Final Project
