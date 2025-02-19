@@ -1,5 +1,7 @@
 import type { Config } from "tailwindcss";
 
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 export default {
   content: [
     "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
@@ -11,7 +13,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        inset: "var(--inset)",
       },
+      fontFamily: {
+        funnel: ['Funnel Display', ...defaultTheme.fontFamily.sans],
+      }
     },
   },
   plugins: [],
