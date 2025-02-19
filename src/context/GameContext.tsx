@@ -1,18 +1,29 @@
 'use client'
 
-import { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, Dispatch, SetStateAction } from "react";
 
 interface GameContextType {
-  items: string[];
-  setItems: (items: string[]) => void;
+  tiles: Tile[];
+  setTiles: Dispatch<SetStateAction<Tile[]>>;
+}
+
+export interface Tile {
+  _id: number;
+  displayName: string;
+  rank: 1 | 2 | 3 | 4 | undefined;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [items, setItems] = useState<string[]>(["Rect 1", "Rect 2", "Rect 3", "Rect 4"]);
+  const [tiles, setTiles] = useState<Tile[]>([
+    { _id: 0, displayName: "spring", rank: undefined },
+    { _id: 1, displayName: "summer", rank: undefined },
+    { _id: 2, displayName: "fall", rank: undefined },
+    { _id: 3, displayName: "winter", rank: undefined },
+  ]);
 
-  return <GameContext.Provider value={{ items, setItems }}>{children}</GameContext.Provider>;
+  return <GameContext.Provider value={{ tiles, setTiles }}>{children}</GameContext.Provider>;
 };
 
 export const useGameContext = () => {

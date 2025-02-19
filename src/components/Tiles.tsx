@@ -4,7 +4,7 @@ import React from 'react';
 import clsx from "clsx";
 
 interface DraggableTileProps {
-  id: string;
+  id: number;
   children: React.ReactNode;
 }
 
@@ -22,7 +22,9 @@ const DraggableTile: React.FC<DraggableTileProps> = ({ id, children }) => {
       {...attributes}
       {...listeners}
       className={clsx(
-        "w-full cursor-grab active:cursor-grabbing"
+        "w-full cursor-grab active:cursor-grabbing text-black font-bold text-lg uppercase",
+        isDragging ? "z-50" : "z-10",
+        isDragging ? "shadow-xl" : null,
       )}
     >
       {children}
@@ -30,33 +32,33 @@ const DraggableTile: React.FC<DraggableTileProps> = ({ id, children }) => {
   );
 };
 
-const WordBankTile = ({id}: {id?: string}) => {
-  if (!id) {
+const WordBankTile = ({id, displayName}: {id?: number, displayName?: string}) => {
+  if (id === null || id === undefined) {
     return (
       <div className="h-12"></div>
     );
   } else {
     return (
       <DraggableTile id={id}>
-        <div className="h-12 bg-neutral-300 border-2 border-neutral-400 text-black flex items-center justify-center font-bold rounded-md">
-          {id}
+        <div className="h-12 dark:bg-foreground bg-neutral-200 flex items-center justify-center rounded">
+          {displayName}
         </div>
       </DraggableTile>
     );
   }
 };
 
-const SortedTile = ({id, rank}: {id: string, rank: number}) => {
+const SortedTile = ({id, displayName, rank}: {id: number, displayName: string, rank: number}) => {
   const colors = ["#118AB2", "#06D6A0", "#FFD166", "#EF476F"];
   const color = colors[rank-1];
 
   return (
     <DraggableTile id={id}>
       <div
-        className={`h-16 flex items-center justify-center font-bold rounded-md text-black`}
+        className="h-16 flex items-center justify-center rounded"
         style={{ backgroundColor: color }}
       >
-        {id}
+        {displayName}
       </div>
     </DraggableTile>
   );
