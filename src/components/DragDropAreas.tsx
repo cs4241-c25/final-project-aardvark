@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { createPortal } from 'react-dom';
 import { DragOverlay } from '@dnd-kit/core';
-import { SortedTile, WordBankTile } from './Tiles';
+import { DraggableTile } from './Tiles';
 import Droppable from './Droppable';
 import WordBank from './WordBank';
 import { useGameContext, Tile } from '@/context/GameContext';
@@ -63,10 +63,9 @@ function DragDropAreas() {
 
       if (tile) {
         return (
-          <WordBankTile 
+          <DraggableTile 
             key={position}
-            id={tile._id} 
-            displayName={tile.displayName}
+            tile={tile}
           />
         );
       } else {
@@ -74,10 +73,7 @@ function DragDropAreas() {
         const assignedTile = tiles.find(t => t._id === position);
         // If a tile belongs here but is currently ranked, show empty tile
         return (
-          <WordBankTile 
-            key={position}
-            // Pass the assigned tile's id as a className to style differently if needed
-          />
+          <div key={`empty-${position}`} className='h-12'></div>
         );
       }
     });
@@ -96,11 +92,9 @@ function DragDropAreas() {
               {tiles
                 .filter(tile => tile.rank === containerId)
                 .map((tile) => (
-                  <SortedTile 
+                  <DraggableTile 
                     key={tile._id} 
-                    id={tile._id} 
-                    displayName={tile.displayName} 
-                    rank={containerId}
+                    tile={tile}
                   />
                 ))
               }
@@ -115,15 +109,12 @@ function DragDropAreas() {
       {createPortal(
         <DragOverlay>
           {activeTile && activeTile.rank !== undefined ? (
-            <SortedTile 
-              id={activeTile._id} 
-              displayName={activeTile.displayName} 
-              rank={activeTile.rank} 
+            <DraggableTile 
+              tile={activeTile} 
             />
           ) : activeTile ? (
-            <WordBankTile 
-              id={activeTile._id} 
-              displayName={activeTile.displayName} 
+            <DraggableTile 
+              tile={activeTile}
             />
           ) : null}
         </DragOverlay>,

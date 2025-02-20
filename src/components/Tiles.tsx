@@ -1,67 +1,51 @@
 import { useDraggable } from "@dnd-kit/core";
-import { CSS } from "@dnd-kit/utilities";
 import React from 'react';
 import clsx from "clsx";
+import { useGameContext, Tile } from "@/context/GameContext";
+import { motion } from "motion/react";
 
 interface DraggableTileProps {
-  id: number;
-  children: React.ReactNode;
+  tile: Tile;
 }
 
-const DraggableTile: React.FC<DraggableTileProps> = ({ id, children }) => {
-  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
+const DraggableTile: React.FC<DraggableTileProps> = ({ tile }) => {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id: tile._id });
+
+  const colors = ["#118AB2", "#06D6A0", "#FFD166", "#EF476F"];
+  const color = tile.rank ? colors[tile.rank-1] : "#E5E5E5"
 
   const style = {
-    transform: CSS.Translate.toString(transform),
+    transform: transform ? `translate(${transform.x}px, ${transform.y}px)` : undefined,
+    backgroundColor: color,
   };
 
-  return (
-    <div
-      ref={setNodeRef}
-      style={style}
-      {...attributes}
-      {...listeners}
-      className={clsx(
-        "w-full cursor-grab active:cursor-grabbing text-black font-bold text-lg uppercase",
-        isDragging ? "z-50" : "z-10",
-        isDragging ? "shadow-xl" : null,
-      )}
-    >
-      {children}
-    </div>
-  );
-};
+  const className = "w-full h-full rounded cursor-grab active:cursor-grabbing text-black font-bold text-lg uppercase flex justify-center items-center";
 
-const WordBankTile = ({id, displayName}: {id?: number, displayName?: string}) => {
-  if (id === null || id === undefined) {
+  if (tile.rank === undefined) {
     return (
-      <div className="h-12"></div>
+      <motion.div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className={className}
+      >
+        {tile.displayName}
+      </motion.div>
     );
   } else {
     return (
-      <DraggableTile id={id}>
-        <div className="h-12 dark:bg-foreground bg-neutral-200 flex items-center justify-center rounded">
-          {displayName}
-        </div>
-      </DraggableTile>
+      <motion.div
+        ref={setNodeRef}
+        style={style}
+        {...attributes}
+        {...listeners}
+        className={className}
+      >
+        {tile.displayName}
+      </motion.div>
     );
   }
 };
 
-const SortedTile = ({id, displayName, rank}: {id: number, displayName: string, rank: number}) => {
-  const colors = ["#118AB2", "#06D6A0", "#FFD166", "#EF476F"];
-  const color = colors[rank-1];
-
-  return (
-    <DraggableTile id={id}>
-      <div
-        className="h-16 flex items-center justify-center rounded"
-        style={{ backgroundColor: color }}
-      >
-        {displayName}
-      </div>
-    </DraggableTile>
-  );
-}
-
-export {SortedTile, WordBankTile};
+export { DraggableTile };
