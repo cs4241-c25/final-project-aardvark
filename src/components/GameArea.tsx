@@ -57,9 +57,19 @@ export default function GameArea() {
         {containers.map((containerId) => {
           const tile = tiles.find(tile => tile.rank === containerId);
           return tile ? (
-            <RankedTile tile={tile} id={containerId} key={tile.displayName} handleClick={handleRankedTileClick} />
+            <RankedTile
+              tile={tile}
+              id={containerId}
+              key={`${tile._id}-${containerId}`}
+              handleClick={handleRankedTileClick}
+            />
           ) : (
-            <EmptyRankedTile id={containerId} key={containerId} handleClick={handleEmptyRankClick} currentDestination={destination} />
+            <EmptyRankedTile
+              id={containerId}
+              key={containerId}
+              handleClick={handleEmptyRankClick}
+              currentDestination={destination}
+            />
           )
         })}
       </div>
@@ -68,7 +78,11 @@ export default function GameArea() {
           return tile.rank ? (
             <div className="h-12 rounded bg-inset" key={tile._id}></div>
           ) : (
-            <WordBankTile tile={tile} key={tile._id} handleClick={handleWordBankClick} />
+            <WordBankTile
+              tile={tile}
+              key={tile._id}
+              handleClick={handleWordBankClick}
+            />
           )
         })}
       </div>

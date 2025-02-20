@@ -1,5 +1,7 @@
 import { Tile } from "@/context/GameContext";
 import clsx from "clsx";
+import { motion } from "motion/react";
+import { ReactNode } from "react";
 
 const rankColorsBg: Record<1|2|3|4, string> = {
   1: "bg-rank1",
@@ -22,14 +24,40 @@ interface WordBankTileProps {
 
 function WordBankTile({ tile, handleClick }: WordBankTileProps) {
   return (
-    <button
+    <motion.button
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 15 }}
       className="h-12 rounded bg-neutral-200 text-[#0a0a0a] uppercase font-bold"
       onClick={() => handleClick(tile)}
     >
       {tile.displayName}
-    </button>
+    </motion.button>
   );
 };
+
+interface RankedTileProps {
+  id: 1 | 2 | 3 | 4;
+  tile: Tile;
+  handleClick: (tile: Tile) => void;
+}
+
+function RankedTile({ id, tile, handleClick }: RankedTileProps) {
+  return (
+    <motion.button
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 15 }}
+      className={clsx(
+        "h-16 rounded uppercase font-bold text-[#0a0a0a]",
+        rankColorsBg[id]
+      )}
+      onClick={() => handleClick(tile)}
+    >
+      {tile.displayName}
+    </motion.button>
+  );
+}
 
 interface EmptyRankedTileProps {
   id: 1 | 2 | 3 | 4;
@@ -38,7 +66,6 @@ interface EmptyRankedTileProps {
 };
 
 function EmptyRankedTile({ id, handleClick, currentDestination }: EmptyRankedTileProps) {
-  const color = `rank${id}`;
   return (
     <button
       className={clsx(
@@ -50,26 +77,5 @@ function EmptyRankedTile({ id, handleClick, currentDestination }: EmptyRankedTil
     ></button>
   );
 };
-
-interface RankedTileProps {
-  id: 1 | 2 | 3 | 4;
-  tile: Tile;
-  handleClick: (tile: Tile) => void;
-}
-
-function RankedTile({ id, tile, handleClick }: RankedTileProps) {
-  const color = `rank${id}`;
-  return (
-    <button
-      className={clsx(
-        "h-16 rounded uppercase font-bold text-[#0a0a0a]",
-        rankColorsBg[id]
-      )}
-      onClick={() => handleClick(tile)}
-    >
-      {tile.displayName}
-    </button>
-  );
-}
 
 export { WordBankTile, RankedTile, EmptyRankedTile };
