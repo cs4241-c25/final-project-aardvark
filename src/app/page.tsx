@@ -1,38 +1,41 @@
-'use client'
+"use client"
 
-import { useEffect } from 'react';
-
-import { useGameContext } from '@/context/GameContext';
-import DragDropAreas from '@/components/DragDropAreas';
-import Button from '@/components/ui/Button';
-import GameHeader from '@/components/GameHeader';
+import { useState } from "react";
+import Button from "@/components/ui/Button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const { tiles, setTiles } = useGameContext();
+  const text = "Consensus";
+  const colors = ["#118AB2", "#06D6A0", "#FFD166", "#EF476F"];
+  const router = useRouter();
+
+  const pickColor = () => {
+    const randomIndex = Math.floor(Math.random() * colors.length);
+    return colors[randomIndex];
+  };
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <GameHeader category='Seasons' />
-      <div className='flex flex-col flex-grow items-center justify-center'>
-        <DragDropAreas />
-        <div className='flex gap-16 justify-center mt-20'>
-          <Button
-            className='w-28'
-            variant='secondary'
-            onClick={() => setTiles((prevTiles) => prevTiles.map((tile) => ({ ...tile, rank: undefined })))}
-            disabled={tiles.every((tile) => tile.rank === undefined)}
+    <div className="flex flex-col min-h-screen items-center justify-center">
+      <h1 className="font-funnel font-black text-8xl">
+        {text.split("").map((letter, index) => (
+          <span
+            key={index}
+            className="inline-block transition-transform duration-300 transform hover:-translate-y-2 select-none"
+            style={{ color: "inherit" }} // Default color
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = pickColor(); // Change color on hover
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "inherit"; // Reset color when not hovered
+            }}
           >
-            Clear
-          </Button>
-
-          {/* submit button should be its own component eventually */}
-          <Button
-            className='w-28'
-            disabled={tiles.some((tile) => tile.rank === undefined)}
-          >
-            Submit
-          </Button>
-        </div>
+            {letter}
+          </span>
+        ))}
+      </h1>
+      <div className="flex gap-8 mt-8">
+        <Button className="w-28" variant="secondary">Log In</Button>
+        <Button className="w-28" onClick={() => router.push("/play")}>Play</Button>
       </div>
     </div>
   );
