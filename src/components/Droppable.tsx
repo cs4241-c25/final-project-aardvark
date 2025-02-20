@@ -14,7 +14,7 @@ const Droppable: React.FC<DroppableProps> = ({ id, children }) => {
   return (
     <div
       ref={setNodeRef}
-      className="bg-inset h-16 flex justify-center items-center rounded-md transition-all"
+      className="bg-inset h-12 md:h-16 flex justify-center items-center rounded-md transition-all"
       style={{
         borderColor: color,
         borderWidth: isOver ? '6px' : '2px',

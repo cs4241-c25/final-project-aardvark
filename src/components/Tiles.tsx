@@ -19,7 +19,7 @@ const DraggableTile: React.FC<DraggableTileProps> = ({ tile }) => {
     backgroundColor: color,
   };
 
-  const className = "w-full h-full rounded cursor-grab active:cursor-grabbing text-black font-bold text-lg uppercase flex justify-center items-center";
+  const className = "w-full h-full rounded cursor-grab active:cursor-grabbing text-black font-bold md:text-lg uppercase flex justify-center items-center";
 
   if (tile.rank === undefined) {
     return (

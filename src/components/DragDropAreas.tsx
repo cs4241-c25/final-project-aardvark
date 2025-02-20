@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { DndContext, DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, DragStartEvent, PointerSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { createPortal } from 'react-dom';
 import { DragOverlay } from '@dnd-kit/core';
 import { DraggableTile } from './Tiles';
@@ -11,6 +11,16 @@ function DragDropAreas() {
   const containers = [1, 2, 3, 4];
   const { tiles, setTiles } = useGameContext();
   const [activeTileId, setActiveTileId] = useState<number | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 150,
+        tolerance: 5,
+      },
+    })
+  );
 
   const handleDragStart = useCallback((event: DragStartEvent) => {
     setActiveTileId(event.active.id as number);
@@ -52,50 +62,33 @@ function DragDropAreas() {
 
   const activeTile = tiles.find(tile => tile._id === activeTileId);
 
-  // Render word bank tiles in their designated positions
   const getWordBankTiles = () => {
-    // Create array of 4 positions
     return Array.from({ length: 4 }, (_, position) => {
-      // Find the tile that belongs in this position
-      const tile = tiles.find(
-        t => t.rank === undefined && t._id === position
-      );
-
+      const tile = tiles.find(t => t.rank === undefined && t._id === position);
       if (tile) {
-        return (
-          <DraggableTile 
-            key={position}
-            tile={tile}
-          />
-        );
+        return <DraggableTile key={position} tile={tile} />;
       } else {
-        // Find if any tile belongs in this position (even if currently ranked)
         const assignedTile = tiles.find(t => t._id === position);
-        // If a tile belongs here but is currently ranked, show empty tile
-        return (
-          <div key={`empty-${position}`} className='h-12'></div>
-        );
+        return <div key={`empty-${position}`} className='h-12'></div>;
       }
     });
   };
 
   return (
     <DndContext 
+      sensors={sensors}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={handleDragCancel}
     >
-      <div className='w-full max-w-lg'>
+      <div className='w-full px-8 md:max-w-lg'>
         <div className='flex flex-col gap-2 mb-10'>
           {containers.map((containerId) => (
             <Droppable key={containerId} id={containerId}>
               {tiles
                 .filter(tile => tile.rank === containerId)
                 .map((tile) => (
-                  <DraggableTile 
-                    key={tile._id} 
-                    tile={tile}
-                  />
+                  <DraggableTile key={tile._id} tile={tile} />
                 ))
               }
             </Droppable>
@@ -108,15 +101,7 @@ function DragDropAreas() {
 
       {createPortal(
         <DragOverlay>
-          {activeTile && activeTile.rank !== undefined ? (
-            <DraggableTile 
-              tile={activeTile} 
-            />
-          ) : activeTile ? (
-            <DraggableTile 
-              tile={activeTile}
-            />
-          ) : null}
+          {activeTile && <DraggableTile tile={activeTile} />}
         </DragOverlay>,
         document.body
       )}
