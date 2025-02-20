@@ -52,7 +52,7 @@ export default function GameArea() {
   };
 
   return (
-    <div className="w-full max-w-lg">
+    <div className="w-full px-8 md:max-w-lg">
       <div className="flex flex-col gap-2 mb-10">
         {containers.map((containerId) => {
           const tile = tiles.find(tile => tile.rank === containerId);
@@ -76,7 +76,7 @@ export default function GameArea() {
       <div className="grid grid-cols-2 grid-rows-2 gap-2">
         {tiles.map((tile) => {
           return tile.rank ? (
-            <div className="h-12 rounded bg-inset" key={tile._id}></div>
+            <div className="h-10 md:h-12 rounded bg-inset" key={tile._id}></div>
           ) : (
             <WordBankTile
               tile={tile}

@@ -28,7 +28,7 @@ function WordBankTile({ tile, handleClick }: WordBankTileProps) {
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 15 }}
-      className="h-12 rounded bg-neutral-200 text-[#0a0a0a] uppercase font-bold"
+      className="h-10 md:h-12 rounded bg-neutral-200 text-[#0a0a0a] uppercase font-bold"
       onClick={() => handleClick(tile)}
     >
       {tile.displayName}
@@ -49,7 +49,7 @@ function RankedTile({ id, tile, handleClick }: RankedTileProps) {
       animate={{ scale: 1, opacity: 1 }}
       transition={{ type: "spring", stiffness: 300, damping: 15 }}
       className={clsx(
-        "h-16 rounded uppercase font-bold text-[#0a0a0a]",
+        "h-12 md:h-16 rounded uppercase font-bold text-[#0a0a0a]",
         rankColorsBg[id]
       )}
       onClick={() => handleClick(tile)}
@@ -69,7 +69,7 @@ function EmptyRankedTile({ id, handleClick, currentDestination }: EmptyRankedTil
   return (
     <button
       className={clsx(
-        "h-16 rounded border-2 hover:border-4 transition-all bg-inset",
+        "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset",
         rankColorsBorder[id],
         currentDestination === id ? "border-4 bg-white/30" : "",
       )}
