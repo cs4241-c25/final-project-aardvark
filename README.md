@@ -1,8 +1,7 @@
-## FRONTEND REPO: https://github.com/aschechter10/consensus-frontend.git
-
 ## To run the app:
 
 npm install
+
 npm run dev
 
 # Final Project
