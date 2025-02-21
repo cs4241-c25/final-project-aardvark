@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function Home() {
   const text = "Consensus";
-  const colors = ["#118AB2", "#06D6A0", "#FFD166", "#EF476F"];
+  const colors = ["#11B6EC", "#06D6A0", "#FFD166", "#EF476F"];
   const router = useRouter();
 
   const pickColor = () => {
@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
-      <h1 className="font-funnel font-black text-8xl">
+      <h1 className="font-funnel font-black text-5xl md:text-8xl">
         {text.split("").map((letter, index) => (
           <span
             key={index}

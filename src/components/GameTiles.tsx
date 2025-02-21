@@ -71,7 +71,7 @@ function EmptyRankedTile({ id, handleClick, currentDestination }: EmptyRankedTil
       className={clsx(
         "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset",
         rankColorsBorder[id],
-        currentDestination === id ? "border-4 bg-white/30" : "",
+        currentDestination === id ? "border-4 dark:bg-white/30 bg-black/20" : "",
       )}
       onClick={() => id !== undefined && handleClick(id)}
     ></button>
