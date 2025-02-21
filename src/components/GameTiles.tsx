@@ -1,26 +1,25 @@
 import { Tile } from "@/context/GameContext";
 import clsx from "clsx";
 import { motion } from "motion/react";
-import { ReactNode } from "react";
 
-const rankColorsBg: Record<1|2|3|4, string> = {
+const rankColorsBg: Record<1 | 2 | 3 | 4, string> = {
   1: "bg-rank1",
   2: "bg-rank2",
   3: "bg-rank3",
   4: "bg-rank4",
-}
+};
 
-const rankColorsBorder: Record<1|2|3|4, string> = {
+const rankColorsBorder: Record<1 | 2 | 3 | 4, string> = {
   1: "border-rank1",
   2: "border-rank2",
   3: "border-rank3",
   4: "border-rank4",
-}
+};
 
 interface WordBankTileProps {
   tile: Tile;
   handleClick: (tile: Tile) => void;
-};
+}
 
 function WordBankTile({ tile, handleClick }: WordBankTileProps) {
   return (
@@ -34,7 +33,7 @@ function WordBankTile({ tile, handleClick }: WordBankTileProps) {
       {tile.displayName}
     </motion.button>
   );
-};
+}
 
 interface RankedTileProps {
   id: 1 | 2 | 3 | 4;
@@ -63,19 +62,23 @@ interface EmptyRankedTileProps {
   id: 1 | 2 | 3 | 4;
   handleClick: (rank: 1 | 2 | 3 | 4) => void;
   currentDestination: 1 | 2 | 3 | 4 | null;
-};
+}
 
-function EmptyRankedTile({ id, handleClick, currentDestination }: EmptyRankedTileProps) {
+function EmptyRankedTile({
+  id,
+  handleClick,
+  currentDestination,
+}: EmptyRankedTileProps) {
   return (
     <button
       className={clsx(
         "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset",
         rankColorsBorder[id],
-        currentDestination === id ? "border-4 bg-white/30" : "",
+        currentDestination === id ? "border-4 bg-white/30" : ""
       )}
       onClick={() => id !== undefined && handleClick(id)}
     ></button>
   );
-};
+}
 
-export { WordBankTile, RankedTile, EmptyRankedTile };
+export { EmptyRankedTile, RankedTile, WordBankTile };
