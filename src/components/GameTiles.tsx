@@ -1,4 +1,4 @@
-import { Tile } from "@/context/GameContext";
+import { Tile, useGameContext } from "@/context/GameContext";
 import clsx from "clsx";
 import { motion } from "motion/react";
 
@@ -39,19 +39,31 @@ interface RankedTileProps {
   id: 1 | 2 | 3 | 4;
   tile: Tile;
   handleClick: (tile: Tile) => void;
+  animateOnSubmit: boolean;
 }
 
-function RankedTile({ id, tile, handleClick }: RankedTileProps) {
+function RankedTile({
+  id,
+  tile,
+  handleClick,
+  animateOnSubmit,
+}: RankedTileProps) {
+  const { submitted } = useGameContext();
   return (
     <motion.button
       initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
+      animate={{
+        scale: 1,
+        opacity: 1,
+        ...(animateOnSubmit && { scale: [1, 1.1] }), // Pulse effect on submit
+      }}
       transition={{ type: "spring", stiffness: 300, damping: 15 }}
       className={clsx(
         "h-12 md:h-16 rounded uppercase font-bold text-[#0a0a0a]",
         rankColorsBg[id]
       )}
       onClick={() => handleClick(tile)}
+      disabled={submitted}
     >
       {tile.displayName}
     </motion.button>
@@ -72,12 +84,14 @@ function EmptyRankedTile({
   return (
     <button
       className={clsx(
-        "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset",
+        "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset uppercase font-bold text-white/40",
         rankColorsBorder[id],
-        currentDestination === id ? "border-4 bg-white/30" : ""
+        currentDestination === id ? "border-4 dark:bg-white/30 bg-black/20" : ""
       )}
       onClick={() => id !== undefined && handleClick(id)}
-    ></button>
+    >
+      {id}
+    </button>
   );
 }
 

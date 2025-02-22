@@ -1,15 +1,23 @@
 "use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { useGameContext, Tile } from "@/context/GameContext";
 import { WordBankTile, RankedTile, EmptyRankedTile } from "@/components/GameTiles";
 
 export default function GameArea() {
   const containers: (1|2|3|4)[] = [1, 2, 3, 4];
-  const { tiles, setTiles } = useGameContext();
+  const { tiles, setTiles, submitted, setSubmitted } = useGameContext();
 
   const [destination, setDestination] = useState<1 | 2 | 3 | 4 | null>(null);
+  const [animateOnSubmit, setAnimateOnSubmit] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (submitted) {
+      setAnimateOnSubmit(true);
+      setTimeout(() => setAnimateOnSubmit(false), 800);
+    }
+  }, [submitted]);
 
   const handleWordBankClick = (tile: Tile) => {
     setTiles((prevTiles) => {
@@ -62,6 +70,7 @@ export default function GameArea() {
               id={containerId}
               key={`${tile._id}-${containerId}`}
               handleClick={handleRankedTileClick}
+              animateOnSubmit={animateOnSubmit}
             />
           ) : (
             <EmptyRankedTile
