@@ -8,8 +8,10 @@ export default function SubmitButton() {
 
   const handleClick = () => {
     setSubmitted(true);
-    // do some stuff here
-    // once ranking is submitted, open modal
+
+    // alpha beta chungus corporation stedman boston division creative director of rizz
+
+    // gotta wait until the animation's done to open the modal
     setTimeout(() => openModal(), 1500);
   }
 

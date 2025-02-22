@@ -9,6 +9,7 @@ import { Tile } from "@/context/GameContext";
 export default function StatsModal() {
   const { isOpen, closeModal } = useModal(); 
 
+  // remove later :)
   const dummyRanking: Tile[] = [
     { _id: 0, displayName: "spring", rank: 4 },
     { _id: 1, displayName: "summer", rank: 1 },
@@ -18,7 +19,7 @@ export default function StatsModal() {
 
   return (
     <Modal isOpen={isOpen} onClose={closeModal}>
-      <div className="grid grid-rows-1 grid-cols-2 gap-6 mb-4">
+      <div className="grid grid-rows-1 grid-cols-2 gap-6 mb-6">
         <div>
           <div className="relative py-5 border border-foreground rounded-sm mb-6">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 px-2 text-sm uppercase">
@@ -55,9 +56,11 @@ export default function StatsModal() {
             </div>
           </div>
         </div>
-        <div>
-          <div className="h-full flex flex-col justify-center gap-2">
+        <div className="flex flex-col">
+          <div>
             <h1 className="text-center font-funnel uppercase mb-2">Today's most common ranking</h1>
+          </div>
+          <div className="flex flex-grow flex-col justify-around gap-2">
             {[1,2,3,4].map((rank) => {
               const matchingTile = dummyRanking.find((tile) => tile.rank === rank);
               const color = `bg-rank${rank}`;
@@ -70,8 +73,13 @@ export default function StatsModal() {
           </div>
         </div>
       </div>
-      <div className="h-12 flex items-center justify-center">
-        <Button variant="secondary"><Share2 className="mr-2" /> Share</Button>
+      <div className="grid grid-cols-2 grid-rows-1">
+        <div className="flex justify-center items-center">
+          <p className="text-sm"><a className="underline" href="/">Log in</a> to save your results</p>
+        </div>
+        <div className="flex justify-center items-center">
+          <Button variant="secondary"><Share2 className="mr-2" /> Share my ranking</Button>
+        </div>
       </div>
     </Modal>
   );
