@@ -20,8 +20,8 @@ export default function StatsModal() {
     <Modal isOpen={isOpen} onClose={closeModal}>
       <div className="grid grid-rows-1 grid-cols-2 gap-6 mb-4">
         <div>
-          <div className="relative py-5 border border-foreground dark:border-background rounded-sm mb-6">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background dark:bg-foreground dark:text-background px-2 text-sm uppercase">
+          <div className="relative py-5 border border-foreground rounded-sm mb-6">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 px-2 text-sm uppercase">
               Today's Stats
             </div>
             <div className="flex items-end justify-around text-center">
@@ -35,8 +35,8 @@ export default function StatsModal() {
               </div>
             </div>
           </div>
-          <div className="relative py-5 border border-foreground dark:border-background rounded-sm">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background dark:bg-foreground dark:text-background px-2 text-sm uppercase">
+          <div className="relative py-5 border border-foreground rounded-sm">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 px-2 text-sm uppercase">
               Your Stats
             </div>
             <div className="flex items-end justify-around text-center">
@@ -62,7 +62,7 @@ export default function StatsModal() {
               const matchingTile = dummyRanking.find((tile) => tile.rank === rank);
               const color = `bg-rank${rank}`;
               return (
-                <div key={rank} className={clsx("rounded py-1 uppercase text-center", color)}>
+                <div key={rank} className={clsx("rounded py-1 uppercase text-center dark:text-background", color)}>
                   {matchingTile?.displayName}
                 </div>
               );
@@ -71,7 +71,7 @@ export default function StatsModal() {
         </div>
       </div>
       <div className="h-12 flex items-center justify-center">
-        <Button variant="secondary" className="dark:text-background dark:border-background"><Share2 className="mr-2" /> Share</Button>
+        <Button variant="secondary"><Share2 className="mr-2" /> Share</Button>
       </div>
     </Modal>
   );

@@ -19,14 +19,14 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: "100%", opacity: 0 }}
         transition={{ type: "spring", stiffness: 80, damping: 20, duration: 0.6 }}
-        className="w-full max-w-2xl bg-background dark:bg-foreground p-2 rounded shadow-lg"
+        className="w-full max-w-2xl bg-background dark:bg-neutral-900 p-2 rounded shadow-lg"
       >
         <div className="flex justify-end items-center">
-          <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-200">
-            <X className="w-5 h-5 dark:text-background" />
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700">
+            <X className="w-5 h-5" />
           </button>
         </div>
-        <div className="px-6 pb-2 dark:text-background">
+        <div className="px-6 pb-2">
           {children}
         </div>
       </motion.div>
