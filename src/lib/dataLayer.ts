@@ -48,7 +48,30 @@ export class GameData extends DataLayer {
         return submissions;
     }
 
+}
 
+export class Consensi extends DataLayer{
+    private collectionName = "consensi"
+
+    private async getCollection() {
+        const db = await this.getDb();
+        return db.collection("collectionName");
+    }
+
+    public async getData() {
+        const collection = await this.getCollection();
+        return collection.find({}).toArray();
+    }
+
+    public async getTodaysConsensi(date: Date){
+        const collection = await this.getCollection();
+        const submissions = await collection.find({date}).toArray();
+        if (submissions.length === 0) {
+            throw new Error(`No Consensi found for date: ${date}`);
+        }
+
+        return submissions;
+    }
 
 
 }
