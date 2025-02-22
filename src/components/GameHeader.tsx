@@ -2,28 +2,20 @@
 
 import { motion } from "motion/react";
 import { IconButton } from "./ui/Button";
-import { User, ChartColumnBig, CircleHelp, History } from "lucide-react";
-import { useGameContext } from "@/context/GameContext";
+import { ClockCounterClockwise, ChartBar, Question, UserCircle } from "@phosphor-icons/react";
 
 export default function GameHeader({ category }: { category: string }) {
   return (
-    <header className="flex md:px-4 border-b border-inset py-2">
-      <div className="flex items-center">
-        <h1 className="font-funnel font-black text-6xl md:text-4xl border-r pr-4">Consensus</h1>
-        <motion.p
-          className="md:text-base text-sm ml-4"
-          initial={{ opacity: 0, x: -25 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-        >
-          #001 - {category}
-        </motion.p>
+    <header className="flex px-2 md:px-4 border-b border-inset py-2">
+      <div className="md:flex items-center">
+        <h1 className="font-funnel font-black text-2xl md:text-4xl md:border-r pr-4">Consensus</h1>
+        <p className="md:text-base text-sm md:ml-4">#001 - {category}</p>
       </div>
       <div className="flex flex-grow justify-end items-center gap-1">
-        <IconButton icon={<History />} /> {/* goes to consensus archive- TODO: create page */}
-        <IconButton icon={<ChartColumnBig />} /> {/* goes to statistics for today's consensus- TODO: create page */}
-        <IconButton icon={<CircleHelp />} /> {/* opens how to play modal- TODO: create modal */}
-        <IconButton icon={<User />} />
+        <IconButton title="Archive" icon={<ClockCounterClockwise size={24} />} /> {/* goes to consensus archive- TODO: create page */}
+        <IconButton title="Today's Statistics" icon={<ChartBar size={24} />} />   {/* goes to statistics for today's consensus- TODO: create page */}
+        <IconButton title="How to Play" icon={<Question size={24} />} />          {/* opens how to play modal- TODO: create modal */}
+        <IconButton title="My Profile" icon={<UserCircle size={24} />} />         {/* goes to user profile page- TODO: create page */}
       </div>
     </header>
   );

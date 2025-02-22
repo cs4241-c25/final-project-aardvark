@@ -39,7 +39,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       <button
         ref={ref}
         className={clsx(
-          "hover:bg-inset rounded transition-colors p-3",
+          "hover:bg-inset rounded transition-colors md:p-3 p-2",
           className,
         )}
         {...props}
