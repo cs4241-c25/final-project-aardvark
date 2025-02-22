@@ -1,6 +1,7 @@
 "use client";
 
 import GoogleAuthButton from "@/components/auth/GoogleAuthButton";
+import TwitterAuthButton from "@/components/auth/TwitterAuthButton";
 import { useSession } from "next-auth/react";
 
 export default function Login() {
@@ -11,7 +12,6 @@ export default function Login() {
     console.log("signed in");
     console.log("username", session.user?.name);
     console.log("email", session.user?.email);
-    console.log("image", session.user?.image);
   }
 
   return (
@@ -23,7 +23,7 @@ export default function Login() {
           </h1>
           <div className="space-y-4 md:space-y-6 w-full">
             <GoogleAuthButton />
-            <img />
+            <TwitterAuthButton />
           </div>
         </div>
       </div>
