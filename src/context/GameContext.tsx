@@ -5,6 +5,8 @@ import React, { createContext, useContext, useState, Dispatch, SetStateAction } 
 interface GameContextType {
   tiles: Tile[];
   setTiles: Dispatch<SetStateAction<Tile[]>>;
+  submitted: boolean;
+  setSubmitted: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface Tile {
@@ -22,8 +24,9 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     { _id: 2, displayName: "fall", rank: undefined },
     { _id: 3, displayName: "winter", rank: undefined },
   ]);
+  const [submitted, setSubmitted] = useState<boolean>(false);
 
-  return <GameContext.Provider value={{ tiles, setTiles }}>{children}</GameContext.Provider>;
+  return <GameContext.Provider value={{ tiles, setTiles, submitted, setSubmitted }}>{children}</GameContext.Provider>;
 };
 
 export const useGameContext = () => {

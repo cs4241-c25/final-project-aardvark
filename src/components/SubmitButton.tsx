@@ -3,20 +3,20 @@ import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 
 export default function SubmitButton() {
-  const { tiles } = useGameContext();
+  const { tiles, submitted, setSubmitted } = useGameContext();
   const { openModal } = useModal();
 
   const handleClick = () => {
-    
+    setSubmitted(true);
     // do some stuff here
     // once ranking is submitted, open modal
-    openModal();
+    setTimeout(() => openModal(), 1500);
   }
 
   return (
     <Button
       className="w-28"
-      disabled={tiles.some((tile) => tile.rank === undefined)}
+      disabled={submitted || (tiles.some((tile) => tile.rank === undefined))}
       onClick={handleClick}
     >
       Submit

@@ -11,7 +11,7 @@ import SubmitButton from '@/components/SubmitButton';
 import StatsModal from '@/components/StatsModal';
 
 export default function Play() {
-  const { tiles, setTiles } = useGameContext();
+  const { tiles, setTiles, submitted } = useGameContext();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -25,7 +25,7 @@ export default function Play() {
               className='w-28'
               variant='secondary'
               onClick={() => setTiles((prevTiles) => prevTiles.map((tile) => ({ ...tile, rank: undefined })))}
-              disabled={tiles.every((tile) => tile.rank === undefined)}
+              disabled={submitted || (tiles.every((tile) => tile.rank === undefined))}
             >
               Clear
             </Button>
