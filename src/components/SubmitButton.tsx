@@ -1,4 +1,4 @@
-import Button from "./ui/Button";
+import {Button} from "./ui/Button";
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 

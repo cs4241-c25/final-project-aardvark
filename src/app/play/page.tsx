@@ -1,10 +1,8 @@
 'use client'
 
-import { useState } from 'react';
-
 import { useGameContext } from '@/context/GameContext';
 import { ModalProvider, useModal } from '@/context/ModalContext';
-import Button from '@/components/ui/Button';
+import { Button } from '@/components/ui/Button';
 import GameHeader from '@/components/GameHeader';
 import GameArea from '@/components/GameArea';
 import SubmitButton from '@/components/SubmitButton';
