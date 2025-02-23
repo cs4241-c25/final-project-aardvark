@@ -33,10 +33,12 @@ export default function SubmitButton() {
     axios
       .post("/api/gameData", gameDataRecord)
       .then(function (response) {
+        // successfully inserted user submission
         console.log(response);
         axios
           .post("/api/gameData/consensus", consensus)
           .then(function (response) {
+            // successfully calculated consensus
             console.log(response);
           })
           .catch(function (error) {
