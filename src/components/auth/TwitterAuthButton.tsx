@@ -1,10 +1,9 @@
-import { signInWithTwitter } from "@/actions/authActions";
 import { motion } from "motion/react";
 // test
 
 export default function GoogleAuthButton() {
   return (
-    <form action={signInWithTwitter}>
+    <form action={() => {}}>
       <motion.button
         whileHover={{ scale: 1.04 }}
         transition={{ type: "spring", stiffness: 300, damping: 15 }}

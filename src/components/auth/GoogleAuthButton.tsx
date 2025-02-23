@@ -1,9 +1,14 @@
-import { signInWithGoogle } from "@/actions/authActions";
 import { motion } from "motion/react";
+import { signIn } from "next-auth/react";
 
 export default function GoogleAuthButton() {
   return (
-    <form action={signInWithGoogle}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        signIn("google", { callbackUrl: "/play" });
+      }}
+    >
       <motion.button
         whileHover={{ scale: 1.04 }}
         transition={{ type: "spring", stiffness: 300, damping: 15 }}
