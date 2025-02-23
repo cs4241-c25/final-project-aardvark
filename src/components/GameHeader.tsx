@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "motion/react";
 import { IconButton } from "./ui/Button";
 import { ClockCounterClockwise, ChartBar, Question, UserCircle } from "@phosphor-icons/react";
 
