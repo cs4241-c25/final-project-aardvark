@@ -3,7 +3,12 @@
 import Button from "@/components/ui/Button";
 import { useRouter } from "next/navigation";
 
+import { signOut, useSession } from "next-auth/react";
+import { useEffect } from "react";
+
 export default function Home() {
+  const { data: session } = useSession();
+
   const text = "Consensus";
   const colors = ["#11B6EC", "#06D6A0", "#FFD166", "#EF476F"];
   const router = useRouter();
@@ -12,6 +17,10 @@ export default function Home() {
     const randomIndex = Math.floor(Math.random() * colors.length);
     return colors[randomIndex];
   };
+
+  useEffect(() => {
+    console.log(session);
+  }, [session]);
 
   return (
     <div className="flex flex-col min-h-screen items-center justify-center">
@@ -33,8 +42,18 @@ export default function Home() {
         ))}
       </h1>
       <div className="flex gap-8 mt-8">
-        <Button className="w-28" variant="secondary">
-          Log In
+        <Button
+          className="w-28"
+          variant="secondary"
+          onClick={() => {
+            session && session?.user?.image != "anonymous"
+              ? signOut()
+              : router.push("/login");
+          }}
+        >
+          {session && session?.user?.image != "anonymous"
+            ? "Log Out"
+            : "Log In"}
         </Button>
         <Button className="w-28" onClick={() => router.push("/play")}>
           Play
