@@ -12,7 +12,7 @@ export const authOptions = {
     Credentials({
       name: "anonymous",
       credentials: {},
-      async authorize(credentials, req) {
+      async authorize() {
         return createAnonymousUser();
       },
     }),

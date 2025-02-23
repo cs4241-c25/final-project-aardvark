@@ -46,12 +46,12 @@ export default function Home() {
           className="w-28"
           variant="secondary"
           onClick={() => {
-            session && session?.user?.image != "anonymous"
+            session && session?.user?.image !== "anonymous"
               ? signOut()
               : router.push("/login");
           }}
         >
-          {session && session?.user?.image != "anonymous"
+          {session && session?.user?.image !== "anonymous"
             ? "Log Out"
             : "Log In"}
         </Button>
