@@ -16,10 +16,11 @@
     "mongodb": "^6.13.0",
     "motion": "^12.4.5",
     "next": "15.1.7",
-    "next-auth": "^5.0.0-beta.25",
+    "next-auth": "^4.24.11",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "util": "^0.12.5"
+    "util": "^0.12.5",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

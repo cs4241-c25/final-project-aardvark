@@ -1,13 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { useGameContext, Tile } from "@/context/GameContext";
-import { WordBankTile, RankedTile, EmptyRankedTile } from "@/components/GameTiles";
+import {
+  EmptyRankedTile,
+  RankedTile,
+  WordBankTile,
+} from "@/components/GameTiles";
+import { Tile, useGameContext } from "@/context/GameContext";
 
 export default function GameArea() {
-  const containers: (1|2|3|4)[] = [1, 2, 3, 4];
-  const { tiles, setTiles, submitted, setSubmitted } = useGameContext();
+  const containers: (1 | 2 | 3 | 4)[] = [1, 2, 3, 4];
+  const { tiles, setTiles, submitted } = useGameContext();
 
   const [destination, setDestination] = useState<1 | 2 | 3 | 4 | null>(null);
   const [animateOnSubmit, setAnimateOnSubmit] = useState<boolean>(false);
@@ -24,17 +28,21 @@ export default function GameArea() {
       const assignedRanks = prevTiles
         .filter((t) => t.rank !== undefined)
         .map((t) => t.rank as 1 | 2 | 3 | 4); // Ensure type matches
-  
+
       // Find the lowest available rank from [1, 2, 3, 4]
-      const availableRank = ([1, 2, 3, 4] as const).find((r) => !assignedRanks.includes(r));
-  
+      const availableRank = ([1, 2, 3, 4] as const).find(
+        (r) => !assignedRanks.includes(r)
+      );
+
       const newRank: 1 | 2 | 3 | 4 | undefined = destination ?? availableRank; // Ensure correct type
-  
+
       return prevTiles.map((t) =>
-        t._id === tile._id && newRank !== undefined ? { ...t, rank: newRank } : t
+        t._id === tile._id && newRank !== undefined
+          ? { ...t, rank: newRank }
+          : t
       );
     });
-  
+
     setDestination(null);
   };
 
@@ -49,11 +57,15 @@ export default function GameArea() {
   const handleRankedTileClick = (tile: Tile) => {
     if (destination) {
       setTiles((prevTiles) => {
-        return prevTiles.map((t) => t._id === tile._id ? { ...t, rank: destination } : t);
+        return prevTiles.map((t) =>
+          t._id === tile._id ? { ...t, rank: destination } : t
+        );
       });
     } else {
       setTiles((prevTiles) => {
-        return prevTiles.map((t) => t._id === tile._id ? { ...t, rank: undefined } : t);
+        return prevTiles.map((t) =>
+          t._id === tile._id ? { ...t, rank: undefined } : t
+        );
       });
     }
     setDestination(null);
@@ -63,7 +75,7 @@ export default function GameArea() {
     <div className="w-full px-8 md:max-w-lg">
       <div className="flex flex-col gap-2 mb-10">
         {containers.map((containerId) => {
-          const tile = tiles.find(tile => tile.rank === containerId);
+          const tile = tiles.find((tile) => tile.rank === containerId);
           return tile ? (
             <RankedTile
               tile={tile}
@@ -79,7 +91,7 @@ export default function GameArea() {
               handleClick={handleEmptyRankClick}
               currentDestination={destination}
             />
-          )
+          );
         })}
       </div>
       <div className="grid grid-cols-2 grid-rows-2 gap-2">
@@ -92,7 +104,7 @@ export default function GameArea() {
               key={tile._id}
               handleClick={handleWordBankClick}
             />
-          )
+          );
         })}
       </div>
     </div>
