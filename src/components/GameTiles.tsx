@@ -84,7 +84,7 @@ function EmptyRankedTile({
   return (
     <button
       className={clsx(
-        "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset uppercase font-bold text-white/40",
+        "h-12 md:h-16 rounded border-2 hover:border-4 transition-all bg-inset uppercase font-bold text-black/40 dark:text-white/40",
         rankColorsBorder[id],
         currentDestination === id ? "border-4 dark:bg-white/30 bg-black/20" : ""
       )}

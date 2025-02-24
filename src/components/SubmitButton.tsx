@@ -2,7 +2,7 @@ import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 import { GameDataRecord, Ranking } from "@/lib/interfaces";
 import axios from "axios";
-import Button from "./ui/Button";
+import { Button } from "./ui/Button";
 
 export default function SubmitButton() {
   const { tiles, submitted, setSubmitted, consensus } = useGameContext();
