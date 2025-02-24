@@ -24,7 +24,7 @@ export default function StatsModal() {
         <div>
           <div className="relative py-5 border border-foreground rounded-sm mb-6">
             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background dark:bg-neutral-900 px-2 text-sm uppercase">
-              Today's Stats
+              {"Today's Stats"}
             </div>
             <div className="flex items-end justify-around text-center">
               <div>
@@ -60,7 +60,7 @@ export default function StatsModal() {
         <div className="flex flex-col">
           <div>
             <h1 className="text-center font-funnel uppercase mb-2">
-              Today's Consensus
+              {"Today's Consensus"}
             </h1>
           </div>
           <div className="flex flex-grow flex-col justify-around gap-2">

@@ -16,7 +16,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
             "bg-foreground text-background": variant === "primary",
             "border border-foreground text-foreground": variant === "secondary",
           },
-          className,
+          className
         )}
         {...props}
       >
@@ -27,7 +27,6 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 );
 // Add display name to fix the ESLint warning
 Button.displayName = "Button";
-
 
 type IconButtonProps = React.ComponentProps<"button"> & {
   icon: React.ReactNode;
@@ -40,7 +39,7 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
         ref={ref}
         className={clsx(
           "hover:bg-inset rounded transition-colors md:p-3 p-2",
-          className,
+          className
         )}
         {...props}
       >
@@ -48,6 +47,8 @@ const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
       </button>
     );
   }
-)
+);
+// Add display name to fix the ESLint warning
+IconButton.displayName = "IconButton";
 
 export { Button, IconButton };
