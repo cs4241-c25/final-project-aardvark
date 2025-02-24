@@ -4,7 +4,7 @@ import GameArea from "@/components/GameArea";
 import GameHeader from "@/components/GameHeader";
 import StatsModal from "@/components/StatsModal";
 import SubmitButton from "@/components/SubmitButton";
-import Button from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
 import { ModalProvider } from "@/context/ModalContext";
 

@@ -1,7 +1,7 @@
 import { useModal } from "@/context/ModalContext";
 import clsx from "clsx";
 import { Share2 } from "lucide-react";
-import Button from "./ui/Button";
+import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
 
 import { Tile } from "@/context/GameContext";
@@ -23,8 +23,8 @@ export default function StatsModal() {
       <div className="grid grid-rows-1 grid-cols-2 gap-6 mb-6">
         <div>
           <div className="relative py-5 border border-foreground rounded-sm mb-6">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 px-2 text-sm uppercase">
-              {"Today's Stats"}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background dark:bg-neutral-900 px-2 text-sm uppercase">
+              Today's Stats
             </div>
             <div className="flex items-end justify-around text-center">
               <div>
@@ -38,7 +38,7 @@ export default function StatsModal() {
             </div>
           </div>
           <div className="relative py-5 border border-foreground rounded-sm">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-900 px-2 text-sm uppercase">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-background dark:bg-neutral-900 px-2 text-sm uppercase">
               Your Stats
             </div>
             <div className="flex items-end justify-around text-center">
@@ -60,7 +60,7 @@ export default function StatsModal() {
         <div className="flex flex-col">
           <div>
             <h1 className="text-center font-funnel uppercase mb-2">
-              {"Today's most common ranking"}
+              Today's Consensus
             </h1>
           </div>
           <div className="flex flex-grow flex-col justify-around gap-2">
