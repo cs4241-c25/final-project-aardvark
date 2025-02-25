@@ -30,7 +30,7 @@ export default function SubmitButton() {
         date: dateOnly,
         user: String(session?.user?.email),
       },
-      consensusId: consensusTheme?._id!,
+      consensusId: consensusTheme?._id || null,
       submission: ranking,
       location: null,
     };
@@ -45,7 +45,7 @@ export default function SubmitButton() {
             // successfully calculated consensus
             const consensusObj = response.data.consensusData;
             let userSubmissionString = "";
-            Object.entries(consensusObj.consensus).forEach(([key, value]) => {
+            Object.entries(consensusObj.consensus).forEach(([key, _value]) => {
               userSubmissionString += String(ranking[key]);
             });
             const userScore = getUserScore(userSubmissionString);

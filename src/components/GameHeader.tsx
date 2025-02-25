@@ -9,7 +9,7 @@ import {
 } from "@phosphor-icons/react";
 import { IconButton } from "./ui/Button";
 
-export default function GameHeader({ category }: { category: string }) {
+export default function GameHeader() {
   const { consensusTheme } = useGameContext();
   const formattedConsensusNum = (num: number) => String(num).padStart(3, "0");
 

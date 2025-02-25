@@ -12,7 +12,7 @@ export interface GameDataRecord {
     // could change based on fingerprintjs
     user: string;
   };
-  consensusId: ObjectId;
+  consensusId: ObjectId | null;
   submission: Ranking;
   location: {
     lat: number;

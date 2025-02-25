@@ -15,7 +15,7 @@ export default function Play() {
     <div className="flex flex-col min-h-screen">
       <ModalProvider>
         <StatsModal />
-        <GameHeader category="Seasons" />
+        <GameHeader />
         <div className="flex flex-col flex-grow items-center justify-center">
           <GameArea />
           <div className="flex gap-16 justify-center mt-20">
