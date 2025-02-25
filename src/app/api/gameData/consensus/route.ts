@@ -1,7 +1,14 @@
 import { GameData } from "@/lib/datalayer";
+import { getServerSession } from "next-auth";
 
 export async function POST(request: Request) {
   // return all consensus score
+  const session = await getServerSession();
+
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   const gameData = new GameData();
   const todayConsensus = await request.json();
   const todayRankings = await gameData.getTodaysRankings();
