@@ -4,19 +4,20 @@ import { Share2 } from "lucide-react";
 import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
 
-import { Tile } from "@/context/GameContext";
+import { useGameContext } from "@/context/GameContext";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function StatsModal() {
   const { isOpen, closeModal } = useModal();
+  const { todaysConsensus } = useGameContext();
+  const [sortedConsensusKeys, setSortedConsensusKeys] = useState<string[]>([]);
 
-  // remove later :)
-  const dummyRanking: Tile[] = [
-    { _id: 0, displayName: "spring", rank: 4 },
-    { _id: 1, displayName: "summer", rank: 1 },
-    { _id: 2, displayName: "fall", rank: 2 },
-    { _id: 3, displayName: "winter", rank: 3 },
-  ];
+  useEffect(() => {
+    if (todaysConsensus) {
+      setSortedConsensusKeys(Object.keys(todaysConsensus.consensus));
+    }
+  }, [todaysConsensus]);
 
   return (
     <Modal isOpen={isOpen} onClose={closeModal}>
@@ -28,11 +29,18 @@ export default function StatsModal() {
             </div>
             <div className="flex items-end justify-around text-center">
               <div>
-                <p className="text-4xl font-bold">5,192</p>
+                <p className="text-4xl font-bold">
+                  {todaysConsensus?.numSubmissions}
+                </p>
                 <p className="text-xs">Total plays today</p>
               </div>
               <div>
-                <p className="text-4xl font-bold">67%</p>
+                <p className="text-4xl font-bold">
+                  {todaysConsensus
+                    ? ((todaysConsensus?.userScore / 24) * 100).toFixed(0)
+                    : 0}
+                  %
+                </p>
                 <p className="text-xs">Your similarity score</p>
               </div>
             </div>
@@ -64,20 +72,17 @@ export default function StatsModal() {
             </h1>
           </div>
           <div className="flex flex-grow flex-col justify-around gap-2">
-            {[1, 2, 3, 4].map((rank) => {
-              const matchingTile = dummyRanking.find(
-                (tile) => tile.rank === rank
-              );
-              const color = `bg-rank${rank}`;
+            {sortedConsensusKeys.map((key, index) => {
+              const color = `bg-rank${index + 1}`;
               return (
                 <div
-                  key={rank}
+                  key={key}
                   className={clsx(
                     "rounded py-1 uppercase text-center dark:text-background",
                     color
                   )}
                 >
-                  {matchingTile?.displayName}
+                  {key}
                 </div>
               );
             })}
