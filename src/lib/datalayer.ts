@@ -39,6 +39,22 @@ export class GameData extends DataLayer {
     return submissions;
   }
 
+  public async getByUsernameAndDate(username: string, date: string) {
+    const collection = await this.getCollection();
+    let submissions = [];
+    try {
+      submissions = await collection
+        .find({ "metadata.user": username, "metadata.date": date })
+        .toArray();
+    } catch (error) {
+      console.error(error);
+      throw new Error(
+        `Something went wrong with getByUsernameAndDate(${username}, ${date})`
+      );
+    }
+    return submissions;
+  }
+
   public async getTodaysRankings() {
     const today = getDateString(new Date());
     const collection = await this.getCollection();

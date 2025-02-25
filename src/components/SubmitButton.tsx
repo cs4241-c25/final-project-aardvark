@@ -5,6 +5,8 @@ import { getDateString } from "@/utils/dateFormat";
 import { getUserScore } from "@/utils/scoreMap";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import LoadingSpinner from "./LoadingSpinner";
 import { Button } from "./ui/Button";
 
 export default function SubmitButton() {
@@ -12,8 +14,10 @@ export default function SubmitButton() {
   const { tiles, submitted, setSubmitted, consensusTheme, setTodaysConsensus } =
     useGameContext();
   const { openModal } = useModal();
+  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
 
   const handleClick = () => {
+    setButtonLoading(true);
     const ranking: Ranking = {
       [tiles[0].displayName]: tiles[0].rank!,
       [tiles[1].displayName]: tiles[1].rank!,
@@ -34,7 +38,7 @@ export default function SubmitButton() {
       .post("/api/gameData", gameDataRecord)
       .then(function (response) {
         // successfully inserted user submission
-        console.log(response);
+        setSubmitted(true);
         axios
           .post("/api/gameData/consensus", consensusTheme)
           .then(function (response) {
@@ -44,32 +48,45 @@ export default function SubmitButton() {
             Object.entries(consensusObj.consensus).forEach(([key, _value]) => {
               userSubmissionString += String(ranking[key]);
             });
+            // get user score
             const userScore = getUserScore(userSubmissionString);
             consensusObj.userScore = userScore;
             setTodaysConsensus(consensusObj);
+
+            setButtonLoading(false);
+
+            // open modal
+            setTimeout(() => openModal(), 1500);
           })
           .catch(function (error) {
             console.log(error);
           });
-        setSubmitted(true);
       })
       .catch(function (error) {
+        // error inserting submission
+        setButtonLoading(false);
         console.log(error);
+      })
+      .finally(function () {
+        setButtonLoading(false);
       });
 
     // alpha beta chungus corporation stedman boston division creative director of rizz
 
     // gotta wait until the animation's done to open the modal
-    setTimeout(() => openModal(), 1500);
   };
 
   return (
     <Button
       className="w-28"
-      disabled={submitted || tiles.some((tile) => tile.rank === undefined)}
+      disabled={
+        buttonLoading ||
+        submitted ||
+        tiles.some((tile) => tile.rank === undefined)
+      }
       onClick={handleClick}
     >
-      Submit
+      {buttonLoading ? <LoadingSpinner /> : "Submit"}
     </Button>
   );
 }

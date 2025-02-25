@@ -1,7 +1,8 @@
 "use client";
 
-import { ConsensiRecord } from "@/lib/interfaces";
+import { ConsensiRecord, GameDataRecord } from "@/lib/interfaces";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import React, {
   createContext,
   Dispatch,
@@ -17,8 +18,10 @@ interface GameContextType {
   submitted: boolean;
   setSubmitted: Dispatch<SetStateAction<boolean>>;
   consensusTheme: ConsensiRecord | undefined;
+  setConsensusTheme: Dispatch<SetStateAction<ConsensiRecord | undefined>>;
   todaysConsensus: TodaysConsensus | undefined;
   setTodaysConsensus: Dispatch<SetStateAction<TodaysConsensus | undefined>>;
+  loading: boolean;
 }
 
 export interface Tile {
@@ -38,6 +41,7 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { data: session } = useSession();
   const [consensusTheme, setConsensusTheme] = useState<
     ConsensiRecord | undefined
   >();
@@ -51,13 +55,42 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     { _id: 3, displayName: "", rank: undefined },
   ]);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  useEffect(() => {
-    fetchTodaysConsensus();
-  }, []);
+  const fetchUserSubmission = () => {
+    setLoading(true);
+    axios
+      .get(`/api/${session?.user?.email}/gameData/today`)
+      .then(function (response) {
+        const userSubmissions = response.data.result;
+        if (userSubmissions.length > 0) {
+          setSubmitted(true);
+          const userSubmission: GameDataRecord = userSubmissions[0];
+          const tempTiles: Tile[] = [
+            { _id: 0, displayName: "", rank: undefined },
+            { _id: 1, displayName: "", rank: undefined },
+            { _id: 2, displayName: "", rank: undefined },
+            { _id: 3, displayName: "", rank: undefined },
+          ];
+          let i = 0;
+          Object.entries(userSubmission.submission).forEach(([key, value]) => {
+            tempTiles[i].displayName = key;
+            tempTiles[i].rank = value;
+            i++;
+          });
+          setTiles(tempTiles);
+          setLoading(false);
+        }
+      })
+      .catch(function (error) {})
+      .finally(function () {
+        setLoading(false);
+      });
+  };
 
   const fetchTodaysConsensus = () => {
     // TODO need to make this work by date or however we want to fetch new ones each day
+    setLoading(true);
     axios
       .get("/api/consensi/1")
       .then(function (response) {
@@ -65,14 +98,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         const tempConsensus = response.data.consensi[0];
         setConsensusTheme(tempConsensus);
         const options = tempConsensus.options;
-        setTiles((prev) =>
-          prev.map((tile) => {
-            return {
-              ...tile,
-              displayName: options[tile._id],
-            };
-          })
-        );
+        if (!submitted) {
+          setTiles((prev) =>
+            prev.map((tile) => {
+              return {
+                ...tile,
+                displayName: options[tile._id],
+              };
+            })
+          );
+        }
+        setLoading(false);
       })
       .catch(function (error) {
         // handle error
@@ -80,8 +116,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       })
       .finally(function () {
         // always executed
+        setLoading(false);
       });
   };
+
+  useEffect(() => {
+    fetchUserSubmission();
+    fetchTodaysConsensus();
+  }, []);
 
   return (
     <GameContext.Provider
@@ -91,8 +133,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         submitted,
         setSubmitted,
         consensusTheme,
+        setConsensusTheme,
         todaysConsensus,
         setTodaysConsensus,
+        loading,
       }}
     >
       {children}
