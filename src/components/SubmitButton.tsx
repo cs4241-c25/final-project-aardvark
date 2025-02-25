@@ -1,11 +1,15 @@
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 import { GameDataRecord, Ranking } from "@/lib/interfaces";
+import { getUserScore } from "@/lib/scoreMap";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import { Button } from "./ui/Button";
 
 export default function SubmitButton() {
-  const { tiles, submitted, setSubmitted, consensus } = useGameContext();
+  const { data: session } = useSession();
+  const { tiles, submitted, setSubmitted, consensusTheme, setTodaysConsensus } =
+    useGameContext();
   const { openModal } = useModal();
 
   const handleClick = () => {
@@ -24,9 +28,9 @@ export default function SubmitButton() {
     const gameDataRecord: GameDataRecord = {
       metadata: {
         date: dateOnly,
-        user: "johndoe",
+        user: String(session?.user?.email),
       },
-      consensusId: consensus?._id!,
+      consensusId: consensusTheme?._id!,
       submission: ranking,
       location: null,
     };
@@ -36,10 +40,17 @@ export default function SubmitButton() {
         // successfully inserted user submission
         console.log(response);
         axios
-          .post("/api/gameData/consensus", consensus)
+          .post("/api/gameData/consensus", consensusTheme)
           .then(function (response) {
             // successfully calculated consensus
-            console.log(response);
+            const consensusObj = response.data.consensusData;
+            let userSubmissionString = "";
+            Object.entries(consensusObj.consensus).forEach(([key, value]) => {
+              userSubmissionString += String(ranking[key]);
+            });
+            const userScore = getUserScore(userSubmissionString);
+            consensusObj.userScore = userScore;
+            setTodaysConsensus(consensusObj);
           })
           .catch(function (error) {
             console.log(error);

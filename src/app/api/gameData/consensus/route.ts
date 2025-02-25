@@ -31,7 +31,22 @@ export async function POST(request: Request) {
     });
   });
 
-  console.log(consensusValues);
+  // sort to find actual consensus ranking
+  // in case of a tie, compare string values lexicographically
+  // to decide which ranks higher
+  const sortedConsensus = Object.fromEntries(
+    Object.entries(consensusValues).sort(
+      ([keyA, valueA], [keyB, valueB]) =>
+        valueB - valueA || keyB.localeCompare(keyA)
+    )
+  );
 
-  return Response.json({ consensusValues });
+  const consensusData = {
+    numSubmissions: todayRankings.length,
+    consensus: sortedConsensus,
+  };
+
+  console.log(consensusData);
+
+  return Response.json({ consensusData });
 }

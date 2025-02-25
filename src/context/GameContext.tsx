@@ -16,7 +16,9 @@ interface GameContextType {
   setTiles: Dispatch<SetStateAction<Tile[]>>;
   submitted: boolean;
   setSubmitted: Dispatch<SetStateAction<boolean>>;
-  consensus: ConsensiRecord | undefined;
+  consensusTheme: ConsensiRecord | undefined;
+  todaysConsensus: TodaysConsensus | undefined;
+  setTodaysConsensus: Dispatch<SetStateAction<TodaysConsensus | undefined>>;
 }
 
 export interface Tile {
@@ -25,12 +27,23 @@ export interface Tile {
   rank: 1 | 2 | 3 | 4 | undefined;
 }
 
+interface TodaysConsensus {
+  numSubmissions: number;
+  consensus: Record<string, number>;
+  userScore: number;
+}
+
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [consensus, setConsensus] = useState<ConsensiRecord | undefined>();
+  const [consensusTheme, setConsensusTheme] = useState<
+    ConsensiRecord | undefined
+  >();
+  const [todaysConsensus, setTodaysConsensus] = useState<
+    TodaysConsensus | undefined
+  >();
   const [tiles, setTiles] = useState<Tile[]>([
     { _id: 0, displayName: "", rank: undefined },
     { _id: 1, displayName: "", rank: undefined },
@@ -40,12 +53,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   const [submitted, setSubmitted] = useState<boolean>(false);
 
   useEffect(() => {
+    fetchTodaysConsensus();
+  }, []);
+
+  const fetchTodaysConsensus = () => {
+    // TODO need to make this work by date or however we want to fetch new ones each day
     axios
-      .get("/api/consensi/0")
+      .get("/api/consensi/1")
       .then(function (response) {
         // handle success
         const tempConsensus = response.data.consensi[0];
-        setConsensus(tempConsensus);
+        setConsensusTheme(tempConsensus);
         const options = tempConsensus.options;
         setTiles((prev) =>
           prev.map((tile) => {
@@ -63,11 +81,19 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       .finally(function () {
         // always executed
       });
-  }, []);
+  };
 
   return (
     <GameContext.Provider
-      value={{ tiles, setTiles, submitted, setSubmitted, consensus }}
+      value={{
+        tiles,
+        setTiles,
+        submitted,
+        setSubmitted,
+        consensusTheme,
+        todaysConsensus,
+        setTodaysConsensus,
+      }}
     >
       {children}
     </GameContext.Provider>
