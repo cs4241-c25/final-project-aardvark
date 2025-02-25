@@ -2,11 +2,11 @@
 
 import GameArea from "@/components/GameArea";
 import GameHeader from "@/components/GameHeader";
-import StatsModal from "@/components/StatsModal";
+import ModalWrapper from "@/components/ModalWrapper";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
-import { ModalProvider } from "@/context/ModalContext";
+import { ModalProvider, useModal } from "@/context/ModalContext";
 
 export default function Play() {
   const { tiles, setTiles, submitted } = useGameContext();
@@ -14,7 +14,7 @@ export default function Play() {
   return (
     <div className="flex flex-col min-h-screen">
       <ModalProvider>
-        <StatsModal />
+        <ModalWrapper />
         <GameHeader />
         <div className="flex flex-col flex-grow items-center justify-center">
           <GameArea />
