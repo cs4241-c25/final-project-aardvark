@@ -17,12 +17,12 @@ export default function Toast({ title, message, type = "default" }: { title: str
         bgColor,
       )}
       initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
     >
       <div>
         <div className="flex items-center gap-1">
-          <XCircle size={18} />
+          {type === "error" && <XCircle size={18} />}
           <h1 className="font-bold">{title}</h1>
         </div>
         <p>{message}</p>
