@@ -6,7 +6,6 @@ import { getUserScore } from "@/utils/scoreMap";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import LoadingSpinner from "./LoadingSpinner";
 import { Button } from "./ui/Button";
 
 export default function SubmitButton() {
@@ -14,10 +13,12 @@ export default function SubmitButton() {
   const { tiles, submitted, setSubmitted, consensusTheme, setTodaysConsensus } =
     useGameContext();
   const { openModal } = useModal();
-  const [buttonLoading, setButtonLoading] = useState<boolean>(false);
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
 
   const handleClick = () => {
-    setButtonLoading(true);
+    // prevent button spam
+    setButtonDisabled(true);
+
     const ranking: Ranking = {
       [tiles[0].displayName]: tiles[0].rank!,
       [tiles[1].displayName]: tiles[1].rank!,
@@ -53,7 +54,7 @@ export default function SubmitButton() {
             consensusObj.userScore = userScore;
             setTodaysConsensus(consensusObj);
 
-            setButtonLoading(false);
+            setButtonDisabled(false);
 
             // open modal
             setTimeout(() => openModal(), 1500);
@@ -64,11 +65,11 @@ export default function SubmitButton() {
       })
       .catch(function (error) {
         // error inserting submission
-        setButtonLoading(false);
+        setButtonDisabled(false);
         console.log(error);
       })
       .finally(function () {
-        setButtonLoading(false);
+        setButtonDisabled(false);
       });
 
     // alpha beta chungus corporation stedman boston division creative director of rizz
@@ -80,13 +81,13 @@ export default function SubmitButton() {
     <Button
       className="w-28"
       disabled={
-        buttonLoading ||
+        buttonDisabled ||
         submitted ||
         tiles.some((tile) => tile.rank === undefined)
       }
       onClick={handleClick}
     >
-      {buttonLoading ? <LoadingSpinner /> : "Submit"}
+      Submit
     </Button>
   );
 }
