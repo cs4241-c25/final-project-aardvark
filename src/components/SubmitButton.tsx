@@ -1,7 +1,8 @@
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 import { GameDataRecord, Ranking } from "@/lib/interfaces";
-import { getUserScore } from "@/lib/scoreMap";
+import { getDateString } from "@/utils/dateFormat";
+import { getUserScore } from "@/utils/scoreMap";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Button } from "./ui/Button";
@@ -19,15 +20,10 @@ export default function SubmitButton() {
       [tiles[2].displayName]: tiles[2].rank!,
       [tiles[3].displayName]: tiles[3].rank!,
     };
-    const today = new Date();
-    const dateOnly = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
+    const today = getDateString(new Date());
     const gameDataRecord: GameDataRecord = {
       metadata: {
-        date: dateOnly,
+        date: today,
         user: String(session?.user?.email),
       },
       consensusId: consensusTheme?._id || null,

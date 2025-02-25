@@ -1,3 +1,4 @@
+import { getDateString } from "@/utils/dateFormat";
 import client from "./db";
 import { GameDataRecord } from "./interfaces";
 
@@ -39,18 +40,13 @@ export class GameData extends DataLayer {
   }
 
   public async getTodaysRankings() {
-    const today = new Date();
-    const dateOnly = new Date(
-      today.getFullYear(),
-      today.getMonth(),
-      today.getDate()
-    );
+    const today = getDateString(new Date());
     const collection = await this.getCollection();
     const submissions = await collection
-      .find({ "metadata.date": dateOnly.toISOString() })
+      .find({ "metadata.date": today })
       .toArray();
     if (submissions.length === 0) {
-      throw new Error(`No submissions found for date: ${dateOnly}`);
+      throw new Error(`No submissions found for date: ${today}`);
     }
 
     return submissions;

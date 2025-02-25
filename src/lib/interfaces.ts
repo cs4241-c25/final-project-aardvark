@@ -7,9 +7,7 @@ export interface Ranking {
 export interface GameDataRecord {
   _id?: ObjectId;
   metadata: {
-    // links to consensus collection for category, options, date
-    date: Date;
-    // could change based on fingerprintjs
+    date: string;
     user: string;
   };
   consensusId: ObjectId | null;
@@ -23,7 +21,7 @@ export interface GameDataRecord {
 export interface ConsensiRecord {
   _id?: ObjectId;
   metadata: {
-    date: Date;
+    date: string;
     author: string | null;
   };
   category: string;
