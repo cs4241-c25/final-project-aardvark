@@ -1,7 +1,7 @@
 import { GameData } from "@/lib/datalayer";
 import { getServerSession } from "next-auth";
 
-export async function GET(_request: Request) {
+export async function GET(request: Request) {
   // return all gameData submissions
   const session = await getServerSession();
 

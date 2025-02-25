@@ -2,7 +2,7 @@ import { Consensi } from "@/lib/datalayer";
 import { getServerSession } from "next-auth";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: { consensusNum: number } }
 ) {
   // return one consensus by consensusNum
