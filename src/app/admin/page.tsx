@@ -101,38 +101,38 @@ const ConsensusEntryForm = () => {
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">Consensus Entry Form</h2>
+      <h2 className="text-2xl font-bold mb-6 text-black">Consensus Entry Form</h2>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-4">
           <div>
-            <label className="block text-gray-700 font-medium">Date:</label>
+            <label className="block text-black font-medium">Date:</label>
             <input
               type="date"
               name="date"
               value={record.metadata.date}
               onChange={handleMetadataChange}
-              className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border p-3 w-full rounded-lg text-black"
               required
             />
           </div>
           <div>
-            <label className="block text-gray-700 font-medium">Author:</label>
+            <label className="block text-black font-medium">Author:</label>
             <input
               type="text"
               name="author"
               value={record.metadata.author || ""}
               onChange={handleMetadataChange}
-              className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="border p-3 w-full rounded-lg text-black"
               required
             />
           </div>
-          <label className="block text-gray-700 font-medium">Category:</label>
+          <label className="block text-black font-medium">Category:</label>
             <input
                 type="text"
                 name="category"
                 value={record.category}
                 onChange={handleCategoryChange}
-                className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="border p-3 w-full rounded-lg text-black"
                 required
                 />
         </div>
@@ -146,7 +146,7 @@ const ConsensusEntryForm = () => {
                 value={option}
                 onChange={(e) => handleOptionChange(index, e.target.value)}
                 placeholder={`Option ${index + 1}`}
-                className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="border p-3 w-full rounded-lg text-black"
                 required
               />
             </div>
