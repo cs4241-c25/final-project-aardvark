@@ -102,4 +102,19 @@ export class Consensi extends DataLayer {
     }
     return result;
   }
+  
+  public async getHighestConsensusNum() {
+    const collection = await this.getCollection();
+    const highestConsensus = await collection
+      .find({})
+      .sort({ consensusNum: -1 }) // Sort in descending order
+      .limit(1) // Get only the highest one
+      .toArray();
+  
+    if (highestConsensus.length === 0) {
+      throw new Error("No Consensi records found");
+    }
+  
+    return highestConsensus[0].consensusNum;
+  }
 }

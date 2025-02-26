@@ -1,6 +1,7 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ConsensiRecord } from "@/lib/interfaces";
+import { Button } from "@/components/ui/Button";
 
 interface ConsensusResult {
   numSubmissions: number;
@@ -21,28 +22,32 @@ const ConsensusEntryForm = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const fetchHighestConsensusNum = async () => {
+      try {
+        const response = await fetch("/api/admin");
+        if (!response.ok) throw new Error("Failed to fetch highest consensus number");
+        const data = await response.json();
+        const { highestConsensusNum } = data;
+        setRecord((prev) => ({ ...prev, consensusNum: highestConsensusNum + 1 }));
+
+      } catch (err) {
+        setError("Failed to retrieve the latest consensus number.");
+      }
+    };
+
+    fetchHighestConsensusNum();
+  }, []);
+
   const handleMetadataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (name === "consensusNum") {
-      setRecord((prev) => ({
-        ...prev,
-        consensusNum: parseInt(value, 10) || 0,
-      }));
-    } else if (name === "category") {
-      setRecord((prev) => ({
-        ...prev,
-        category: value,
-      }));
-    } else {
-      // Handles "date" and "author" fields under metadata
-      setRecord((prev) => ({
-        ...prev,
-        metadata: {
-          ...prev.metadata,
-          [name]: value,
-        },
-      }));
-    }
+    setRecord((prev) => ({
+      ...prev,
+      metadata: {
+        ...prev.metadata,
+        [name]: value,
+      },
+    }));
   };
 
   const handleOptionChange = (index: number, value: string) => {
@@ -51,6 +56,11 @@ const ConsensusEntryForm = () => {
     setRecord((prev) => ({ ...prev, options: updatedOptions }));
   };
 
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = e.target;
+    setRecord((prev) => ({ ...prev, category: value }));
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -58,11 +68,7 @@ const ConsensusEntryForm = () => {
     setResult(null);
 
     const { date, author } = record.metadata;
-    if (
-      !date ||
-      !author ||
-      record.options.some((opt) => opt.trim() === "")
-    ) {
+    if (!date || !author || record.options.some((opt) => opt.trim() === "")) {
       setError("Please fill in all metadata fields and all 4 options.");
       setLoading(false);
       return;
@@ -120,28 +126,15 @@ const ConsensusEntryForm = () => {
               required
             />
           </div>
-          <div>
-            <label className="block text-gray-700 font-medium">Category:</label>
+          <label className="block text-gray-700 font-medium">Category:</label>
             <input
-              type="text"
-              name="category"
-              value={record.category}
-              onChange={handleMetadataChange}
-              className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-gray-700 font-medium">Consensus Number:</label>
-            <input
-              type="number"
-              name="consensusNum"
-              value={record.consensusNum || ""}
-              onChange={handleMetadataChange}
-              className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-            />
-          </div>
+                type="text"
+                name="category"
+                value={record.category}
+                onChange={handleCategoryChange}
+                className="border p-3 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+                />
         </div>
 
         <div>
@@ -160,15 +153,12 @@ const ConsensusEntryForm = () => {
           ))}
         </div>
 
-        <button
+        <Button
           type="submit"
           disabled={loading}
-          className={`w-full py-3 rounded-lg text-white font-semibold transition duration-300 ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"
-          }`}
         >
           {loading ? "Submitting..." : "Submit"}
-        </button>
+        </Button>
       </form>
 
       {error && <p className="mt-4 text-red-600 text-center font-medium">{error}</p>}
