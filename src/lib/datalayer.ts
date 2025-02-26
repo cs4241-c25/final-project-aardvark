@@ -1,6 +1,6 @@
 import { getDateString } from "@/utils/dateFormat";
 import client from "./db";
-import { GameDataRecord } from "./interfaces";
+import { ConsensiRecord, GameDataRecord } from "./interfaces";
 
 export class DataLayer {
   private dbName = "consensus";
@@ -92,5 +92,14 @@ export class Consensi extends DataLayer {
     }
 
     return submissions;
+  }
+
+  public async saveConsensus(consensusData: ConsensiRecord) {
+    const collection = await this.getCollection();
+    const result = await collection.insertOne(consensusData);
+    if (!result){
+      throw new Error('Could not add consensi')
+    }
+    return result;
   }
 }
