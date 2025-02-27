@@ -75,6 +75,7 @@ export default function SubmitButton() {
     // alpha beta chungus corporation stedman boston division creative director of rizz
 
     // gotta wait until the animation's done to open the modal
+    setTimeout(() => openModal("Statistics"), 1500);
   };
 
   return (

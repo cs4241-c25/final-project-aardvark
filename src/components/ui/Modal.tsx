@@ -1,16 +1,16 @@
 "use client";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
+import clsx from "clsx";
 
 interface ModalProps {
-  isOpen: boolean;
+  title?: string;
   onClose: () => void;
   children: React.ReactNode;
+  className?: string;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
-  if (!isOpen) return null;
-
+const Modal: React.FC<ModalProps> = ({ title, onClose, children, className }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
       <motion.div
@@ -23,17 +23,21 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
           damping: 20,
           duration: 0.6,
         }}
-        className="w-full max-w-2xl bg-background dark:bg-neutral-900 p-2 rounded shadow-lg z-50"
+        className={clsx(
+          "bg-background dark:bg-neutral-900 p-4 rounded shadow-lg z-50",
+          className,
+        )}
       >
-        <div className="flex justify-end items-center">
+        <div className={`flex items-center ${title ? "justify-between" : "justify-end"}`}>
+          {title && <h1 className="text-xl font-funnel font-bold">{title}</h1>}
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700"
+            className="rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700"
           >
-            <X className="w-5 h-5" />
+            <X className="h-8 w-8 p-2" />
           </button>
         </div>
-        <div className="px-6 pb-2">{children}</div>
+        <div>{children}</div>
       </motion.div>
     </div>
   );
