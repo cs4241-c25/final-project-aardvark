@@ -55,9 +55,6 @@ export default function SubmitButton() {
             setTodaysConsensus(consensusObj);
 
             setButtonDisabled(false);
-
-            // open modal
-            setTimeout(() => openModal(), 1500);
           })
           .catch(function (error) {
             console.log(error);
