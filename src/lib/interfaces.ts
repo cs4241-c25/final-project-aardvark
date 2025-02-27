@@ -28,3 +28,15 @@ export interface ConsensiRecord {
   consensusNum: number;
   options: string[];
 }
+
+export interface ConsensiSuggestion {
+  _id?: ObjectId;
+  author: string | null;
+  category: string;
+  options: string[];
+}
+
+export interface PromptSchema {
+  role: string,
+  content: string,
+}
