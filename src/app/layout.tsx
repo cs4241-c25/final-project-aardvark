@@ -5,6 +5,7 @@ import "./globals.css";
 import AnonymousSessionProvider from "@/components/auth/AnonymousSessionProvider";
 import SessionProvider from "@/components/auth/SessionProvider";
 import { GameProvider } from "@/context/GameContext";
+import { ToastProvider } from "@/context/ToastContext";
 import { getServerSession } from "next-auth";
 
 const geistSans = Geist({
@@ -48,7 +49,11 @@ export default async function RootLayout({
       >
         <SessionProvider session={session}>
           <AnonymousSessionProvider>
-            <GameProvider>{children}</GameProvider>
+            <ToastProvider>
+              <GameProvider>
+                {children}
+              </GameProvider>
+            </ToastProvider>
           </AnonymousSessionProvider>
         </SessionProvider>
       </body>

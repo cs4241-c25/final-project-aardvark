@@ -7,9 +7,11 @@ import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
 import { ModalProvider, useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 
 export default function Play() {
   const { tiles, setTiles, submitted } = useGameContext();
+  const { showToast } = useToast();
 
   return (
     <div className="flex flex-col min-h-screen">

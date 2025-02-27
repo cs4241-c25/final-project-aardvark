@@ -1,19 +1,16 @@
 "use client";
 
 import { useGameContext } from "@/context/GameContext";
-import {
-  ChartBar,
-  ClockCounterClockwise,
-  Question,
-  UserCircle,
-} from "@phosphor-icons/react";
 import { IconButton } from "./ui/Button";
 import { ModalProvider, useModal } from "@/context/ModalContext";
+import { ClockCounterClockwise, ChartBar, Question, UserCircle } from "@phosphor-icons/react";
+import { useToast } from "@/context/ToastContext";
 
 export default function GameHeader() {
   const { consensusTheme } = useGameContext();
   const formattedConsensusNum = (num: number) => String(num).padStart(3, "0");
   const { openModal } = useModal();
+  const { showToast } = useToast();
 
   return (
     <header className="flex px-2 md:px-4 border-b border-inset py-2">
