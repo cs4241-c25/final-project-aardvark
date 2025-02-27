@@ -29,3 +29,5 @@ const scoreMap: Record<string, number> = {
 export function getUserScore(userRanking: string) {
   return scoreMap[userRanking];
 }
+
+export function getUserRankingString() {}

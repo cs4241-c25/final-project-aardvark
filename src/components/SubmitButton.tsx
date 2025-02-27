@@ -2,7 +2,7 @@ import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 import { GameDataRecord, Ranking } from "@/lib/interfaces";
 import { getDateString } from "@/utils/dateFormat";
-import { getUserScore } from "@/utils/scoreMap";
+import { getUserScore } from "@/utils/scoreUtils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -72,7 +72,7 @@ export default function SubmitButton() {
     // alpha beta chungus corporation stedman boston division creative director of rizz
 
     // gotta wait until the animation's done to open the modal
-    setTimeout(() => openModal("Statistics"), 1500);
+    // setTimeout(() => openModal("Statistics"), 1500);
   };
 
   return (

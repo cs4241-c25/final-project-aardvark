@@ -11,6 +11,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { useToast } from "./ToastContext";
 
 interface GameContextType {
   tiles: Tile[];
@@ -56,6 +57,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   ]);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const { showToast } = useToast();
 
   const fetchUserSubmission = () => {
     setLoading(true);
@@ -80,6 +82,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           });
           setTiles(tempTiles);
           setLoading(false);
+          setTimeout(
+            () =>
+              showToast(
+                "🎉",
+                "Thanks for playing consensus today! 🎉",
+                "default"
+              ),
+            500
+          );
         }
       })
       .catch(function (error) {})
