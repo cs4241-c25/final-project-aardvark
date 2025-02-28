@@ -163,14 +163,7 @@ const ConsensusEntryForm = () => {
 
       {error && <p className="mt-4 text-red-600 text-center font-medium">{error}</p>}
       
-      {result && (
-        <div className="mt-6 p-4 bg-gray-100 rounded-lg">
-          <h3 className="font-bold text-gray-800">Consensus Results:</h3>
-          <pre className="mt-2 p-3 bg-white rounded-lg shadow-sm overflow-x-auto">
-            {JSON.stringify(result, null, 2)}
-          </pre>
-        </div>
-      )}
+      {result && <p>Consensus Added Successfully</p>}
     </div>
   );
 };
