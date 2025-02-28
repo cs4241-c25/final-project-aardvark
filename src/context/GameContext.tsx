@@ -1,6 +1,12 @@
 "use client";
 
-import { ConsensiRecord, GameDataRecord } from "@/lib/interfaces";
+import {
+  ConsensiRecord,
+  GameDataRecord,
+  Tile,
+  TodaysConsensus,
+  UserData,
+} from "@/lib/interfaces";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, {
@@ -22,19 +28,9 @@ interface GameContextType {
   setConsensusTheme: Dispatch<SetStateAction<ConsensiRecord | undefined>>;
   todaysConsensus: TodaysConsensus | undefined;
   setTodaysConsensus: Dispatch<SetStateAction<TodaysConsensus | undefined>>;
+  userData: UserData;
+  setUserData: Dispatch<SetStateAction<UserData>>;
   loading: boolean;
-}
-
-export interface Tile {
-  _id: number;
-  displayName: string;
-  rank: 1 | 2 | 3 | 4 | undefined;
-}
-
-interface TodaysConsensus {
-  numSubmissions: number;
-  consensus: Record<string, number>;
-  userScore: number;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -49,6 +45,11 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   const [todaysConsensus, setTodaysConsensus] = useState<
     TodaysConsensus | undefined
   >();
+  const [userData, setUserData] = useState<UserData>({
+    played: null,
+    score: null,
+    stats: null,
+  });
   const [tiles, setTiles] = useState<Tile[]>([
     { _id: 0, displayName: "", rank: undefined },
     { _id: 1, displayName: "", rank: undefined },
@@ -60,40 +61,53 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   const { showToast } = useToast();
 
   const fetchUserSubmission = () => {
+    // has the user played today?
     setLoading(true);
     axios
       .get(`/api/${session?.user?.email}/gameData/today`)
       .then(function (response) {
-        const userSubmissions = response.data.result;
-        if (userSubmissions.length > 0) {
-          setSubmitted(true);
-          const userSubmission: GameDataRecord = userSubmissions[0];
-          const tempTiles: Tile[] = [
-            { _id: 0, displayName: "", rank: undefined },
-            { _id: 1, displayName: "", rank: undefined },
-            { _id: 2, displayName: "", rank: undefined },
-            { _id: 3, displayName: "", rank: undefined },
-          ];
-          let i = 0;
-          Object.entries(userSubmission.submission).forEach(([key, value]) => {
-            tempTiles[i].displayName = key;
-            tempTiles[i].rank = value;
-            i++;
-          });
-          setTiles(tempTiles);
+        const userSubmissionArr: GameDataRecord[] = response.data.result;
+        if (userSubmissionArr.length > 0) {
+          // user has played today
+          const userSubmission: GameDataRecord = userSubmissionArr[0];
+          // set user submission in context
+          const todaysUserData: UserData = {
+            played: userSubmission,
+            score: null,
+            stats: null,
+          };
+          setUserData(todaysUserData);
+          // check auth
+          if (session?.user?.image === "anonymous") {
+            // user is unauthenticated
+          } else {
+            // user is signed in with account
+          }
           setLoading(false);
           setTimeout(
             () =>
               showToast(
-                "🎉",
+                "",
                 "Thanks for playing consensus today! 🎉",
                 "default"
               ),
             500
           );
+        } else {
+          // user has not played today
+          // check auth
+          if (session?.user?.image === "anonymous") {
+            // user is unauthenticated
+          } else {
+            // user is logged in with account
+            // get stats?
+          }
         }
       })
-      .catch(function (error) {})
+      .catch(function (error) {
+        setLoading(false);
+        showToast("Error", error, "error");
+      })
       .finally(function () {
         setLoading(false);
       });
@@ -122,8 +136,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         setLoading(false);
       })
       .catch(function (error) {
-        // handle error
-        console.log(error);
+        setLoading(false);
+        showToast("Error", error, "error");
       })
       .finally(function () {
         // always executed
@@ -132,8 +146,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   useEffect(() => {
-    fetchUserSubmission();
     fetchTodaysConsensus();
+    fetchUserSubmission();
   }, []);
 
   return (
@@ -147,6 +161,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         setConsensusTheme,
         todaysConsensus,
         setTodaysConsensus,
+        userData,
+        setUserData,
         loading,
       }}
     >

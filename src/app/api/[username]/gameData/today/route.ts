@@ -16,7 +16,6 @@ export async function GET(
   const gameData = new GameData();
 
   const username = (await params).username;
-  console.log(username);
   const today = getDateString(new Date());
   const result = await gameData.getByUsernameAndDate(username, today);
   return Response.json({ result });

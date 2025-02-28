@@ -88,11 +88,13 @@ export class Consensi extends DataLayer {
     return collection.find({}).toArray();
   }
 
-  public async getTodaysConsensiByDate(date: Date) {
+  public async getTodaysConsensiByDate(dateString: string) {
     const collection = await this.getCollection();
-    const submissions = await collection.find({ date }).toArray();
+    const submissions = await collection
+      .find({ "metadata.date": dateString })
+      .toArray();
     if (submissions.length === 0) {
-      throw new Error(`No Consensi found for date: ${date}`);
+      throw new Error(`No Consensi found for date: ${dateString}`);
     }
 
     return submissions;

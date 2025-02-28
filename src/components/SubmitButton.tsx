@@ -1,5 +1,6 @@
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { GameDataRecord, Ranking } from "@/lib/interfaces";
 import { getDateString } from "@/utils/dateFormat";
 import { getUserScore } from "@/utils/scoreUtils";
@@ -10,10 +11,17 @@ import { Button } from "./ui/Button";
 
 export default function SubmitButton() {
   const { data: session } = useSession();
-  const { tiles, submitted, setSubmitted, consensusTheme, setTodaysConsensus } =
-    useGameContext();
-  const { openModal } = useModal();
+  const {
+    tiles,
+    submitted,
+    setSubmitted,
+    consensusTheme,
+    setTodaysConsensus,
+    setUserData,
+  } = useGameContext();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
+  const { showToast } = useToast();
+  const { openModal } = useModal();
 
   const handleClick = () => {
     // prevent button spam
@@ -44,15 +52,14 @@ export default function SubmitButton() {
           .post("/api/gameData/consensus", consensusTheme)
           .then(function (response) {
             // successfully calculated consensus
+            // set consensus in state
             const consensusObj = response.data.consensusData;
-            let userSubmissionString = "";
-            Object.entries(consensusObj.consensus).forEach(([key, _value]) => {
-              userSubmissionString += String(ranking[key]);
-            });
-            // get user score
-            const userScore = getUserScore(userSubmissionString);
-            consensusObj.userScore = userScore;
             setTodaysConsensus(consensusObj);
+
+            const userScore = getUserScore(gameDataRecord, consensusObj);
+            setUserData((prev) => ({ ...prev, score: userScore }));
+
+            setTimeout(() => openModal("Statistics"), 1500);
 
             setButtonDisabled(false);
           })
@@ -62,8 +69,8 @@ export default function SubmitButton() {
       })
       .catch(function (error) {
         // error inserting submission
+        showToast("Error", error, "error");
         setButtonDisabled(false);
-        console.log(error);
       })
       .finally(function () {
         setButtonDisabled(false);
@@ -72,20 +79,15 @@ export default function SubmitButton() {
     // alpha beta chungus corporation stedman boston division creative director of rizz
 
     // gotta wait until the animation's done to open the modal
-    // setTimeout(() => openModal("Statistics"), 1500);
   };
 
   return (
     <Button
       className="w-28"
-      disabled={
-        buttonDisabled ||
-        submitted ||
-        tiles.some((tile) => tile.rank === undefined)
-      }
-      onClick={handleClick}
+      disabled={buttonDisabled || tiles.some((tile) => tile.rank === undefined)}
+      onClick={() => (submitted ? openModal("Statistics") : handleClick())}
     >
-      Submit
+      {submitted ? "See Stats" : "Submit"}
     </Button>
   );
 }

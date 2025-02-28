@@ -3,16 +3,25 @@
 import GameArea from "@/components/GameArea";
 import GameHeader from "@/components/GameHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
-import StatsModal from "@/components/StatsModal";
+import ModalWrapper from "@/components/ModalWrapper";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
 import { ModalProvider } from "@/context/ModalContext";
-import { useToast } from "@/context/ToastContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Play() {
-  const { tiles, setTiles, submitted, loading } = useGameContext();
-  const { showToast } = useToast();
+  const { tiles, setTiles, submitted, userData, loading } = useGameContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    // if user has played, redirect them to the stats page
+    console.log(userData.played);
+    if (userData.played) {
+      router.push("/stats");
+    }
+  }, [userData]);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -22,7 +31,7 @@ export default function Play() {
         </div>
       ) : (
         <ModalProvider>
-          <StatsModal />
+          <ModalWrapper />
           <GameHeader />
           <div className="flex flex-col flex-grow items-center justify-center">
             <GameArea />

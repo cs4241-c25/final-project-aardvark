@@ -1,3 +1,5 @@
+import { GameDataRecord, TodaysConsensus } from "@/lib/interfaces";
+
 const scoreMap: Record<string, number> = {
   // TODO describe this
   "1234": 24,
@@ -26,8 +28,18 @@ const scoreMap: Record<string, number> = {
   "4321": 1,
 };
 
-export function getUserScore(userRanking: string) {
+export function getScoreMap(userRanking: string) {
   return scoreMap[userRanking];
 }
 
-export function getUserRankingString() {}
+export function getUserScore(
+  gameDataRecord: GameDataRecord,
+  consensus: TodaysConsensus
+) {
+  let userSubmissionString = "";
+  Object.entries(consensus.consensus).forEach(([key, _value]) => {
+    userSubmissionString += String(gameDataRecord.submission[key]);
+  });
+  // get user score
+  return getScoreMap(userSubmissionString);
+}

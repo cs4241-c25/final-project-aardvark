@@ -9,7 +9,7 @@ import { signOut, useSession } from "next-auth/react";
 
 export default function Home() {
   const { data: session } = useSession();
-  const { submitted, loading } = useGameContext();
+  const { userData, loading } = useGameContext();
 
   const text = "Consensus";
   const colors = ["#11B6EC", "#06D6A0", "#FFD166", "#EF476F"];
@@ -59,8 +59,17 @@ export default function Home() {
                 ? "Log Out"
                 : "Log In"}
             </Button>
-            <Button className="w-28" onClick={() => router.push("/play")}>
-              {submitted ? "See Stats" : "Play"}
+            <Button
+              className="w-28"
+              onClick={() => {
+                if (userData.played) {
+                  router.push("/stats");
+                } else {
+                  router.push("/play");
+                }
+              }}
+            >
+              {userData.played ? "See Stats" : "Play"}
             </Button>
           </div>
         </>
