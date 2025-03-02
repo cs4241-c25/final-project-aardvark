@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function StatsModal() {
-  const { openModal, closeModal } = useModal();
+  const { closeModal } = useModal();
   const { todaysConsensus } = useGameContext();
   const [sortedConsensusKeys, setSortedConsensusKeys] = useState<string[]>([]);
 
