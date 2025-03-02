@@ -7,7 +7,8 @@ import {
   RankedTile,
   WordBankTile,
 } from "@/components/GameTiles";
-import { Tile, useGameContext } from "@/context/GameContext";
+import { useGameContext } from "@/context/GameContext";
+import { Tile } from "@/lib/interfaces";
 
 export default function GameArea() {
   const containers: (1 | 2 | 3 | 4)[] = [1, 2, 3, 4];
