@@ -80,19 +80,28 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           // check auth
           if (session?.user?.image === "anonymous") {
             // user is unauthenticated
+            setTimeout(
+              () =>
+                showToast(
+                  "",
+                  "Thanks for playing consensus today! 🎉",
+                  "default"
+                ),
+              500
+            );
           } else {
             // user is signed in with account
+            setTimeout(
+              () =>
+                showToast(
+                  `Welcome back ${session?.user?.name}`,
+                  "Thanks for playing consensus today! 🎉",
+                  "default"
+                ),
+              500
+            );
           }
           setLoading(false);
-          setTimeout(
-            () =>
-              showToast(
-                "",
-                "Thanks for playing consensus today! 🎉",
-                "default"
-              ),
-            500
-          );
         } else {
           // user has not played today
           // check auth
@@ -101,6 +110,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           } else {
             // user is logged in with account
             // get stats?
+            setTimeout(
+              () =>
+                showToast(
+                  "",
+                  `Welcome back ${session?.user?.name} 👋`,
+                  "default"
+                ),
+              500
+            );
           }
         }
       })
