@@ -36,6 +36,7 @@ export interface Tile {
   _id: number;
   displayName: string;
   rank: 1 | 2 | 3 | 4 | undefined;
+  color: string;
 }
 
 export interface TodaysConsensus {

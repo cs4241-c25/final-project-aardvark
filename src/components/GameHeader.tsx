@@ -21,7 +21,7 @@ export default function GameHeader() {
         <h1 className="font-funnel font-black text-2xl md:text-4xl md:border-r pr-4">
           Consensus
         </h1>
-        <p className="md:text-base text-sm md:ml-4">
+        <p className="md:text-base text-sm md:ml-4 font-funnel">
           #{formattedConsensusNum(Number(consensusTheme?.consensusNum))} -{" "}
           {consensusTheme?.category}
         </p>
