@@ -56,10 +56,10 @@ export async function POST(request: Request) {
       getDateString(new Date())
     );
     if (todayTaken.length > 0) {
-      return NextResponse.json({
-        message: "Consensus already scheduled for today",
-        consensusData: todayTaken,
-      });
+      return NextResponse.json(
+        { error: "Consensus already scheduled for that day" },
+        { status: 400 }
+      );
     }
 
     await consensi.saveConsensus(data);
