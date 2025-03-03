@@ -1,7 +1,10 @@
 "use client";
+import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
 import { ModalProvider } from "@/context/ModalContext";
 import { ConsensiRecord, TodaysConsensus } from "@/lib/interfaces";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 const ConsensusEntryForm = () => {
@@ -17,6 +20,27 @@ const ConsensusEntryForm = () => {
   const [result, setResult] = useState<TodaysConsensus | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { data: session } = useSession();
+  const [userAuthLoad, setUserAuthLoad] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (
+      !session ||
+      session.user?.image === "anonymous" ||
+      (session.user?.email !== process.env.NEXT_PUBLIC_ARI_ADMIN &&
+        session.user?.email !== process.env.NEXT_PUBLIC_JACK_ADMIN &&
+        session.user?.email !== process.env.NEXT_PUBLIC_GUS_ADMIN &&
+        session.user?.email !== process.env.NEXT_PUBLIC_WALDEN_ADMIN &&
+        session.user?.email !== process.env.NEXT_PUBLIC_STEVE_ADMIN &&
+        session.user?.email !== process.env.NEXT_PUBLIC_BMO_ADMIN)
+    ) {
+      // not allowed to use admin page
+      router.replace("/");
+    } else {
+      setUserAuthLoad(false);
+    }
+  }, [session]);
 
   useEffect(() => {
     const fetchHighestConsensusNum = async () => {
@@ -36,7 +60,7 @@ const ConsensusEntryForm = () => {
     };
 
     fetchHighestConsensusNum();
-  }, []);
+  }, [userAuthLoad]);
 
   const handleMetadataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -100,73 +124,79 @@ const ConsensusEntryForm = () => {
 
   return (
     <ModalProvider>
-      <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-        <h2 className="text-2xl font-bold mb-6 text-black">
-          Consensus Entry Form
-        </h2>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 gap-4">
-            <div>
-              <label className="block text-black font-medium">Date:</label>
-              <input
-                type="date"
-                name="date"
-                value={record.metadata.date}
-                onChange={handleMetadataChange}
-                className="border p-3 w-full rounded-lg text-black"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-black font-medium">Author:</label>
-              <input
-                type="text"
-                name="author"
-                value={record.metadata.author || ""}
-                onChange={handleMetadataChange}
-                className="border p-3 w-full rounded-lg text-black"
-              />
-            </div>
-            <label className="block text-black font-medium">Category:</label>
-            <input
-              type="text"
-              name="category"
-              value={record.category}
-              onChange={handleCategoryChange}
-              className="border p-3 w-full rounded-lg text-black"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-gray-700 font-medium mb-2">
-              Options (exactly 4):
-            </label>
-            {record.options.map((option, index) => (
-              <div key={index} className="mb-3">
+      {userAuthLoad ? (
+        <div className="w-[100vw] h-[100vh] flex justify-center items-center">
+          <LoadingSpinner />
+        </div>
+      ) : (
+        <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+          <h2 className="text-2xl font-bold mb-6 text-black">
+            Consensus Entry Form
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label className="block text-black font-medium">Date:</label>
                 <input
-                  type="text"
-                  value={option}
-                  onChange={(e) => handleOptionChange(index, e.target.value)}
-                  placeholder={`Option ${index + 1}`}
+                  type="date"
+                  name="date"
+                  value={record.metadata.date}
+                  onChange={handleMetadataChange}
                   className="border p-3 w-full rounded-lg text-black"
                   required
                 />
               </div>
-            ))}
-          </div>
+              <div>
+                <label className="block text-black font-medium">Author:</label>
+                <input
+                  type="text"
+                  name="author"
+                  value={record.metadata.author || ""}
+                  onChange={handleMetadataChange}
+                  className="border p-3 w-full rounded-lg text-black"
+                />
+              </div>
+              <label className="block text-black font-medium">Category:</label>
+              <input
+                type="text"
+                name="category"
+                value={record.category}
+                onChange={handleCategoryChange}
+                className="border p-3 w-full rounded-lg text-black"
+                required
+              />
+            </div>
 
-          <Button type="submit" disabled={loading}>
-            {loading ? "Submitting..." : "Submit"}
-          </Button>
-        </form>
+            <div>
+              <label className="block text-gray-700 font-medium mb-2">
+                Options (exactly 4):
+              </label>
+              {record.options.map((option, index) => (
+                <div key={index} className="mb-3">
+                  <input
+                    type="text"
+                    value={option}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                    placeholder={`Option ${index + 1}`}
+                    className="border p-3 w-full rounded-lg text-black"
+                    required
+                  />
+                </div>
+              ))}
+            </div>
 
-        {error && (
-          <p className="mt-4 text-red-600 text-center font-medium">{error}</p>
-        )}
+            <Button type="submit" disabled={loading}>
+              {loading ? "Submitting..." : "Submit"}
+            </Button>
+          </form>
 
-        {result && <p className="text-black">Consensus Added Successfully</p>}
-      </div>
+          {error && (
+            <p className="mt-4 text-red-600 text-center font-medium">{error}</p>
+          )}
+
+          {result && <p className="text-black">Consensus Added Successfully</p>}
+        </div>
+      )}
     </ModalProvider>
   );
 };
