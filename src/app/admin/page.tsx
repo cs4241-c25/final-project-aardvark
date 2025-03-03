@@ -1,13 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/Button";
 import { ModalProvider } from "@/context/ModalContext";
-import { ConsensiRecord } from "@/lib/interfaces";
+import { ConsensiRecord, TodaysConsensus } from "@/lib/interfaces";
 import { useEffect, useState } from "react";
-
-interface ConsensusResult {
-  numSubmissions: number;
-  consensus: Record<string, number>;
-}
 
 const ConsensusEntryForm = () => {
   const [record, setRecord] = useState<ConsensiRecord>({
@@ -19,7 +14,7 @@ const ConsensusEntryForm = () => {
     consensusNum: 0,
     options: ["", "", "", ""],
   });
-  const [result, setResult] = useState<ConsensusResult | null>(null);
+  const [result, setResult] = useState<TodaysConsensus | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
