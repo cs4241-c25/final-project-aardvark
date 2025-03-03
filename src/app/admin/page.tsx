@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { ConsensiRecord } from "@/lib/interfaces";
 import { Button } from "@/components/ui/Button";
+import { ModalProvider } from "@/context/ModalContext";
+import GameHeader from "@/components/GameHeader";
 
 interface ConsensusResult {
   numSubmissions: number;
@@ -100,71 +102,73 @@ const ConsensusEntryForm = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <h2 className="text-2xl font-bold mb-6 text-black">Consensus Entry Form</h2>
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <label className="block text-black font-medium">Date:</label>
-            <input
-              type="date"
-              name="date"
-              value={record.metadata.date}
-              onChange={handleMetadataChange}
-              className="border p-3 w-full rounded-lg text-black"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-black font-medium">Author:</label>
-            <input
-              type="text"
-              name="author"
-              value={record.metadata.author || ""}
-              onChange={handleMetadataChange}
-              className="border p-3 w-full rounded-lg text-black"
-              required
-            />
-          </div>
-          <label className="block text-black font-medium">Category:</label>
-            <input
-                type="text"
-                name="category"
-                value={record.category}
-                onChange={handleCategoryChange}
+    <ModalProvider>
+        <div className="max-w-xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+        <h2 className="text-2xl font-bold mb-6 text-black">Consensus Entry Form</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-4">
+            <div>
+                <label className="block text-black font-medium">Date:</label>
+                <input
+                type="date"
+                name="date"
+                value={record.metadata.date}
+                onChange={handleMetadataChange}
                 className="border p-3 w-full rounded-lg text-black"
                 required
                 />
-        </div>
-
-        <div>
-          <label className="block text-gray-700 font-medium mb-2">Options (exactly 4):</label>
-          {record.options.map((option, index) => (
-            <div key={index} className="mb-3">
-              <input
+            </div>
+            <div>
+                <label className="block text-black font-medium">Author:</label>
+                <input
                 type="text"
-                value={option}
-                onChange={(e) => handleOptionChange(index, e.target.value)}
-                placeholder={`Option ${index + 1}`}
+                name="author"
+                value={record.metadata.author || ""}
+                onChange={handleMetadataChange}
                 className="border p-3 w-full rounded-lg text-black"
                 required
-              />
+                />
             </div>
-          ))}
+            <label className="block text-black font-medium">Category:</label>
+                <input
+                    type="text"
+                    name="category"
+                    value={record.category}
+                    onChange={handleCategoryChange}
+                    className="border p-3 w-full rounded-lg text-black"
+                    required
+                    />
+            </div>
+
+            <div>
+            <label className="block text-gray-700 font-medium mb-2">Options (exactly 4):</label>
+            {record.options.map((option, index) => (
+                <div key={index} className="mb-3">
+                <input
+                    type="text"
+                    value={option}
+                    onChange={(e) => handleOptionChange(index, e.target.value)}
+                    placeholder={`Option ${index + 1}`}
+                    className="border p-3 w-full rounded-lg text-black"
+                    required
+                />
+                </div>
+            ))}
+            </div>
+
+            <Button
+            type="submit"
+            disabled={loading}
+            >
+            {loading ? "Submitting..." : "Submit"}
+            </Button>
+        </form>
+
+        {error && <p className="mt-4 text-red-600 text-center font-medium">{error}</p>}
+        
+        {result && <p className="text-black">Consensus Added Successfully</p>}
         </div>
-
-        <Button
-          type="submit"
-          disabled={loading}
-        >
-          {loading ? "Submitting..." : "Submit"}
-        </Button>
-      </form>
-
-      {error && <p className="mt-4 text-red-600 text-center font-medium">{error}</p>}
-      
-      {result && <p>Consensus Added Successfully</p>}
-    </div>
+    </ModalProvider>
   );
 };
 
