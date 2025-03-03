@@ -9,8 +9,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function StatsModal() {
-  const { openModal, closeModal } = useModal();
-  const { todaysConsensus } = useGameContext();
+  const { closeModal } = useModal();
+  const { todaysConsensus, userData } = useGameContext();
   const [sortedConsensusKeys, setSortedConsensusKeys] = useState<string[]>([]);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function StatsModal() {
               <div>
                 <p className="text-4xl font-bold">
                   {todaysConsensus
-                    ? ((todaysConsensus?.userScore / 24) * 100).toFixed(0)
+                    ? (((userData?.score ?? 0) / 24) * 100).toFixed(0)
                     : 0}
                   %
                 </p>

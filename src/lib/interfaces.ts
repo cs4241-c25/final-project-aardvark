@@ -5,6 +5,7 @@ export interface Ranking {
 }
 
 export interface GameDataRecord {
+  // represents a user submission
   _id?: ObjectId;
   metadata: {
     date: string;
@@ -19,6 +20,7 @@ export interface GameDataRecord {
 }
 
 export interface ConsensiRecord {
+  // represents a consensus game for a given day
   _id?: ObjectId;
   metadata: {
     date: string;
@@ -39,4 +41,22 @@ export interface ConsensiSuggestion {
 export interface PromptSchema {
   role: string,
   content: string,
+}
+
+export interface Tile {
+  // represents a tile in the game
+  _id: number;
+  displayName: string;
+  rank: 1 | 2 | 3 | 4 | undefined;
+}
+
+export interface TodaysConsensus {
+  numSubmissions: number;
+  consensus: Record<string, number>;
+}
+
+export interface UserData {
+  played: GameDataRecord | null;
+  score: number | null;
+  stats: {} | null;
 }

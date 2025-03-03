@@ -1,7 +1,14 @@
 "use client";
 
-import { ConsensiRecord } from "@/lib/interfaces";
+import {
+  ConsensiRecord,
+  GameDataRecord,
+  Tile,
+  TodaysConsensus,
+  UserData,
+} from "@/lib/interfaces";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 import React, {
   createContext,
   Dispatch,
@@ -10,6 +17,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { useToast } from "./ToastContext";
 
 interface GameContextType {
   tiles: Tile[];
@@ -17,20 +25,12 @@ interface GameContextType {
   submitted: boolean;
   setSubmitted: Dispatch<SetStateAction<boolean>>;
   consensusTheme: ConsensiRecord | undefined;
+  setConsensusTheme: Dispatch<SetStateAction<ConsensiRecord | undefined>>;
   todaysConsensus: TodaysConsensus | undefined;
   setTodaysConsensus: Dispatch<SetStateAction<TodaysConsensus | undefined>>;
-}
-
-export interface Tile {
-  _id: number;
-  displayName: string;
-  rank: 1 | 2 | 3 | 4 | undefined;
-}
-
-interface TodaysConsensus {
-  numSubmissions: number;
-  consensus: Record<string, number>;
-  userScore: number;
+  userData: UserData;
+  setUserData: Dispatch<SetStateAction<UserData>>;
+  loading: boolean;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -38,12 +38,18 @@ const GameContext = createContext<GameContextType | undefined>(undefined);
 export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { data: session } = useSession();
   const [consensusTheme, setConsensusTheme] = useState<
     ConsensiRecord | undefined
   >();
   const [todaysConsensus, setTodaysConsensus] = useState<
     TodaysConsensus | undefined
   >();
+  const [userData, setUserData] = useState<UserData>({
+    played: null,
+    score: null,
+    stats: null,
+  });
   const [tiles, setTiles] = useState<Tile[]>([
     { _id: 0, displayName: "", rank: undefined },
     { _id: 1, displayName: "", rank: undefined },
@@ -51,13 +57,83 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     { _id: 3, displayName: "", rank: undefined },
   ]);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const { showToast } = useToast();
 
-  useEffect(() => {
-    fetchTodaysConsensus();
-  }, []);
+  const fetchUserSubmission = () => {
+    // has the user played today?
+    setLoading(true);
+    axios
+      .get(`/api/${session?.user?.email}/gameData/today`)
+      .then(function (response) {
+        const userSubmissionArr: GameDataRecord[] = response.data.result;
+        if (userSubmissionArr.length > 0) {
+          // user has played today
+          const userSubmission: GameDataRecord = userSubmissionArr[0];
+          // set user submission in context
+          const todaysUserData: UserData = {
+            played: userSubmission,
+            score: null,
+            stats: null,
+          };
+          setUserData(todaysUserData);
+          // check auth
+          if (session?.user?.image === "anonymous") {
+            // user is unauthenticated
+            setTimeout(
+              () =>
+                showToast(
+                  "",
+                  "Thanks for playing consensus today! 🎉",
+                  "default"
+                ),
+              500
+            );
+          } else {
+            // user is signed in with account
+            setTimeout(
+              () =>
+                showToast(
+                  `Welcome back ${session?.user?.name}`,
+                  "Thanks for playing consensus today! 🎉",
+                  "default"
+                ),
+              500
+            );
+          }
+          setLoading(false);
+        } else {
+          // user has not played today
+          // check auth
+          if (session?.user?.image === "anonymous") {
+            // user is unauthenticated
+          } else {
+            // user is logged in with account
+            // get stats?
+            setTimeout(
+              () =>
+                showToast(
+                  "",
+                  `Welcome back ${session?.user?.name} 👋`,
+                  "default"
+                ),
+              500
+            );
+          }
+        }
+      })
+      .catch(function (error) {
+        setLoading(false);
+        showToast("Error", error, "error");
+      })
+      .finally(function () {
+        setLoading(false);
+      });
+  };
 
   const fetchTodaysConsensus = () => {
     // TODO need to make this work by date or however we want to fetch new ones each day
+    setLoading(true);
     axios
       .get("/api/consensi/1")
       .then(function (response) {
@@ -65,23 +141,32 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         const tempConsensus = response.data.consensi[0];
         setConsensusTheme(tempConsensus);
         const options = tempConsensus.options;
-        setTiles((prev) =>
-          prev.map((tile) => {
-            return {
-              ...tile,
-              displayName: options[tile._id],
-            };
-          })
-        );
+        if (!submitted) {
+          setTiles((prev) =>
+            prev.map((tile) => {
+              return {
+                ...tile,
+                displayName: options[tile._id],
+              };
+            })
+          );
+        }
+        setLoading(false);
       })
       .catch(function (error) {
-        // handle error
-        console.log(error);
+        setLoading(false);
+        showToast("Error", error, "error");
       })
       .finally(function () {
         // always executed
+        setLoading(false);
       });
   };
+
+  useEffect(() => {
+    fetchTodaysConsensus();
+    fetchUserSubmission();
+  }, []);
 
   return (
     <GameContext.Provider
@@ -91,8 +176,12 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         submitted,
         setSubmitted,
         consensusTheme,
+        setConsensusTheme,
         todaysConsensus,
         setTodaysConsensus,
+        userData,
+        setUserData,
+        loading,
       }}
     >
       {children}
