@@ -9,8 +9,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function StatsModal() {
-  const { isOpen, closeModal } = useModal();
-  const { todaysConsensus } = useGameContext();
+  const { closeModal } = useModal();
+  const { todaysConsensus, userData } = useGameContext();
   const [sortedConsensusKeys, setSortedConsensusKeys] = useState<string[]>([]);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function StatsModal() {
   }, [todaysConsensus]);
 
   return (
-    <Modal isOpen={isOpen} onClose={closeModal}>
+    <Modal onClose={closeModal} className="w-full max-w-2xl">
       <div className="grid grid-rows-1 grid-cols-2 gap-6 mb-6">
         <div>
           <div className="relative py-5 border border-foreground rounded-sm mb-6">
@@ -37,7 +37,7 @@ export default function StatsModal() {
               <div>
                 <p className="text-4xl font-bold">
                   {todaysConsensus
-                    ? ((todaysConsensus?.userScore / 24) * 100).toFixed(0)
+                    ? (((userData?.score ?? 0) / 24) * 100).toFixed(0)
                     : 0}
                   %
                 </p>
@@ -89,7 +89,7 @@ export default function StatsModal() {
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 grid-rows-1">
+      <div className="grid grid-cols-2 grid-rows-1 mb-3">
         <div className="flex justify-center items-center">
           <p className="text-sm">
             <Link className="underline" href="/">

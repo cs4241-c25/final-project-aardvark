@@ -1,4 +1,5 @@
-import { Tile, useGameContext } from "@/context/GameContext";
+import { useGameContext } from "@/context/GameContext";
+import { Tile } from "@/lib/interfaces";
 import clsx from "clsx";
 import { motion } from "motion/react";
 

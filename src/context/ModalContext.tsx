@@ -1,21 +1,28 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
+
+type ModalType = "Statistics" | "How to Play" | null;
 
 interface ModalContextProps {
-  isOpen: boolean;
-  openModal: () => void;
+  openModal: (type: ModalType) => void;
   closeModal: () => void;
+  modalType: ModalType;
 }
 
 const ModalContext = createContext<ModalContextProps | undefined>(undefined);
 
 export function ModalProvider({ children }: { children: ReactNode }) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [modalType, setModalType] = useState<ModalType>(null);
 
-  const openModal = () => setIsOpen(true);
-  const closeModal = () => setIsOpen(false);
+  const openModal = (type: ModalType) => {
+    setModalType(type);
+  };
+
+  const closeModal = () => {
+    setModalType(null);
+  };
 
   return (
-    <ModalContext.Provider value={{ isOpen, openModal, closeModal }}>
+    <ModalContext.Provider value={{ openModal, closeModal, modalType }}>
       {children}
     </ModalContext.Provider>
   );

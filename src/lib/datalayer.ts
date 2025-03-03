@@ -39,6 +39,22 @@ export class GameData extends DataLayer {
     return submissions;
   }
 
+  public async getByUsernameAndDate(username: string, date: string) {
+    const collection = await this.getCollection();
+    let submissions = [];
+    try {
+      submissions = await collection
+        .find({ "metadata.user": username, "metadata.date": date })
+        .toArray();
+    } catch (error) {
+      console.error(error);
+      throw new Error(
+        `Something went wrong with getByUsernameAndDate(${username}, ${date})`
+      );
+    }
+    return submissions;
+  }
+
   public async getTodaysRankings() {
     const today = getDateString(new Date());
     const collection = await this.getCollection();
@@ -72,11 +88,13 @@ export class Consensi extends DataLayer {
     return collection.find({}).toArray();
   }
 
-  public async getTodaysConsensiByDate(date: Date) {
+  public async getTodaysConsensiByDate(dateString: string) {
     const collection = await this.getCollection();
-    const submissions = await collection.find({ date }).toArray();
+    const submissions = await collection
+      .find({ "metadata.date": dateString })
+      .toArray();
     if (submissions.length === 0) {
-      throw new Error(`No Consensi found for date: ${date}`);
+      throw new Error(`No Consensi found for date: ${dateString}`);
     }
 
     return submissions;
