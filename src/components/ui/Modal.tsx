@@ -12,10 +12,10 @@ interface ModalProps {
 
 const Modal: React.FC<ModalProps> = ({ title, onClose, children, className }) => {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+    <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-40">
       <motion.div
-        initial={{ y: "100%", opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
+        initial={{ y: "100%" }}
+        animate={{ y: 0 }}
         exit={{ y: "100%", opacity: 0 }}
         transition={{
           type: "spring",
@@ -24,15 +24,15 @@ const Modal: React.FC<ModalProps> = ({ title, onClose, children, className }) =>
           duration: 0.6,
         }}
         className={clsx(
-          "bg-background dark:bg-neutral-900 p-4 rounded shadow-lg z-50",
+          "bg-background dark:bg-neutral-900 p-6 rounded shadow-lg z-50",
           className,
         )}
       >
-        <div className={`flex items-center ${title ? "justify-between" : "justify-end"}`}>
+        <div className={`flex relative justify-center`}>
           {title && <h1 className="text-xl font-funnel font-bold">{title}</h1>}
           <button
             onClick={onClose}
-            className="rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700"
+            className="rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 absolute right-0"
           >
             <X className="h-8 w-8 p-2" />
           </button>

@@ -31,6 +31,7 @@ interface GameContextType {
   userData: UserData;
   setUserData: Dispatch<SetStateAction<UserData>>;
   loading: boolean;
+  bgColorMap: Map<string, string>
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -51,10 +52,16 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     stats: null,
   });
   const [tiles, setTiles] = useState<Tile[]>([
-    { _id: 0, displayName: "", rank: undefined },
-    { _id: 1, displayName: "", rank: undefined },
-    { _id: 2, displayName: "", rank: undefined },
-    { _id: 3, displayName: "", rank: undefined },
+    { _id: 0, displayName: "", rank: undefined, color: "blue" },
+    { _id: 1, displayName: "", rank: undefined, color: "green" },
+    { _id: 2, displayName: "", rank: undefined, color: "yellow" },
+    { _id: 3, displayName: "", rank: undefined, color: "red" },
+  ]);
+  const bgColorMap: Map<string, string> = new Map([
+    ["blue", "bg-gameBlue"],
+    ["green", "bg-gameGreen"],
+    ["yellow", "bg-gameYellow"],
+    ["red", "bg-gameRed"],
   ]);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
@@ -182,6 +189,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         userData,
         setUserData,
         loading,
+        bgColorMap,
       }}
     >
       {children}
