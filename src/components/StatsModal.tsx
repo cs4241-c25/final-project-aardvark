@@ -127,7 +127,9 @@ export default function StatsModal() {
                 );
               })
             : null}
-          <p className="text-center uppercase font-funnel">Today's Consensus</p>
+          <p className="text-center uppercase font-funnel">
+            {"Today's Consensus"}
+          </p>
         </div>
         <div className="flex justify-center items-center">
           <Button variant="secondary" onClick={copyShare}>

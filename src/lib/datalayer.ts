@@ -1,7 +1,7 @@
 import { getDateString } from "@/utils/dateFormat";
+import { ObjectId } from "mongodb";
 import client from "./db";
 import { ConsensiRecord, GameDataRecord } from "./interfaces";
-import { Collection, ObjectId } from "mongodb";
 
 export class DataLayer {
   private dbName = "consensus";
@@ -94,7 +94,7 @@ export class Consensi extends DataLayer {
     const submissions = await collection
       .find({ "metadata.date": dateString })
       .toArray();
-      
+
     return submissions;
   }
 
@@ -113,12 +113,12 @@ export class Consensi extends DataLayer {
   public async saveConsensus(consensusData: ConsensiRecord) {
     const collection = await this.getCollection();
     const result = await collection.insertOne(consensusData);
-    if (!result){
-      throw new Error('Could not add consensi')
+    if (!result) {
+      throw new Error("Could not add consensi");
     }
     return result;
   }
-  
+
   public async getHighestConsensusNum() {
     const collection = await this.getCollection();
     const highestConsensus = await collection
@@ -126,11 +126,11 @@ export class Consensi extends DataLayer {
       .sort({ consensusNum: -1 }) // Sort in descending order
       .limit(1) // Get only the highest one
       .toArray();
-  
+
     if (highestConsensus.length === 0) {
       throw new Error("No Consensi records found");
     }
-  
+
     return highestConsensus[0].consensusNum;
   }
 
@@ -141,21 +141,18 @@ export class Consensi extends DataLayer {
 
   public async getAllConsensiSortedByDateAfterToday() {
     const collection = await this.getCollection();
-  
+
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
-  
+
     const formattedTomorrow = tomorrow.toISOString().slice(0, 10);
-  
+
     return collection
       .find({ "metadata.date": { $gte: formattedTomorrow } })
       .sort({ "metadata.date": 1 })
       .toArray();
   }
-  
-
-
 }
 
 export class Suggestion extends DataLayer {
@@ -165,7 +162,7 @@ export class Suggestion extends DataLayer {
     const db = await this.getDb();
     return db.collection(this.collectionName);
   }
-  public async getSuggestions(){
+  public async getSuggestions() {
     const collection = await this.getCollection();
 
     const result = await collection.find({}).toArray();
@@ -173,7 +170,7 @@ export class Suggestion extends DataLayer {
     return result;
   }
 
-  public async removeSelection(id: ObjectId){
+  public async removeSelection(id: ObjectId) {
     const collection = await this.getCollection();
     const result = await collection.deleteOne({ _id: id });
 

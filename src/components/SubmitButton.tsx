@@ -13,7 +13,6 @@ export default function SubmitButton() {
   const { data: session } = useSession();
   const {
     tiles,
-    submitted,
     setSubmitted,
     consensusTheme,
     setTodaysConsensus,
