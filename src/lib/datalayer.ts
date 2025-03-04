@@ -112,3 +112,22 @@ export class Consensi extends DataLayer {
     return submissions;
   }
 }
+
+export class ConsensiSuggestion extends DataLayer {
+  private collectionName = "consensiSuggestion";
+
+  private async getCollection() {
+    const db = await this.getDb();
+    return db.collection(this.collectionName);
+  }
+
+  public async getData() {
+    const collection = await this.getCollection();
+    return collection.find({}).toArray();
+  }
+
+  public async addNewSuggestion(suggestions: ConsensiSuggestion) {
+    const collection = await this.getCollection();
+    await collection.insertOne(suggestions);
+  }
+}

@@ -13,7 +13,8 @@ export class Gemini {
         "I want you to when given a category generate 10 distinct groups of 4 values for the options for that category."+
         "If you are not given a category, generate 10 distinct category's each with one group of 4 values for the options for that category."+
         "Format all responses as an array of JSON objects matching the ConsensiSuggestion interface: " +
-        "{ _id: string, metadata: { author: string }, category: string, options: string[] }." +
+        "{ _id: string, author: string, category: string, options: string[] }." +
+        "Make sure the author is Set to AI."+
         "Please do not include any other text beside the array of JSON objects";
 
     async prompt(userMessage: string) {
