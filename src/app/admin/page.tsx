@@ -26,8 +26,6 @@ const ConsensusEntryForm = () => {
   const [userAuthLoad, setUserAuthLoad] = useState(true);
   const router = useRouter();
 
-  // Moved the fetchHighestConsensusNum function to the top level.
-  // It now returns the new consensus number so it can be reused elsewhere.
   const fetchHighestConsensusNum = async (): Promise<number | undefined> => {
     try {
       const response = await fetch("/api/admin");
@@ -59,7 +57,6 @@ const ConsensusEntryForm = () => {
     }
   }, [session]);
 
-  // Set the initial consensus number after user authentication is loaded.
   useEffect(() => {
     const setInitialConsensusNum = async () => {
       const newConsensusNum = await fetchHighestConsensusNum();
@@ -136,20 +133,17 @@ const ConsensusEntryForm = () => {
     }
   };
 
-  // Handle changes for the approval date input on each suggestion.
   const handleSuggestionDateChange = (index: number, value: string) => {
     const updatedSuggestions = [...allSuggestions];
     updatedSuggestions[index] = { ...updatedSuggestions[index], date: value };
     setAllSuggestions(updatedSuggestions);
   };
-  
 
-  // Approve or deny a suggestion.
   const handleSuggestionCheck = async (index: number, value: string) => {
     const updatedSuggestions = [...allSuggestions];
     updatedSuggestions[index] = { ...updatedSuggestions[index], checked: value };
     setAllSuggestions(updatedSuggestions);
-  
+
     if (value === "yes") {
       const suggestionToApprove = updatedSuggestions[index];
       const newConsensusNum = await fetchHighestConsensusNum();
@@ -165,7 +159,7 @@ const ConsensusEntryForm = () => {
         consensusNum: newConsensusNum,
         options: suggestionToApprove.options,
       };
-  
+
       try {
         setLoading(true);
         const response = await fetch("/api/admin", {
@@ -186,8 +180,7 @@ const ConsensusEntryForm = () => {
         setLoading(false);
       }
     }
-  
-    // Now delete the suggestion from the suggestions list.
+
     try {
       setLoading(true);
       const suggestionToDelete = updatedSuggestions[index];
@@ -195,15 +188,15 @@ const ConsensusEntryForm = () => {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });
-  
+
       if (!response.ok) {
         const err = await response.json();
         setError(err.error || "An error occurred while deleting the suggestion.");
         return;
       }
-  
+
       setAllSuggestions((prev) => prev.filter((_, i) => i !== index));
-  
+
       const data = await response.json();
       setResult(data.consensusData);
     } catch (err) {
@@ -212,7 +205,6 @@ const ConsensusEntryForm = () => {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     const getAllConsensi = async () => {
@@ -276,9 +268,9 @@ const ConsensusEntryForm = () => {
         {userAuthLoad ? (
           <LoadingSpinner />
         ) : (
-          <div className="flex flex-row gap-8">
-            {/* Display all consensi */}
-            <div className="w-[35vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
+          <div className="flex flex-row gap-8 w-full justify-center px-4 overflow-x-auto">
+            {/* All Consensi */}
+            <div className="w-[30vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
               <h3 className="text-xl font-bold mb-4 text-black">All Consensi</h3>
               {loading ? (
                 <LoadingSpinner />
@@ -376,8 +368,8 @@ const ConsensusEntryForm = () => {
               )}
             </div>
 
-            {/* Display all suggestions with approve/deny buttons */}
-            <div className="w-[35vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
+            {/* All Suggestions */}
+            <div className="w-[30vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
               <h3 className="text-xl font-bold mb-4 text-black">All Suggestions</h3>
               {loading ? (
                 <LoadingSpinner />
@@ -396,7 +388,6 @@ const ConsensusEntryForm = () => {
                     <p className="text-black">
                       <strong>Options:</strong> {suggestion.options.join(", ")}
                     </p>
-                    {/* New approval date input */}
                     <div className="mt-2">
                       <label className="block text-black font-medium">Approval Date:</label>
                       <input
