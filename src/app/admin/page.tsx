@@ -26,7 +26,7 @@ const ConsensusEntryForm = () => {
   const [userAuthLoad, setUserAuthLoad] = useState(true);
   const router = useRouter();
 
-  const fetchHighestConsensusNum = async (): Promise<number | undefined> => {
+   const fetchHighestConsensusNum = async (): Promise<number | undefined> => {
     try {
       const response = await fetch("/api/admin");
       if (!response.ok)
@@ -305,49 +305,49 @@ const ConsensusEntryForm = () => {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-black font-medium">Date:</label>
+                    <label className="block text-black font-medium bg-white">Date:</label>
                     <input
                       type="date"
                       name="date"
                       value={record.metadata.date}
                       onChange={handleMetadataChange}
-                      className="border p-3 w-full rounded-lg text-black"
+                      className="border p-3 w-full rounded-lg text-black bg-white"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-black font-medium">Author:</label>
+                    <label className="block text-black font-medium bg-white">Author:</label>
                     <input
                       type="text"
                       name="author"
                       value={record.metadata.author || ""}
                       onChange={handleMetadataChange}
-                      className="border p-3 w-full rounded-lg text-black"
+                      className="border p-3 w-full rounded-lg text-black bg-white"
                     />
                   </div>
-                  <label className="block text-black font-medium">Category:</label>
+                  <label className="block text-black font-medium bg-white">Category:</label>
                   <input
                     type="text"
                     name="category"
                     value={record.category}
                     onChange={handleCategoryChange}
-                    className="border p-3 w-full rounded-lg text-black"
+                    className="border p-3 w-full rounded-lg text-black bg-white"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-gray-700 font-medium mb-2">
+                  <label className="block text-gray-700 font-medium mb-2 bg-white">
                     Options (exactly 4):
                   </label>
                   {record.options.map((option, index) => (
-                    <div key={index} className="mb-3">
+                    <div key={index} className="mb-3 bg-white">
                       <input
                         type="text"
                         value={option}
                         onChange={(e) => handleOptionChange(index, e.target.value)}
                         placeholder={`Option ${index + 1}`}
-                        className="border p-3 w-full rounded-lg text-black"
+                        className="border p-3 w-full rounded-lg text-black bg-white"
                         required
                       />
                     </div>
@@ -389,14 +389,14 @@ const ConsensusEntryForm = () => {
                       <strong>Options:</strong> {suggestion.options.join(", ")}
                     </p>
                     <div className="mt-2">
-                      <label className="block text-black font-medium">Approval Date:</label>
+                      <label className="block text-black font-medium bg-white">Approval Date:</label>
                       <input
                         type="date"
                         value={(suggestion as any).date || ""}
                         onChange={(e) =>
                           handleSuggestionDateChange(index, e.target.value)
                         }
-                        className="border p-3 w-full rounded-lg text-black"
+                        className="border p-3 w-full rounded-lg text-black bg-white"
                         required
                       />
                     </div>

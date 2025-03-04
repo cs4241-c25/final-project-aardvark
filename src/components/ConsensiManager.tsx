@@ -14,21 +14,59 @@ import {useEffect, useState} from "react";
 
 interface ConsensiTableProps {
     aiSuggestions: ConsensiSuggestion[];
-    userSuggestions: ConsensiSuggestion[];
+    userSuggestion: ConsensiSuggestion[];
 }
 
-const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSuggestions }) => {
+const fetchHighestConsensusNum = async () => {
+    try {
+        const response = await fetch("/api/admin");
+        if (!response.ok)
+            throw new Error("Failed to fetch highest consensus number");
+        const data = await response.json();
+        const { highestConsensusNum } = data;
+        return highestConsensusNum + 1;
+    } catch (err) {
+        console.error("Issue getting highest consensus num",err);
+        return undefined;
+    }
+};
+
+const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSuggestion}) => {
 
     const [aiLists, setAILists] = useState<ConsensiSuggestion[]>(aiSuggestions);
+    const [userSuggestions, setUserSuggestions] = useState<ConsensiSuggestion[]>([]);
+
+    console.log("Data: ",userSuggestion)
 
     useEffect(() => {
         setAILists(aiSuggestions);
-    }, [aiSuggestions]);
+        setUserSuggestions(userSuggestion);
+    }, [aiSuggestions, userSuggestion]);
 
 
     const handleApproveConsensi = async (record: ConsensiSuggestion) => {
         try {
-            await axios.post(`/api/admin`, record);
+
+            const newConsensusNum = await fetchHighestConsensusNum();
+            if (newConsensusNum === undefined) {
+                return;
+            }
+
+            const newConsensi: ConsensiRecord = {
+                metadata: {
+                    author: record.author,
+                    date: record.date
+                },
+                category: record.category,
+                consensusNum: newConsensusNum,
+                options: record.options
+            }
+
+            await axios.post(`/api/admin`, newConsensi);
+
+            if(record._id){
+                await handleDeleteConsensi(record._id.toString())
+            }
         } catch (err) {
             console.error("Error adding data:", err);
         }
@@ -36,8 +74,7 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
 
     const handleDeleteConsensi = async (_id: string) => {
         try {
-            await axios.delete(`/api/consensi/${_id}`);
-            // setData((prevData) => prevData.filter((record) => record._id !== _id));
+            await axios.delete(`/api/admin/suggestions?id=${_id}`);
         } catch (err) {
             console.error("Error deleting data:", err);
         }
@@ -74,13 +111,33 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
                                         <TableCell>{record.author}</TableCell>
                                         <TableCell>{record.options.join(", ")}</TableCell>
                                         <TableCell className="flex gap-2">
-                                            <Button variant="primary" className="text-green-500 border-green-500" onClick={() => handleApproveConsensi(record)}>
+                                            <Button variant="primary" className="text-green-500 border-green-500 bg-transparent p-1" onClick={ async() =>
+                                            {
+                                                try{
+                                                    await handleApproveConsensi(record)
+                                                    setUserSuggestions((prevData) =>
+                                                        prevData.filter((item) => item._id !== record._id)
+                                                    );
+                                                }catch(error){
+                                                    console.error("Error approving data:", error);
+                                                }
+                                            }
+                                                }>
                                                 <CheckCircle className="w-5 h-5" />
                                             </Button>
-                                            {/*figure out how to delete probably*/}
-                                            <Button variant="primary" className="text-red-500 border-red-500"
-                                                // onClick={() => setData((prevData) => prevData
-                                                //     .filter((item) => item !== record))}
+
+                                            <Button variant="primary" className="text-red-500 border-red-500 bg-transparent p-1"
+                                                onClick={async() => {
+                                                    try {
+                                                        await handleDeleteConsensi(record._id!.toString());
+                                                        setUserSuggestions((prevData) =>
+                                                            prevData.filter((item) => item._id !== record._id)
+                                                        );
+                                                    } catch (error) {
+                                                        console.error("Error deleting data:", error);
+                                                        }
+                                                    }
+                                            }
 
                                             >    <XCircle className="w-5 h-5" />
                                             </Button>
@@ -119,7 +176,16 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
                                         <TableCell>{record.author}</TableCell>
                                         <TableCell>{record.options.join(", ")}</TableCell>
                                         <TableCell className="flex gap-2">
-                                            <Button variant={undefined} className="text-green-500 border-green-500 bg-transparent p-1" onClick={() => handleApproveConsensi(record)}>
+                                            <Button variant={undefined} className="text-green-500 border-green-500 bg-transparent p-1" onClick={ async () =>
+                                            {
+                                                try{
+                                                    await handleApproveConsensi(record);
+                                                    setAILists(aiLists => aiLists.filter(item => item !== record))
+                                                } catch(error){
+                                                    console.error("Error deleting data:", error);
+                                                    }
+                                                }
+                                            }>
                                                 <CheckCircle className="w-5 h-5" />
                                             </Button>
                                             <Button variant={undefined} className="text-red-500 border-red-500 bg-transparent p-1"

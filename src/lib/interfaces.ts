@@ -36,6 +36,7 @@ export interface ConsensiSuggestion {
   author: string | null;
   category: string;
   options: string[];
+  date: string;
 }
 
 export interface PromptSchema {

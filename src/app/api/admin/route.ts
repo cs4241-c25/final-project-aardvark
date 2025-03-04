@@ -52,15 +52,28 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     const consensusDate = data.metadata.date
-    console.log('date', consensusDate)
-    const existingConsensus = await consensi.getTodaysConsensiByDate(consensusDate);
-    console.log('existing:', existingConsensus)
-    if (existingConsensus.length > 0) {
-      return NextResponse.json(
-        { error: "Consensus already scheduled for that day" },
-        { status: 400 }
-      );
-   }  
+
+    if(consensusDate != "null") {
+      console.log('date', consensusDate)
+      const existingConsensus = await consensi.getTodaysConsensiByDate(consensusDate);
+      console.log('existing:', existingConsensus)
+      if (existingConsensus.length > 0) {
+        return NextResponse.json(
+            { error: "Consensus already scheduled for that day" },
+            { status: 400 }
+        );
+      }
+    } else {
+      const nextDate = await consensi.getNextDate()
+
+      const cleanedDate = nextDate.trim().replace(/\u200B/g, "");
+
+
+      const latestDate = new Date(cleanedDate);
+
+      latestDate.setDate(latestDate.getDate() + 1);
+      data.metadata.date = latestDate.toISOString().split("T")[0];
+    }
 
     await consensi.saveConsensus(data);
     return NextResponse.json({

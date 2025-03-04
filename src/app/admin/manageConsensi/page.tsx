@@ -30,6 +30,14 @@ export default function manageConsensi() {
                 .then(response => setUserSuggestions(response.data))
                 .catch(error => console.error("Error fetching data:", error));
         }
+
+
+            axios.get("/api/admin/suggestions")
+                .then(response => {
+                    setUserSuggestions(response.data.consensi);
+                })
+                .catch(error => console.error("Error fetching data:", error));
+
     }, []);
 
     async function sendPrompt() {
@@ -53,7 +61,7 @@ export default function manageConsensi() {
                 <div className="flex flex-col flex-grow items-center justify-center">
                     <h2>Consensus Suggestion Manager</h2>
                     <p>Accept or Reject Consensus suggestions from users, or generate your own using ai.</p>
-                    <ConsensiManager aiSuggestions={data} userSuggestions={userSuggestions}></ConsensiManager>
+                    <ConsensiManager aiSuggestions={data} userSuggestion={userSuggestions}></ConsensiManager>
                     {loading &&
                         <div className="flex justify-center mt-4"><Loader2 className="animate-spin text-white h-8 w-8"/>
                         </div>}

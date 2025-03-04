@@ -1,6 +1,6 @@
 import { getDateString } from "@/utils/dateFormat";
 import client from "./db";
-import { ConsensiRecord, GameDataRecord } from "./interfaces";
+import {ConsensiRecord, ConsensiSuggestion, GameDataRecord} from "./interfaces";
 import { Collection, ObjectId } from "mongodb";
 
 export class DataLayer {
@@ -134,6 +134,13 @@ export class Consensi extends DataLayer {
     return highestConsensus[0].consensusNum;
   }
 
+  public async getNextDate() {
+    const collection = await this.getCollection();
+    const latest = await collection.findOne({}, { sort: { "metadata.date": -1 } });
+    return latest!.metadata.date;
+  }
+
+
   public async getAllConsensiSortedByDate() {
     const collection = await this.getCollection();
     return collection.find({}).sort({ date: -1 }).toArray();
@@ -168,19 +175,18 @@ export class Suggestion extends DataLayer {
   public async getSuggestions(){
     const collection = await this.getCollection();
 
-    const result = await collection.find({}).toArray();
+    return collection.find({}).toArray();
 
-    return result;
   }
 
   public async removeSelection(id: ObjectId){
     const collection = await this.getCollection();
-    return await collection.deleteOne({ _id: id });
+    return collection.deleteOne({ _id: id });
 
   }
 
     public async addNewSuggestion(suggestions: ConsensiSuggestion) {
         const collection = await this.getCollection();
-        await collection.insertOne(suggestions);
+        return await collection.insertOne(suggestions);
     }
 }
