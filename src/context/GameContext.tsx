@@ -7,6 +7,8 @@ import {
   TodaysConsensus,
   UserData,
 } from "@/lib/interfaces";
+import { getDateString } from "@/utils/dateFormat";
+import { getUserScore } from "@/utils/scoreUtils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import React, {
@@ -31,7 +33,7 @@ interface GameContextType {
   userData: UserData;
   setUserData: Dispatch<SetStateAction<UserData>>;
   loading: boolean;
-  bgColorMap: Map<string, string>
+  bgColorMap: Map<string, string>;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -77,13 +79,24 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         if (userSubmissionArr.length > 0) {
           // user has played today
           const userSubmission: GameDataRecord = userSubmissionArr[0];
-          // set user submission in context
-          const todaysUserData: UserData = {
-            played: userSubmission,
-            score: null,
-            stats: null,
-          };
-          setUserData(todaysUserData);
+
+          // get consensus and user submission
+          axios
+            .get(`/api/gameData/consensus/${getDateString(new Date())}`)
+            .then(function (response) {
+              // successfully calculated consensus
+              // set consensus in state
+              const consensusObj = response.data.consensusData;
+              setTodaysConsensus(consensusObj);
+
+              const userScore = getUserScore(userSubmission, consensusObj);
+              const todaysUserData: UserData = {
+                played: userSubmission,
+                score: userScore,
+                stats: null,
+              };
+              setUserData(todaysUserData);
+            });
           // check auth
           if (session?.user?.image === "anonymous") {
             // user is unauthenticated
@@ -142,7 +155,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     // TODO need to make this work by date or however we want to fetch new ones each day
     setLoading(true);
     axios
-      .get("/api/consensi/1")
+      .get("/api/consensi/today")
       .then(function (response) {
         // handle success
         const tempConsensus = response.data.consensi[0];
