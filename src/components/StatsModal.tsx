@@ -1,5 +1,6 @@
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { ShareNetwork } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
@@ -11,6 +12,7 @@ export default function StatsModal() {
   const { closeModal } = useModal();
   const { tiles, todaysConsensus, userData, bgColorMap } = useGameContext();
   const { data: session } = useSession();
+  const { showToast } = useToast();
   const sortedUserRanking = [...tiles].sort(
     (a, b) => (a.rank ?? 5) - (b.rank ?? 5)
   );
@@ -46,11 +48,15 @@ export default function StatsModal() {
     )} - ${consensusTheme?.category}\n\n`;
     let i = 1;
     Object.entries(tileColorMap).forEach(([key, value]) => {
-      returnStr += `${key} ${emojiMap[value]} ${i}\n`;
+      returnStr += `${i} ${emojiMap[value]} ${key}\n`;
       i++;
     });
     returnStr += `\nWhat do you think? Play here: https://consensus-game.vercel.app`;
     navigator.clipboard.writeText(returnStr);
+    showToast(
+      "Successfully copied to clipboard 🔗",
+      "Share it with all your friends!"
+    );
   };
 
   return (
