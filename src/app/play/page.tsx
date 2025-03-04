@@ -8,24 +8,39 @@ import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
 import { ModalProvider } from "@/context/ModalContext";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Ranking } from "@/lib/interfaces";
+import { useEffect, useState } from "react";
 
 export default function Play() {
   const { tiles, setTiles, submitted, userData, loading } = useGameContext();
-  const router = useRouter();
+  const [localLoading, setLocalLoading] = useState(true);
 
   useEffect(() => {
-    // if user has played, redirect them to the stats page
-    console.log(userData.played);
+    // Function to update tiles based on submission
+    const updateTiles = (submission: Ranking) => {
+      const updatedTiles = tiles.map((tile) => {
+        const displayName = Object.keys(submission).find(
+          (key) => submission[key] === tile._id + 1
+        );
+        return {
+          ...tile,
+          displayName: displayName || "",
+          rank: displayName ? submission[displayName] : undefined,
+        };
+      });
+
+      setTiles(updatedTiles);
+    };
     if (userData.played) {
-      router.push("/stats");
+      updateTiles(userData.played.submission);
+      // router.push("/stats");
     }
+    setLocalLoading(false);
   }, [userData]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      {loading ? (
+      {loading || localLoading ? (
         <div className="flex h-screen w-screen justify-center items-center">
           <LoadingSpinner />
         </div>
@@ -45,7 +60,9 @@ export default function Play() {
                   )
                 }
                 disabled={
-                  submitted || tiles.every((tile) => tile.rank === undefined)
+                  submitted ||
+                  userData.played !== null ||
+                  tiles.every((tile) => tile.rank === undefined)
                 }
               >
                 Clear
