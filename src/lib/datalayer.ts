@@ -135,4 +135,27 @@ export class Consensi extends DataLayer {
   
     return highestConsensus[0].consensusNum;
   }
+
+  public async getAllConsensiSortedByDate() {
+    const collection = await this.getCollection();
+    return collection.find({}).sort({ date: -1 }).toArray();
+  }
+
+  public async getAllConsensiSortedByDateAfterToday() {
+    const collection = await this.getCollection();
+  
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+  
+    const formattedTomorrow = tomorrow.toISOString().slice(0, 10);
+  
+    return collection
+      .find({ "metadata.date": { $gte: formattedTomorrow } })
+      .sort({ "metadata.date": 1 })
+      .toArray();
+  }
+  
+
+
 }
