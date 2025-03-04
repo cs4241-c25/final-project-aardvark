@@ -3,6 +3,7 @@ import { useModal } from "@/context/ModalContext";
 import { ShareNetwork } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
 
@@ -14,7 +15,15 @@ export default function StatsModal() {
     (a, b) => (a.rank ?? 5) - (b.rank ?? 5)
   );
   const { consensusTheme } = useGameContext();
-  const formattedConsensusNum = (num: number) => String(num).padStart(3, "0");
+  const formattedConsensusNum = (num: number) => {
+    if (num > 99) {
+      return String(num);
+    } else if (num > 9) {
+      return String(num).padStart(2, "0");
+    } else {
+      return String(num).padStart(3, "0");
+    }
+  };
 
   const sortedConsensusKeys = Object.entries(todaysConsensus?.consensus || {})
     .sort(([, a], [, b]) => b - a)
@@ -23,6 +32,26 @@ export default function StatsModal() {
   const tileColorMap = Object.fromEntries(
     tiles.map((tile) => [tile.displayName, tile.color])
   );
+
+  const emojiMap: Record<string, string> = {
+    blue: "🟦",
+    green: "🟩",
+    yellow: "🟨",
+    red: "🟥",
+  };
+
+  const copyShare = () => {
+    let returnStr = `Consensus #${formattedConsensusNum(
+      Number(consensusTheme?.consensusNum)
+    )} - ${consensusTheme?.category}\n\n`;
+    let i = 1;
+    Object.entries(tileColorMap).forEach(([key, value]) => {
+      returnStr += `${key} ${emojiMap[value]} ${i}\n`;
+      i++;
+    });
+    returnStr += `\nWhat do you think? Play here: https://consensus-game.vercel.app`;
+    navigator.clipboard.writeText(returnStr);
+  };
 
   return (
     <Modal
@@ -95,7 +124,7 @@ export default function StatsModal() {
           <p className="text-center uppercase font-funnel">Today's Consensus</p>
         </div>
         <div className="flex justify-center items-center">
-          <Button variant="secondary">
+          <Button variant="secondary" onClick={copyShare}>
             <ShareNetwork size={22} />
             Share
           </Button>
@@ -106,9 +135,9 @@ export default function StatsModal() {
             <Button variant="secondary">See Stats</Button>
           ) : (
             <p className="font-funnel">
-              <a className="underline" href="">
+              <Link className="underline" href="/login">
                 Log in
-              </a>{" "}
+              </Link>{" "}
               to see more statistics!
             </p>
           )}
