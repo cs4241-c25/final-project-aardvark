@@ -43,11 +43,22 @@ export interface PromptSchema {
   content: string,
 }
 
+export interface SuggestionRecord {
+  _id?: ObjectId;
+  author: string | null;
+  category: string;
+  consensusNum: number;
+  options: string[];
+  checked: string;
+  date: string;
+}
+
 export interface Tile {
   // represents a tile in the game
   _id: number;
   displayName: string;
   rank: 1 | 2 | 3 | 4 | undefined;
+  color: string;
 }
 
 export interface TodaysConsensus {

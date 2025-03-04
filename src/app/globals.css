@@ -4,10 +4,10 @@
 
 :root {
   --inset: #EFEFEF;
-  --rank1: #11B6EC;
-  --rank2: #06D6A0;
-  --rank3: #FFD166;
-  --rank4: #EF476F;
+  --game-blue: #11B6EC;
+  --game-green: #06D6A0;
+  --game-yellow: #FFD166;
+  --game-red: #EF476F;
 }
 
 @media (prefers-color-scheme: dark) {

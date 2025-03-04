@@ -15,10 +15,10 @@ export default {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			inset: 'var(--inset)',
-  			rank1: 'var(--rank1)',
-  			rank2: 'var(--rank2)',
-  			rank3: 'var(--rank3)',
-  			rank4: 'var(--rank4)',
+            gameBlue: "var(--game-blue)",
+            gameGreen: "var(--game-green)",
+            gameYellow: "var(--game-yellow)",
+            gameRed: "var(--game-red)",
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'

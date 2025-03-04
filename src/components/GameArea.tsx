@@ -80,7 +80,6 @@ export default function GameArea() {
           return tile ? (
             <RankedTile
               tile={tile}
-              id={containerId}
               key={`${tile._id}-${containerId}`}
               handleClick={handleRankedTileClick}
               animateOnSubmit={animateOnSubmit}

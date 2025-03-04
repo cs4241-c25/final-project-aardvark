@@ -3,18 +3,19 @@ import { CaretLeft, CaretRight, Circle } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
+import clsx from "clsx";
 
 export default function HowToPlay() {
   const MAX_PAGE = 1;
   const [page, setPage] = useState(0);
   const { closeModal } = useModal();
-  const tileColor: Record<number, string> = {
-    0: "bg-rank1 border-rank1",
-    1: "bg-rank2 border-rank2",
-    2: "bg-rank3 border-rank3",
-    3: "bg-rank4 border-rank4",
-  };
-  const seasons = ["Spring", "Summer", "Fall", "Winter"];
+
+  const seasons = [
+    { name: "Spring", color: "bg-gameBlue" },
+    { name: "Summer", color: "bg-gameYellow" },
+    { name: "Winter", color: "bg-gameGreen" },
+    { name: "Fall", color: "bg-gameRed" }
+  ]
 
   const [filledIndexes, setFilledIndexes] = useState<number[]>([]);
   const [shuffledSeasons, setShuffledSeasons] = useState(() =>
@@ -82,15 +83,12 @@ export default function HowToPlay() {
             {[0, 1, 2, 3].map((index) => (
               <div
                 key={index}
-                className={`p-2 h-9 flex items-center justify-center text-center uppercase text-black font-bold rounded border-2 transition-all duration-500 ${
-                  tileColor[index]
-                } ${
-                  filledIndexes.includes(index)
-                    ? "text-white"
-                    : "bg-transparent"
-                }`}
+                className={clsx(
+                  "p-2 h-9 flex items-center justify-center text-center uppercase text-black font-bold rounded transition-all duration-500",
+                  filledIndexes.includes(index) ? shuffledSeasons[index].color : "bg-transparent border-2",
+                )}
               >
-                {filledIndexes.includes(index) ? shuffledSeasons[index] : ""}
+                {filledIndexes.includes(index) ? shuffledSeasons[index].name : ""}
               </div>
             ))}
           </div>
@@ -117,15 +115,13 @@ export default function HowToPlay() {
             {[0, 1, 2, 3].map((index) => (
               <div
                 key={index}
-                className={`p-2 h-9 flex items-center justify-center text-center uppercase text-black font-bold rounded border-2 transition-all duration-500 ${
-                  tileColor[index]
-                } ${
-                  filledIndexes.includes(index)
-                    ? "text-white"
-                    : "bg-transparent"
-                } ${highlightedIndex === index ? "bg-white/50" : ""}`}
+                className={clsx(
+                  "p-2 h-9 flex items-center justify-center text-center uppercase text-black font-bold rounded transition-all duration-500",
+                  filledIndexes.includes(index) ? shuffledSeasons[index].color : "bg-transparent border-2",
+                  highlightedIndex === index ? "bg-white/50" : ""
+                )}
               >
-                {filledIndexes.includes(index) ? shuffledSeasons[index] : ""}
+                {filledIndexes.includes(index) ? shuffledSeasons[index].name : ""}
               </div>
             ))}
           </div>
