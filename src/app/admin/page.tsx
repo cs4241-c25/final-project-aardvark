@@ -2,7 +2,7 @@
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
 import { ModalProvider } from "@/context/ModalContext";
-import { ConsensiRecord } from "@/lib/interfaces";
+import { ConsensiRecord, SuggestionRecord } from "@/lib/interfaces";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -17,14 +17,30 @@ const ConsensusEntryForm = () => {
     consensusNum: 0,
     options: ["", "", "", ""],
   });
-
   const [result, setResult] = useState<ConsensiRecord | null>(null);
   const [allConsensi, setAllConsensi] = useState<ConsensiRecord[]>([]);
+  const [allSuggestions, setAllSuggestions] = useState<SuggestionRecord[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { data: session } = useSession();
   const [userAuthLoad, setUserAuthLoad] = useState(true);
   const router = useRouter();
+
+  // Moved the fetchHighestConsensusNum function to the top level.
+  // It now returns the new consensus number so it can be reused elsewhere.
+  const fetchHighestConsensusNum = async (): Promise<number | undefined> => {
+    try {
+      const response = await fetch("/api/admin");
+      if (!response.ok)
+        throw new Error("Failed to fetch highest consensus number");
+      const data = await response.json();
+      const { highestConsensusNum } = data;
+      return highestConsensusNum + 1;
+    } catch (err) {
+      setError("Failed to retrieve the latest consensus number.");
+      return undefined;
+    }
+  };
 
   useEffect(() => {
     if (
@@ -43,24 +59,21 @@ const ConsensusEntryForm = () => {
     }
   }, [session]);
 
+  // Set the initial consensus number after user authentication is loaded.
   useEffect(() => {
-    const fetchHighestConsensusNum = async () => {
-      try {
-        const response = await fetch("/api/admin");
-        if (!response.ok)
-          throw new Error("Failed to fetch highest consensus number");
-        const data = await response.json();
-        const { highestConsensusNum } = data;
+    const setInitialConsensusNum = async () => {
+      const newConsensusNum = await fetchHighestConsensusNum();
+      if (newConsensusNum !== undefined) {
         setRecord((prev) => ({
           ...prev,
-          consensusNum: highestConsensusNum + 1,
+          consensusNum: newConsensusNum,
         }));
-      } catch (err) {
-        setError("Failed to retrieve the latest consensus number.");
       }
     };
 
-    fetchHighestConsensusNum();
+    if (!userAuthLoad) {
+      setInitialConsensusNum();
+    }
   }, [userAuthLoad]);
 
   const handleMetadataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,6 +136,84 @@ const ConsensusEntryForm = () => {
     }
   };
 
+  // Handle changes for the approval date input on each suggestion.
+  const handleSuggestionDateChange = (index: number, value: string) => {
+    const updatedSuggestions = [...allSuggestions];
+    updatedSuggestions[index] = { ...updatedSuggestions[index], date: value };
+    setAllSuggestions(updatedSuggestions);
+  };
+  
+
+  // Approve or deny a suggestion.
+  const handleSuggestionCheck = async (index: number, value: string) => {
+    const updatedSuggestions = [...allSuggestions];
+    updatedSuggestions[index] = { ...updatedSuggestions[index], checked: value };
+    setAllSuggestions(updatedSuggestions);
+  
+    if (value === "yes") {
+      const suggestionToApprove = updatedSuggestions[index];
+      const newConsensusNum = await fetchHighestConsensusNum();
+      if (newConsensusNum === undefined) {
+        return;
+      }
+      const newConsensusRecord = {
+        metadata: {
+          date: suggestionToApprove.date,
+          author: suggestionToApprove.author,
+        },
+        category: suggestionToApprove.category,
+        consensusNum: newConsensusNum,
+        options: suggestionToApprove.options,
+      };
+  
+      try {
+        setLoading(true);
+        const response = await fetch("/api/admin", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newConsensusRecord),
+        });
+        if (!response.ok) {
+          const err = await response.json();
+          setError(err.error || "An error occurred while approving the suggestion.");
+          return;
+        }
+        const data = await response.json();
+        setResult(data.consensusData);
+      } catch (err) {
+        setError("An error occurred while approving the suggestion.");
+      } finally {
+        setLoading(false);
+      }
+    }
+  
+    // Now delete the suggestion from the suggestions list.
+    try {
+      setLoading(true);
+      const suggestionToDelete = updatedSuggestions[index];
+      const response = await fetch(`/api/admin/suggestions?id=${suggestionToDelete._id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      if (!response.ok) {
+        const err = await response.json();
+        setError(err.error || "An error occurred while deleting the suggestion.");
+        return;
+      }
+  
+      setAllSuggestions((prev) => prev.filter((_, i) => i !== index));
+  
+      const data = await response.json();
+      setResult(data.consensusData);
+    } catch (err) {
+      setError("An error occurred while deleting the suggestion.");
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
   useEffect(() => {
     const getAllConsensi = async () => {
       try {
@@ -151,6 +242,34 @@ const ConsensusEntryForm = () => {
     getAllConsensi().catch((err) => console.error(err));
   }, []);
 
+  useEffect(() => {
+    const getSuggestions = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch("/api/admin/suggestions", {
+          method: "GET",
+          headers: { "Content-Type": "application/json" },
+        });
+
+        if (!response.ok) {
+          const err = await response.json();
+          setError(err.error || "An error occurred.");
+          return;
+        }
+
+        const data = await response.json();
+        console.log("data:", data.consensi);
+        setAllSuggestions(data.consensi);
+      } catch (err) {
+        setError("An error occurred.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getSuggestions().catch((err) => console.error(err));
+  }, []);
+
   return (
     <ModalProvider>
       <div className="w-screen h-screen flex justify-center items-center">
@@ -158,92 +277,9 @@ const ConsensusEntryForm = () => {
           <LoadingSpinner />
         ) : (
           <div className="flex flex-row gap-8">
-            {/* Consensus Entry Form */}
-            <div className="w-[50vw] p-6 bg-white shadow-lg rounded-lg">
-              <h2 className="text-2xl font-bold mb-6 text-black">
-                Consensus Entry Form
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 gap-4">
-                  <div>
-                    <label className="block text-black font-medium">
-                      Date:
-                    </label>
-                    <input
-                      type="date"
-                      name="date"
-                      value={record.metadata.date}
-                      onChange={handleMetadataChange}
-                      className="border p-3 w-full rounded-lg text-black"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-black font-medium">
-                      Author:
-                    </label>
-                    <input
-                      type="text"
-                      name="author"
-                      value={record.metadata.author || ""}
-                      onChange={handleMetadataChange}
-                      className="border p-3 w-full rounded-lg text-black"
-                    />
-                  </div>
-                  <label className="block text-black font-medium">
-                    Category:
-                  </label>
-                  <input
-                    type="text"
-                    name="category"
-                    value={record.category}
-                    onChange={handleCategoryChange}
-                    className="border p-3 w-full rounded-lg text-black"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-gray-700 font-medium mb-2">
-                    Options (exactly 4):
-                  </label>
-                  {record.options.map((option, index) => (
-                    <div key={index} className="mb-3">
-                      <input
-                        type="text"
-                        value={option}
-                        onChange={(e) =>
-                          handleOptionChange(index, e.target.value)
-                        }
-                        placeholder={`Option ${index + 1}`}
-                        className="border p-3 w-full rounded-lg text-black"
-                        required
-                      />
-                    </div>
-                  ))}
-                </div>
-
-                <Button type="submit" disabled={loading}>
-                  {loading ? "Submitting..." : "Submit"}
-                </Button>
-              </form>
-
-              {error && (
-                <p className="mt-4 text-red-600 text-center font-medium">
-                  {error}
-                </p>
-              )}
-
-              {result && (
-                <p className="text-black">Consensus Added Successfully</p>
-              )}
-            </div>
-
             {/* Display all consensi */}
-            <div className="w-[50vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
-              <h3 className="text-xl font-bold mb-4 text-black">
-                All Consensi
-              </h3>
+            <div className="w-[35vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
+              <h3 className="text-xl font-bold mb-4 text-black">All Consensi</h3>
               {loading ? (
                 <LoadingSpinner />
               ) : allConsensi && allConsensi.length > 0 ? (
@@ -268,6 +304,128 @@ const ConsensusEntryForm = () => {
                 ))
               ) : (
                 <p className="text-black">No consensi found.</p>
+              )}
+            </div>
+
+            {/* Consensus Entry Form */}
+            <div className="w-[30vw] p-6 bg-white shadow-lg rounded-lg">
+              <h2 className="text-2xl font-bold mb-6 text-black">Consensus Entry Form</h2>
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 gap-4">
+                  <div>
+                    <label className="block text-black font-medium">Date:</label>
+                    <input
+                      type="date"
+                      name="date"
+                      value={record.metadata.date}
+                      onChange={handleMetadataChange}
+                      className="border p-3 w-full rounded-lg text-black"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-black font-medium">Author:</label>
+                    <input
+                      type="text"
+                      name="author"
+                      value={record.metadata.author || ""}
+                      onChange={handleMetadataChange}
+                      className="border p-3 w-full rounded-lg text-black"
+                    />
+                  </div>
+                  <label className="block text-black font-medium">Category:</label>
+                  <input
+                    type="text"
+                    name="category"
+                    value={record.category}
+                    onChange={handleCategoryChange}
+                    className="border p-3 w-full rounded-lg text-black"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Options (exactly 4):
+                  </label>
+                  {record.options.map((option, index) => (
+                    <div key={index} className="mb-3">
+                      <input
+                        type="text"
+                        value={option}
+                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                        placeholder={`Option ${index + 1}`}
+                        className="border p-3 w-full rounded-lg text-black"
+                        required
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Submitting..." : "Submit"}
+                </Button>
+              </form>
+
+              {error && (
+                <p className="mt-4 text-red-600 text-center font-medium">{error}</p>
+              )}
+
+              {result && (
+                <p className="text-black">Consensus Added Successfully</p>
+              )}
+            </div>
+
+            {/* Display all suggestions with approve/deny buttons */}
+            <div className="w-[35vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
+              <h3 className="text-xl font-bold mb-4 text-black">All Suggestions</h3>
+              {loading ? (
+                <LoadingSpinner />
+              ) : allSuggestions && allSuggestions.length > 0 ? (
+                allSuggestions.map((suggestion, index) => (
+                  <div key={index} className="border p-4 mb-4">
+                    <p className="text-black">
+                      <strong>Author:</strong> {suggestion.author}
+                    </p>
+                    <p className="text-black">
+                      <strong>Category:</strong> {suggestion.category}
+                    </p>
+                    <p className="text-black">
+                      <strong>Consensus Number:</strong> {suggestion.consensusNum}
+                    </p>
+                    <p className="text-black">
+                      <strong>Options:</strong> {suggestion.options.join(", ")}
+                    </p>
+                    {/* New approval date input */}
+                    <div className="mt-2">
+                      <label className="block text-black font-medium">Approval Date:</label>
+                      <input
+                        type="date"
+                        value={(suggestion as any).date || ""}
+                        onChange={(e) =>
+                          handleSuggestionDateChange(index, e.target.value)
+                        }
+                        className="border p-3 w-full rounded-lg text-black"
+                        required
+                      />
+                    </div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <Button onClick={() => handleSuggestionCheck(index, "yes")}>
+                        Approve
+                      </Button>
+                      <Button onClick={() => handleSuggestionCheck(index, "no")}>
+                        Deny
+                      </Button>
+                    </div>
+                    {(suggestion as any).checked && (
+                      <p className="mt-2 text-black">
+                        Selected: {(suggestion as any).checked}
+                      </p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <p className="text-black">No suggestions found.</p>
               )}
             </div>
           </div>
