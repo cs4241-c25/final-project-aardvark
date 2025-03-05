@@ -33,6 +33,8 @@ interface GameContextType {
   setUserData: Dispatch<SetStateAction<UserData>>;
   loading: boolean;
   bgColorMap: Map<string, string>;
+  animateTilesOnSubmit: boolean;
+  doSubmissionAnimation: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -67,8 +69,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     ["red", "bg-gameRed"],
   ]);
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [animateTilesOnSubmit, setAnimateTilesOnSubmit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const { showToast } = useToast();
+
+  const doSubmissionAnimation = () => {
+    setAnimateTilesOnSubmit(true);
+    setTimeout(() => setAnimateTilesOnSubmit(false), 800);
+  }
 
   const fetchUserSubmission = () => {
     // has the user played today?
@@ -81,6 +89,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           // user has played today
           const userSubmission: GameDataRecord = userSubmissionArr[0];
 
+          setSubmitted(true);
           setTiles((prevTiles) =>
             prevTiles.map((tile) => ({
               ...tile,
@@ -222,6 +231,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         setUserData,
         loading,
         bgColorMap,
+        animateTilesOnSubmit,
+        doSubmissionAnimation,
       }}
     >
       {children}

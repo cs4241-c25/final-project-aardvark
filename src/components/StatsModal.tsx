@@ -113,7 +113,7 @@ export default function StatsModal() {
         <div className="flex flex-col gap-2">
           {sortedConsensusKeys.length > 0
             ? sortedConsensusKeys.map((displayName) => {
-                const color = tileColorMap[displayName] || "bg-gray-300";
+                const color = tileColorMap[displayName];
                 return (
                   <div
                     key={displayName}
