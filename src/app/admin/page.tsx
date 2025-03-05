@@ -141,7 +141,10 @@ const ConsensusEntryForm = () => {
 
   const handleSuggestionCheck = async (index: number, value: string) => {
     const updatedSuggestions = [...allSuggestions];
-    updatedSuggestions[index] = { ...updatedSuggestions[index], checked: value };
+    updatedSuggestions[index] = {
+      ...updatedSuggestions[index],
+      checked: value,
+    };
     setAllSuggestions(updatedSuggestions);
 
     if (value === "yes") {
@@ -169,7 +172,9 @@ const ConsensusEntryForm = () => {
         });
         if (!response.ok) {
           const err = await response.json();
-          setError(err.error || "An error occurred while approving the suggestion.");
+          setError(
+            err.error || "An error occurred while approving the suggestion."
+          );
           return;
         }
         const data = await response.json();
@@ -184,14 +189,19 @@ const ConsensusEntryForm = () => {
     try {
       setLoading(true);
       const suggestionToDelete = updatedSuggestions[index];
-      const response = await fetch(`/api/admin/suggestions?id=${suggestionToDelete._id}`, {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-      });
+      const response = await fetch(
+        `/api/admin/suggestions?id=${suggestionToDelete._id}`,
+        {
+          method: "DELETE",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
 
       if (!response.ok) {
         const err = await response.json();
-        setError(err.error || "An error occurred while deleting the suggestion.");
+        setError(
+          err.error || "An error occurred while deleting the suggestion."
+        );
         return;
       }
 
@@ -222,7 +232,7 @@ const ConsensusEntryForm = () => {
         }
 
         const data = await response.json();
-        console.log("data:", data.consensi);
+        // console.log("data:", data.consensi);
         setAllConsensi(data.consensi);
       } catch (err) {
         setError("An error occurred.");
@@ -250,7 +260,7 @@ const ConsensusEntryForm = () => {
         }
 
         const data = await response.json();
-        console.log("data:", data.consensi);
+        // console.log("data:", data.consensi);
         setAllSuggestions(data.consensi);
       } catch (err) {
         setError("An error occurred.");
@@ -271,7 +281,9 @@ const ConsensusEntryForm = () => {
           <div className="flex flex-row gap-8 w-full justify-center px-4 overflow-x-auto">
             {/* All Consensi */}
             <div className="w-[30vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
-              <h3 className="text-xl font-bold mb-4 text-black">All Consensi</h3>
+              <h3 className="text-xl font-bold mb-4 text-black">
+                All Consensi
+              </h3>
               {loading ? (
                 <LoadingSpinner />
               ) : allConsensi && allConsensi.length > 0 ? (
@@ -287,7 +299,8 @@ const ConsensusEntryForm = () => {
                       <strong>Category:</strong> {consensus.category}
                     </p>
                     <p className="text-black">
-                      <strong>Consensus Number:</strong> {consensus.consensusNum}
+                      <strong>Consensus Number:</strong>{" "}
+                      {consensus.consensusNum}
                     </p>
                     <p className="text-black">
                       <strong>Options:</strong> {consensus.options.join(", ")}
@@ -301,11 +314,15 @@ const ConsensusEntryForm = () => {
 
             {/* Consensus Entry Form */}
             <div className="w-[30vw] p-6 bg-white shadow-lg rounded-lg">
-              <h2 className="text-2xl font-bold mb-6 text-black">Consensus Entry Form</h2>
+              <h2 className="text-2xl font-bold mb-6 text-black">
+                Consensus Entry Form
+              </h2>
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-1 gap-4">
                   <div>
-                    <label className="block text-black font-medium">Date:</label>
+                    <label className="block text-black font-medium">
+                      Date:
+                    </label>
                     <input
                       type="date"
                       name="date"
@@ -316,7 +333,9 @@ const ConsensusEntryForm = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-black font-medium">Author:</label>
+                    <label className="block text-black font-medium">
+                      Author:
+                    </label>
                     <input
                       type="text"
                       name="author"
@@ -325,7 +344,9 @@ const ConsensusEntryForm = () => {
                       className="border p-3 w-full rounded-lg text-black"
                     />
                   </div>
-                  <label className="block text-black font-medium">Category:</label>
+                  <label className="block text-black font-medium">
+                    Category:
+                  </label>
                   <input
                     type="text"
                     name="category"
@@ -345,7 +366,9 @@ const ConsensusEntryForm = () => {
                       <input
                         type="text"
                         value={option}
-                        onChange={(e) => handleOptionChange(index, e.target.value)}
+                        onChange={(e) =>
+                          handleOptionChange(index, e.target.value)
+                        }
                         placeholder={`Option ${index + 1}`}
                         className="border p-3 w-full rounded-lg text-black"
                         required
@@ -360,7 +383,9 @@ const ConsensusEntryForm = () => {
               </form>
 
               {error && (
-                <p className="mt-4 text-red-600 text-center font-medium">{error}</p>
+                <p className="mt-4 text-red-600 text-center font-medium">
+                  {error}
+                </p>
               )}
 
               {result && (
@@ -370,7 +395,9 @@ const ConsensusEntryForm = () => {
 
             {/* All Suggestions */}
             <div className="w-[30vw] p-6 bg-white shadow-lg rounded-lg overflow-y-auto h-[70vh]">
-              <h3 className="text-xl font-bold mb-4 text-black">All Suggestions</h3>
+              <h3 className="text-xl font-bold mb-4 text-black">
+                All Suggestions
+              </h3>
               {loading ? (
                 <LoadingSpinner />
               ) : allSuggestions && allSuggestions.length > 0 ? (
@@ -383,13 +410,16 @@ const ConsensusEntryForm = () => {
                       <strong>Category:</strong> {suggestion.category}
                     </p>
                     <p className="text-black">
-                      <strong>Consensus Number:</strong> {suggestion.consensusNum}
+                      <strong>Consensus Number:</strong>{" "}
+                      {suggestion.consensusNum}
                     </p>
                     <p className="text-black">
                       <strong>Options:</strong> {suggestion.options.join(", ")}
                     </p>
                     <div className="mt-2">
-                      <label className="block text-black font-medium">Approval Date:</label>
+                      <label className="block text-black font-medium">
+                        Approval Date:
+                      </label>
                       <input
                         type="date"
                         value={(suggestion as any).date || ""}
@@ -401,10 +431,14 @@ const ConsensusEntryForm = () => {
                       />
                     </div>
                     <div className="flex items-center gap-2 mt-2">
-                      <Button onClick={() => handleSuggestionCheck(index, "yes")}>
+                      <Button
+                        onClick={() => handleSuggestionCheck(index, "yes")}
+                      >
                         Approve
                       </Button>
-                      <Button onClick={() => handleSuggestionCheck(index, "no")}>
+                      <Button
+                        onClick={() => handleSuggestionCheck(index, "no")}
+                      >
                         Deny
                       </Button>
                     </div>
