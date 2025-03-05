@@ -36,7 +36,7 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
     const [aiLists, setAILists] = useState<ConsensiSuggestion[]>(aiSuggestions);
     const [userSuggestions, setUserSuggestions] = useState<ConsensiSuggestion[]>([]);
 
-    console.log("Data: ",userSuggestion)
+
 
     useEffect(() => {
         setAILists(aiSuggestions);
