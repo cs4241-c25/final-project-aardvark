@@ -1,100 +1,99 @@
-"use client"
-import React, { useEffect, useRef, useState } from "react";
-import { MapContainer, TileLayer, LayersControl } from "react-leaflet";
+"use client";
+
+import React, { useEffect, useRef, useMemo, useState } from "react";
+import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import * as L from "leaflet";
-import "leaflet.heat";
-
-const optionColors = {
-    1: "red",
-    2: "blue",
-    3: "green",
-    4: "orange",
-};
-
-import {useRouter} from "next/navigation";
-import {ConsensiRecord, GameDataRecord} from "@/lib/interfaces";
-import {ModalProvider} from "@/context/ModalContext";
+import { ModalProvider } from "@/context/ModalContext";
+import L from "leaflet";
+import ModalWrapper from "@/components/ModalWrapper";
+import GameHeader from "@/components/GameHeader";
+import { ConsensiRecord, GameDataRecord } from "@/lib/interfaces";
 import axios from "axios";
+import { useGameContext } from "@/context/GameContext";
+
+interface Pin {
+    location: {
+        lat: number;
+        lng: number;
+    };
+    topAnswer: string;
+}
 
 export default function HeatMap() {
+    const mapRef = useRef<L.Map | null>(null);
 
-    const router = useRouter();
+    const [data, setData] = useState<ConsensiRecord[]>([]);
+    const { todaysConsensus, consensusTheme } = useGameContext();
+    const [pins, setPins] = useState<Pin[]>([]); // ✅ Initialized as an empty array
 
-    const mapRef = useRef(null);
-    const [gameData, setGameData] = useState<GameDataRecord[]>([]);
-    const [activeOption, setActiveOption] = useState(null);
+    console.log("Todays consensus: ", todaysConsensus);
 
     useEffect(() => {
-        if (!mapRef.current) return;
-        const map = mapRef.current;
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("/api/gameData/consensus");
+                setData(response.data.result);
+                console.log(response.data);
 
-        // Clear previous layers
-        map.eachLayer(layer => {
-            if (layer instanceof L.LayerGroup) map.removeLayer(layer);
-        });
+                // Extract Pins
+                const extractedPins = response.data.result
+                    .map((record: GameDataRecord) => {
+                        const { location, submission } = record;
 
-        // Create layer groups for each answer option
-        const layers = {};
-        Object.keys(optionColors).forEach(option => {
-            layers[option] = L.layerGroup().addTo(map);
-        });
+                        const topAnswer = Object.keys(submission).find(
+                            (key) => submission[key] === 4
+                        );
 
-        //Set gameData
-        try{
-            axios.get("")
-        }catch(e){
-            console.error(e);
-        }
+                        return topAnswer ? { location, topAnswer } : null;
+                    })
+                    .filter(Boolean) as Pin[];
 
-        // Add heatmap points per category
-        pins.forEach(pin => {
-            if (!pin.answer || !optionColors[pin.answer]) return;
-
-            const heatLayer = L.heatLayer([[pin.lat, pin.lon, 1]], {
-                radius: 20,
-                blur: 15,
-                gradient: { 0.4: optionColors[pin.answer], 1: optionColors[pin.answer] },
-            });
-
-            layers[pin.answer].addLayer(heatLayer);
-        });
-
-        return () => {
-            Object.values(layers).forEach(layer => map.removeLayer(layer));
+                setPins(extractedPins);
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
         };
-    }, [pins, activeOption]);
 
-    return(
+        fetchData();
+    }, []);
+
+    const tileLayer = useMemo(
+        () => (
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution="&copy; OpenStreetMap contributors"
+            />
+        ),
+        []
+    );
+
+    return (
         <ModalProvider>
-            <div>
-                {/* Option Filter */}
-                <div style={{marginBottom: "10px"}}>
-                    <label>Filter by Answer: </label>
-                    <select onChange={e => setActiveOption(e.target.value)} defaultValue="">
-                        <option value="">All</option>
-                        {Object.entries(optionColors).map(([option, color]) => (
-                            <option key={option} value={option}>
-                                Option {option} ({color})
-                            </option>
+            <ModalWrapper/>
+            <GameHeader/>
+            <div className="flex flex-col items-center justify-center min-h-screen p-6">
+                {pins.length === 0 ? (
+                    <p>Loading...</p> // Show loading text
+                ) : (
+                    <MapContainer
+                        center={[20, 0]}
+                        zoom={2}
+                        style={{height: "900px", width: "100%"}}
+                        ref={mapRef}
+                        preferCanvas={true}
+                    >
+                        {tileLayer}
+                        {pins.map((pin, index) => (
+                            <Marker
+                                key={index}
+                                position={[pin.location.lat, pin.location.lng]}
+                            >
+                                <Popup>{pin.topAnswer}</Popup>
+                            </Marker>
                         ))}
-                    </select>
-                </div>
-
-                {/* Map */}
-                <MapContainer
-                    center={[20, 0]}
-                    zoom={2}
-                    style={{height: "500px", width: "100%"}}
-                    whenCreated={map => (mapRef.current = map)}
-                >
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; OpenStreetMap contributors'
-                    />
-                </MapContainer>
+                    </MapContainer>
+                )}
             </div>
         </ModalProvider>
-    )
-
+    );
 }

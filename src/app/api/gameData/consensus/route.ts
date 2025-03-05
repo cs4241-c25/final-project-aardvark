@@ -57,3 +57,16 @@ export async function POST(request: Request) {
 
   return Response.json({ consensusData });
 }
+
+export async function GET(request: Request) {
+  const session = await getServerSession();
+
+  if (!session) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+  const gameData = new GameData();
+
+
+  const result = await gameData.getTodaysRankings();
+  return Response.json({ result });
+}
