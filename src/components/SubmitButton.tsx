@@ -47,6 +47,9 @@ export default function SubmitButton() {
       .post("/api/gameData", gameDataRecord)
       .then(function (response) {
         // successfully inserted user submission
+        setUserData((prevUserData) => (
+          { ...prevUserData, played: gameDataRecord }
+        ))
         setSubmitted(true);
         axios
           .get(`/api/gameData/consensus/${getDateString(new Date())}`)
@@ -69,7 +72,7 @@ export default function SubmitButton() {
       })
       .catch(function (error) {
         // error inserting submission
-        showToast("Error", error, "error");
+        // showToast("Error", error, "error");
         setButtonDisabled(false);
       })
       .finally(function () {
