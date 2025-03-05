@@ -15,7 +15,12 @@ const ConsensusEntryForm = () => {
     },
     category: "",
     consensusNum: 0,
-    options: ["", "", "", ""],
+    options: {
+      "": "blue",
+      "": "green",
+      "": "yellow",
+      "": "red",
+    },
   });
   const [result, setResult] = useState<ConsensiRecord | null>(null);
   const [allConsensi, setAllConsensi] = useState<ConsensiRecord[]>([]);
@@ -84,10 +89,17 @@ const ConsensusEntryForm = () => {
     }));
   };
 
-  const handleOptionChange = (index: number, value: string) => {
-    const updatedOptions = [...record.options];
-    updatedOptions[index] = value;
-    setRecord((prev) => ({ ...prev, options: updatedOptions }));
+  const handleOptionChange = (oldKey: string, newKey: string) => {
+    setRecord((prev) => {
+      const { [oldKey]: color, ...restOptions } = prev.options;
+      return {
+        ...prev,
+        options: {
+          ...restOptions,
+          [newKey]: color,
+        },
+      };
+    });
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +114,10 @@ const ConsensusEntryForm = () => {
     setResult(null);
 
     const { date } = record.metadata;
-    if (!date || record.options.some((opt) => opt.trim() === "")) {
+    if (
+      !date ||
+      Object.keys(record.options).some((opt) => opt.trim() === "")
+    ) {
       setError("Please fill in all metadata fields and all 4 options.");
       setLoading(false);
       return;
@@ -303,7 +318,7 @@ const ConsensusEntryForm = () => {
                       {consensus.consensusNum}
                     </p>
                     <p className="text-black">
-                      <strong>Options:</strong> {consensus.options.join(", ")}
+                      <strong>Options:</strong> {Object.keys(consensus.options).join(", ")}
                     </p>
                   </div>
                 ))
@@ -361,20 +376,18 @@ const ConsensusEntryForm = () => {
                   <label className="block text-gray-700 font-medium mb-2">
                     Options (exactly 4):
                   </label>
-                  {record.options.map((option, index) => (
-                    <div key={index} className="mb-3">
-                      <input
-                        type="text"
-                        value={option}
-                        onChange={(e) =>
-                          handleOptionChange(index, e.target.value)
-                        }
-                        placeholder={`Option ${index + 1}`}
-                        className="border p-3 w-full rounded-lg text-black"
-                        required
-                      />
-                    </div>
-                  ))}
+                  {Object.entries(record.options).map(([option, color], index) => (
+                      <div key={option || index} className="mb-3">
+                        <input
+                          type="text"
+                          value={option}
+                          onChange={(e) => handleOptionChange(option, e.target.value)}
+                          placeholder={`Option ${index + 1}`}
+                          className="border p-3 w-full rounded-lg text-black"
+                          required
+                        />
+                      </div>
+                    ))}
                 </div>
 
                 <Button type="submit" disabled={loading}>

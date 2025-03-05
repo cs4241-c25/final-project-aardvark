@@ -18,17 +18,11 @@ export default function Play() {
   useEffect(() => {
     // Function to update tiles based on submission
     const updateTiles = (submission: Ranking) => {
-      const updatedTiles = tiles.map((tile) => {
-        const displayName = Object.keys(submission).find(
-          (key) => submission[key] === tile._id + 1
-        );
-        return {
-          ...tile,
-          displayName: displayName || "",
-          rank: displayName ? submission[displayName] : undefined,
-        };
-      });
-
+      const updatedTiles = tiles.map((tile) => ({
+        ...tile,
+        rank: submission[tile.displayName], // Find rank using existing displayName
+      }));
+    
       setTiles(updatedTiles);
     };
     if (userData.played) {

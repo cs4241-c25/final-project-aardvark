@@ -52,12 +52,14 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     score: null,
     stats: null,
   });
-  const [tiles, setTiles] = useState<Tile[]>([
-    { _id: 0, displayName: "", rank: undefined, color: "blue" },
-    { _id: 1, displayName: "", rank: undefined, color: "green" },
-    { _id: 2, displayName: "", rank: undefined, color: "yellow" },
-    { _id: 3, displayName: "", rank: undefined, color: "red" },
-  ]);
+  const [tiles, setTiles] = useState<Tile[]>(
+    Array.from({ length: 4 }, (_, i) => ({
+      _id: i,
+      displayName: "",
+      rank: undefined,
+      color: "",
+    }))
+  );
   const bgColorMap: Map<string, string> = new Map([
     ["blue", "bg-gameBlue"],
     ["green", "bg-gameGreen"],
@@ -78,6 +80,13 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         if (userSubmissionArr.length > 0) {
           // user has played today
           const userSubmission: GameDataRecord = userSubmissionArr[0];
+
+          setTiles((prevTiles) =>
+            prevTiles.map((tile) => ({
+              ...tile,
+              rank: userSubmission.submission[tile.displayName],
+            }))
+          );
 
           axios
             .get("/api/date")
@@ -166,19 +175,21 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       .get("/api/consensi/today")
       .then(function (response) {
         // handle success
-        const tempConsensus = response.data.consensi[0];
+        const tempConsensus: ConsensiRecord = response.data.consensi[0];
         setConsensusTheme(tempConsensus);
-        const options = tempConsensus.options;
-        if (!submitted) {
-          setTiles((prev) =>
-            prev.map((tile) => {
-              return {
-                ...tile,
-                displayName: options[tile._id],
-              };
-            })
-          );
-        }
+        const options = Object.entries(tempConsensus.options);
+        // no matter what, set the tiles' displayName and color
+        // we will use this to set tiles to the correct color wherever in the app we need to
+        setTiles((prevTiles) =>
+          prevTiles.map((tile, index) => {
+            const [displayName, color] = options[index];
+            return {
+              ...tile,
+              displayName: displayName,
+              color: color
+            }
+          })
+        )
         setLoading(false);
       })
       .catch(function (error) {
