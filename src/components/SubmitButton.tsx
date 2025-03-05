@@ -13,10 +13,10 @@ export default function SubmitButton() {
   const { data: session } = useSession();
   const {
     tiles,
-    submitted,
     setSubmitted,
     consensusTheme,
     setTodaysConsensus,
+    userData,
     setUserData,
   } = useGameContext();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
@@ -49,7 +49,7 @@ export default function SubmitButton() {
         // successfully inserted user submission
         setSubmitted(true);
         axios
-          .post("/api/gameData/consensus", consensusTheme)
+          .get(`/api/gameData/consensus/${getDateString(new Date())}`)
           .then(function (response) {
             // successfully calculated consensus
             // set consensus in state
@@ -85,9 +85,11 @@ export default function SubmitButton() {
     <Button
       className="w-28"
       disabled={buttonDisabled || tiles.some((tile) => tile.rank === undefined)}
-      onClick={() => (submitted ? openModal("Statistics") : handleClick())}
+      onClick={() =>
+        userData.played !== null ? openModal("Statistics") : handleClick()
+      }
     >
-      {submitted ? "See Stats" : "Submit"}
+      {userData.played !== null ? "See Stats" : "Submit"}
     </Button>
   );
 }

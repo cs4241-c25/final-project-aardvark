@@ -1,5 +1,4 @@
 import { Consensi } from "@/lib/datalayer";
-import { getDateString } from "@/utils/dateFormat";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
@@ -51,11 +50,13 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json();
-
-    const todayTaken = await consensi.getTodaysConsensiByDate(
-      getDateString(new Date())
+    const consensusDate = data.metadata.date;
+    console.log("date", consensusDate);
+    const existingConsensus = await consensi.getTodaysConsensiByDate(
+      consensusDate
     );
-    if (todayTaken.length > 0) {
+    console.log("existing:", existingConsensus);
+    if (existingConsensus.length > 0) {
       return NextResponse.json(
         { error: "Consensus already scheduled for that day" },
         { status: 400 }

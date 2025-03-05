@@ -1,4 +1,5 @@
 import { getDateString } from "@/utils/dateFormat";
+import { ObjectId } from "mongodb";
 import client from "./db";
 import { ConsensiRecord, GameDataRecord } from "./interfaces";
 
@@ -57,6 +58,7 @@ export class GameData extends DataLayer {
 
   public async getTodaysRankings() {
     const today = getDateString(new Date());
+    console.log("TODAY", today);
     const collection = await this.getCollection();
     const submissions = await collection
       .find({ "metadata.date": today })
@@ -93,9 +95,6 @@ export class Consensi extends DataLayer {
     const submissions = await collection
       .find({ "metadata.date": dateString })
       .toArray();
-    if (submissions.length === 0) {
-      throw new Error(`No Consensi found for date: ${dateString}`);
-    }
 
     return submissions;
   }
@@ -115,12 +114,12 @@ export class Consensi extends DataLayer {
   public async saveConsensus(consensusData: ConsensiRecord) {
     const collection = await this.getCollection();
     const result = await collection.insertOne(consensusData);
-    if (!result){
-      throw new Error('Could not add consensi')
+    if (!result) {
+      throw new Error("Could not add consensi");
     }
     return result;
   }
-  
+
   public async getHighestConsensusNum() {
     const collection = await this.getCollection();
     const highestConsensus = await collection
@@ -128,11 +127,54 @@ export class Consensi extends DataLayer {
       .sort({ consensusNum: -1 }) // Sort in descending order
       .limit(1) // Get only the highest one
       .toArray();
-  
+
     if (highestConsensus.length === 0) {
       throw new Error("No Consensi records found");
     }
-  
+
     return highestConsensus[0].consensusNum;
+  }
+
+  public async getAllConsensiSortedByDate() {
+    const collection = await this.getCollection();
+    return collection.find({}).sort({ date: -1 }).toArray();
+  }
+
+  public async getAllConsensiSortedByDateAfterToday() {
+    const collection = await this.getCollection();
+
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+
+    const formattedTomorrow = tomorrow.toISOString().slice(0, 10);
+
+    return collection
+      .find({ "metadata.date": { $gte: formattedTomorrow } })
+      .sort({ "metadata.date": 1 })
+      .toArray();
+  }
+}
+
+export class Suggestion extends DataLayer {
+  private collectionName = "consensiSuggestion";
+
+  private async getCollection() {
+    const db = await this.getDb();
+    return db.collection(this.collectionName);
+  }
+  public async getSuggestions() {
+    const collection = await this.getCollection();
+
+    const result = await collection.find({}).toArray();
+
+    return result;
+  }
+
+  public async removeSelection(id: ObjectId) {
+    const collection = await this.getCollection();
+    const result = await collection.deleteOne({ _id: id });
+
+    return result;
   }
 }

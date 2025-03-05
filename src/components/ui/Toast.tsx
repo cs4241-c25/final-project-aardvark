@@ -1,10 +1,18 @@
 "use client";
 
-import { motion } from "framer-motion";
-import clsx from "clsx";
 import { XCircle } from "@phosphor-icons/react";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
-export default function Toast({ title, message, type = "default" }: { title: string, message: string; type?: "default" | "error" }) {
+export default function Toast({
+  title,
+  message,
+  type = "default",
+}: {
+  title: string;
+  message: string;
+  type?: "default" | "error";
+}) {
   const bgColor = {
     default: "bg-neutral-800",
     error: "bg-red-500",
@@ -13,8 +21,8 @@ export default function Toast({ title, message, type = "default" }: { title: str
   return (
     <motion.div
       className={clsx(
-        "fixed bottom-5 right-5 px-3 py-2 text-white rounded shadow-lg",
-        bgColor,
+        "fixed bottom-5 right-5 px-3 py-2 text-white rounded shadow-lg z-50",
+        bgColor
       )}
       initial={{ opacity: 0, y: 20 }}
       exit={{ opacity: 0, y: 20 }}
