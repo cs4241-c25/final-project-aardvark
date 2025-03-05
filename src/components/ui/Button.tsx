@@ -11,7 +11,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={clsx(
-          "px-4 py-2 rounded-full transition-colors disabled:opacity-55",
+          "px-4 py-2 rounded-full transition-colors disabled:opacity-55 flex gap-2 justify-center items-center font-funnel",
           {
             "bg-foreground text-background": variant === "primary",
             "border border-foreground text-foreground": variant === "secondary",
@@ -25,8 +25,30 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     );
   }
 );
-
 // Add display name to fix the ESLint warning
 Button.displayName = "Button";
 
-export default Button;
+type IconButtonProps = React.ComponentProps<"button"> & {
+  icon: React.ReactNode;
+};
+
+const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
+  ({ className, icon, ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={clsx(
+          "hover:bg-inset rounded transition-colors md:p-3 p-2",
+          className
+        )}
+        {...props}
+      >
+        {icon}
+      </button>
+    );
+  }
+);
+// Add display name to fix the ESLint warning
+IconButton.displayName = "IconButton";
+
+export { Button, IconButton };
