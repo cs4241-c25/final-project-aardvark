@@ -65,7 +65,7 @@ export async function GET(
     consensus: sortedConsensus,
   };
 
-  console.log(consensusData);
+  // console.log(consensusData);
 
   return Response.json({ consensusData });
 }

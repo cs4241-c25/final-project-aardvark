@@ -7,7 +7,6 @@ import {
   TodaysConsensus,
   UserData,
 } from "@/lib/interfaces";
-import { getDateString } from "@/utils/dateFormat";
 import { getUserScore } from "@/utils/scoreUtils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -80,23 +79,32 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           // user has played today
           const userSubmission: GameDataRecord = userSubmissionArr[0];
 
-          // get consensus and user submission
           axios
-            .get(`/api/gameData/consensus/${getDateString(new Date())}`)
+            .get("/api/date")
             .then(function (response) {
-              // successfully calculated consensus
-              // set consensus in state
-              const consensusObj = response.data.consensusData;
-              setTodaysConsensus(consensusObj);
+              const today = response.data.date;
+              // get consensus and user submission
+              axios
+                .get(`/api/gameData/consensus/${today}`)
+                .then(function (response) {
+                  // successfully calculated consensus
+                  // set consensus in state
+                  const consensusObj = response.data.consensusData;
+                  setTodaysConsensus(consensusObj);
 
-              const userScore = getUserScore(userSubmission, consensusObj);
-              const todaysUserData: UserData = {
-                played: userSubmission,
-                score: userScore,
-                stats: null,
-              };
-              setUserData(todaysUserData);
+                  const userScore = getUserScore(userSubmission, consensusObj);
+                  const todaysUserData: UserData = {
+                    played: userSubmission,
+                    score: userScore,
+                    stats: null,
+                  };
+                  setUserData(todaysUserData);
+                });
+            })
+            .catch(function (error) {
+              console.error(error);
             });
+
           // check auth
           if (session?.user?.image === "anonymous") {
             // user is unauthenticated
