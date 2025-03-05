@@ -47,6 +47,10 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
     const handleApproveConsensi = async (record: ConsensiSuggestion) => {
         try {
 
+            if(record.date == null){
+                record.date = "null"
+            }
+            console.log(record.date);
             const newConsensusNum = await fetchHighestConsensusNum();
             if (newConsensusNum === undefined) {
                 return;
@@ -64,9 +68,6 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
 
             await axios.post(`/api/admin`, newConsensi);
 
-            if(record._id){
-                await handleDeleteConsensi(record._id.toString())
-            }
         } catch (err) {
             console.error("Error adding data:", err);
         }
@@ -115,6 +116,7 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
                                             {
                                                 try{
                                                     await handleApproveConsensi(record)
+                                                    await handleDeleteConsensi(record._id!.toString());
                                                     setUserSuggestions((prevData) =>
                                                         prevData.filter((item) => item._id !== record._id)
                                                     );
@@ -182,7 +184,7 @@ const ConsensiManager:  React.FC<ConsensiTableProps> = ({aiSuggestions, userSugg
                                                     await handleApproveConsensi(record);
                                                     setAILists(aiLists => aiLists.filter(item => item !== record))
                                                 } catch(error){
-                                                    console.error("Error deleting data:", error);
+                                                    console.error("Error adding data:", error);
                                                     }
                                                 }
                                             }>

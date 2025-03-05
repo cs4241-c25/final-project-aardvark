@@ -8,7 +8,10 @@ import GameHeader from "@/components/GameHeader";
 import {ModalProvider} from "@/context/ModalContext";
 import { Loader2 } from "lucide-react";
 import ModalWrapper from "@/components/ModalWrapper";
-import {Input} from "@/components/ui/input"; // Import spinner icon
+import {Input} from "@/components/ui/input";
+import {useSession} from "next-auth/react";
+import {router} from "next/client";
+import LoadingSpinner from "@/components/LoadingSpinner"; // Import spinner icon
 
 
 
@@ -23,14 +26,12 @@ export default function manageConsensi() {
 
     const [loading, setLoading] = useState<boolean>(false);
 
+    const { data: session } = useSession();
+
+    const [userAuthLoad, setUserAuthLoad] = useState(true);
+
 
     useEffect(() => {
-        if (!data) {
-            axios.get("/api/consensiSuggestion")
-                .then(response => setUserSuggestions(response.data))
-                .catch(error => console.error("Error fetching data:", error));
-        }
-
 
             axios.get("/api/admin/suggestions")
                 .then(response => {
@@ -39,6 +40,23 @@ export default function manageConsensi() {
                 .catch(error => console.error("Error fetching data:", error));
 
     }, []);
+
+    useEffect(() => {
+        if (
+            !session ||
+            session.user?.image === "anonymous" ||
+            (session.user?.email !== process.env.NEXT_PUBLIC_ARI_ADMIN &&
+                session.user?.email !== process.env.NEXT_PUBLIC_JACK_ADMIN &&
+                session.user?.email !== process.env.NEXT_PUBLIC_GUS_ADMIN &&
+                session.user?.email !== process.env.NEXT_PUBLIC_WALDEN_ADMIN &&
+                session.user?.email !== process.env.NEXT_PUBLIC_STEVE_ADMIN &&
+                session.user?.email !== process.env.NEXT_PUBLIC_BMO_ADMIN)
+        ) {
+            router.replace("/");
+        } else {
+            setUserAuthLoad(false);
+        }
+    }, [session]);
 
     async function sendPrompt() {
         setLoading(true);
@@ -58,6 +76,9 @@ export default function manageConsensi() {
             <ModalProvider>
                 <ModalWrapper/>
                 <GameHeader/>
+                    {userAuthLoad ? (
+                        <LoadingSpinner />
+                    ) : (
                 <div className="flex flex-col flex-grow items-center justify-center">
                     <h2>Consensus Suggestion Manager</h2>
                     <p>Accept or Reject Consensus suggestions from users, or generate your own using ai.</p>
@@ -72,6 +93,7 @@ export default function manageConsensi() {
                     </textarea>
                     <Button onClick={sendPrompt}>Generate</Button>
                 </div>
+                        )}
 
             </ModalProvider>
         </>

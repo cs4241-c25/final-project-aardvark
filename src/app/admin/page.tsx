@@ -6,6 +6,7 @@ import { ConsensiRecord, SuggestionRecord } from "@/lib/interfaces";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import GameHeader from "@/components/GameHeader";
 
 const ConsensusEntryForm = () => {
   const [record, setRecord] = useState<ConsensiRecord>({
@@ -264,6 +265,7 @@ const ConsensusEntryForm = () => {
 
   return (
     <ModalProvider>
+      <GameHeader />
       <div className="w-screen h-screen flex justify-center items-center">
         {userAuthLoad ? (
           <LoadingSpinner />
