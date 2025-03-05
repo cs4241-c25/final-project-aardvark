@@ -7,7 +7,7 @@ export default function Stats() {
   const { userData } = useGameContext();
 
   useEffect(() => {
-    console.log(userData);
+    // console.log(userData);
   }, []);
 
   return <p>stats</p>;

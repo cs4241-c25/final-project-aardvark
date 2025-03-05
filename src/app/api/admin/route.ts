@@ -51,11 +51,11 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     const consensusDate = data.metadata.date;
-    console.log("date", consensusDate);
+    // console.log("date", consensusDate);
     const existingConsensus = await consensi.getTodaysConsensiByDate(
       consensusDate
     );
-    console.log("existing:", existingConsensus);
+    // console.log("existing:", existingConsensus);
     if (existingConsensus.length > 0) {
       return NextResponse.json(
         { error: "Consensus already scheduled for that day" },

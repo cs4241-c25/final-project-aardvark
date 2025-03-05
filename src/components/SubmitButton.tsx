@@ -1,8 +1,6 @@
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
-import { useToast } from "@/context/ToastContext";
 import { GameDataRecord, Ranking } from "@/lib/interfaces";
-import { getDateString } from "@/utils/dateFormat";
 import { getUserScore } from "@/utils/scoreUtils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
@@ -20,10 +18,9 @@ export default function SubmitButton() {
     setUserData,
   } = useGameContext();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
-  const { showToast } = useToast();
   const { openModal } = useModal();
 
-  const handleClick = () => {
+  const handleClick = async () => {
     // prevent button spam
     setButtonDisabled(true);
 
@@ -33,7 +30,15 @@ export default function SubmitButton() {
       [tiles[2].displayName]: tiles[2].rank!,
       [tiles[3].displayName]: tiles[3].rank!,
     };
-    const today = getDateString(new Date());
+    // get date from server
+    let today = "";
+    try {
+      const response = await axios.get("/api/date");
+      today = response.data.date;
+    } catch (error) {
+      console.error(error);
+    }
+
     const gameDataRecord: GameDataRecord = {
       metadata: {
         date: today,
@@ -47,12 +52,13 @@ export default function SubmitButton() {
       .post("/api/gameData", gameDataRecord)
       .then(function (response) {
         // successfully inserted user submission
-        setUserData((prevUserData) => (
-          { ...prevUserData, played: gameDataRecord }
-        ))
+        setUserData((prevUserData) => ({
+          ...prevUserData,
+          played: gameDataRecord,
+        }));
         setSubmitted(true);
         axios
-          .get(`/api/gameData/consensus/${getDateString(new Date())}`)
+          .get(`/api/gameData/consensus/${today}`)
           .then(function (response) {
             // successfully calculated consensus
             // set consensus in state
@@ -67,7 +73,7 @@ export default function SubmitButton() {
             setButtonDisabled(false);
           })
           .catch(function (error) {
-            console.log(error);
+            // console.log(error);
           });
       })
       .catch(function (error) {
