@@ -63,7 +63,9 @@ export default function Home() {
               className="w-28"
               onClick={() => {
                 if (userData.played) {
-                  router.push("/stats");
+                  // router.push("/stats");
+                  // temp while no stats page
+                  router.push("/play");
                 } else {
                   router.push("/play");
                 }
