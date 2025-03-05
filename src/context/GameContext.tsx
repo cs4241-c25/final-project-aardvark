@@ -144,7 +144,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       })
       .catch(function (error) {
         setLoading(false);
-        showToast("Error", error, "error");
+        // showToast("Error", error, "error");
       })
       .finally(function () {
         setLoading(false);
@@ -175,7 +175,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       })
       .catch(function (error) {
         setLoading(false);
-        showToast("Error", error, "error");
+        // showToast("Error", error, "error");
       })
       .finally(function () {
         // always executed

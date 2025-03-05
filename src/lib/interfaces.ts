@@ -70,5 +70,5 @@ export interface TodaysConsensus {
 export interface UserData {
   played: GameDataRecord | null;
   score: number | null;
-  stats: {} | null;
+  stats: object | null;
 }

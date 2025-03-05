@@ -58,6 +58,7 @@ export class GameData extends DataLayer {
 
   public async getTodaysRankings() {
     const today = getDateString(new Date());
+    console.log("TODAY", today);
     const collection = await this.getCollection();
     const submissions = await collection
       .find({ "metadata.date": today })
@@ -113,8 +114,8 @@ export class Consensi extends DataLayer {
   public async saveConsensus(consensusData: ConsensiRecord) {
     const collection = await this.getCollection();
     const result = await collection.insertOne(consensusData);
-    if (!result){
-      throw new Error('Could not add consensi')
+    if (!result) {
+      throw new Error("Could not add consensi");
     }
     return result;
   }
@@ -172,14 +173,14 @@ export class Suggestion extends DataLayer {
     const db = await this.getDb();
     return db.collection(this.collectionName);
   }
-  public async getSuggestions(){
+  public async getSuggestions() {
     const collection = await this.getCollection();
 
     return collection.find({}).toArray();
 
   }
 
-  public async removeSelection(id: ObjectId){
+  public async removeSelection(id: ObjectId) {
     const collection = await this.getCollection();
     return collection.deleteOne({ _id: id });
 
