@@ -23,8 +23,8 @@ import { useToast } from "./ToastContext";
 interface GameContextType {
   tiles: Tile[];
   setTiles: Dispatch<SetStateAction<Tile[]>>;
-  submitted: boolean;
-  setSubmitted: Dispatch<SetStateAction<boolean>>;
+  submitted: boolean | null;
+  setSubmitted: Dispatch<SetStateAction<boolean | null>>;
   consensusTheme: ConsensiRecord | undefined;
   setConsensusTheme: Dispatch<SetStateAction<ConsensiRecord | undefined>>;
   todaysConsensus: TodaysConsensus | undefined;
@@ -68,7 +68,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     ["yellow", "bg-gameYellow"],
     ["red", "bg-gameRed"],
   ]);
-  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [submitted, setSubmitted] = useState<boolean | null>(null);
   const [animateTilesOnSubmit, setAnimateTilesOnSubmit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const { showToast } = useToast();
@@ -150,6 +150,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           setLoading(false);
         } else {
           // user has not played today
+          setSubmitted(false);
           // check auth
           if (session?.user?.image === "anonymous") {
             // user is unauthenticated
