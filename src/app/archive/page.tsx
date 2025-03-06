@@ -146,7 +146,8 @@ const ConsensusItem: React.FC<{
     consensus: Consensus;
     expanded: Record<string, boolean>;
     toggleExpand: (id: string) => void;
-}> = ({ consensus, expanded, toggleExpand }) => {
+
+    }> = ({ consensus, expanded, toggleExpand }) => {
     const id = consensus.consensusNum.toString();
     const isExpanded = expanded[id];
     const hasUserSubmission = Object.keys(consensus.submission).length > 0;
@@ -173,7 +174,7 @@ const ConsensusItem: React.FC<{
                         </div>
                     ) : (
                         <div className="flex gap-4">
-                            {/* Only show user's ranking if they submitted */}
+                            {/* only show user's ranking if they submitted */}
                             {hasUserSubmission && (
                                 <RankingColumn
                                     title="YOUR RANKING"
@@ -182,9 +183,9 @@ const ConsensusItem: React.FC<{
                                 />
                             )}
 
-                            {/* Overall ranking only shown if there are global submissions */}
+                            {/* overall ranking only shown if there are global submissions */}
                             <div className={`flex-1 ${!hasUserSubmission ? 'w-full' : ''}`}>
-                                <h3 className="font-semibold mb-2 text-center">OVERALL RANKING</h3>
+                                <h3 className="font-semibold mb-2 text-center">CONSENSUS</h3>
                                 {consensus.overall.map(({ option }) => (
                                     <AnimatedOption
                                         key={option}
@@ -247,9 +248,12 @@ const AnimatedOption: React.FC<{
     colorClass: string;
 }> = ({ option, colorClass }) => (
     <motion.div
+
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
+
         transition={{ type: "spring", stiffness: 300, damping: 15 }}
+
         className={clsx(
             "p-4 rounded-lg text-center text-black font-bold uppercase mb-2",
             colorClass

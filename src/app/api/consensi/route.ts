@@ -1,12 +1,13 @@
 import { Consensi, GameData } from "@/lib/datalayer";
 import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
     const session = await getServerSession();
     if (!session?.user?.email) {
-        return Response.json({ error: "Unauthorized" }, { status: 401 });
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-    const user = session.user.email;
+    const user: string = session.user.email;
 
     try {
         const gameData = new GameData();
@@ -15,58 +16,76 @@ export async function GET(request: Request) {
 
         const consensiList = [];
         for (const consensusData of allConsensuses) {
-            const allSubmissions = await gameData.getByConsensusId(consensusData._id.toString());
+            try {
+                const allSubmissions = await gameData.getByConsensusId(consensusData._id.toString());
 
-            // Skip consensuses with no submissions
-            if (allSubmissions.length === 0) {
-                continue;
-            }
+                if (allSubmissions.length === 0) continue; // skip empty consensuses
 
-            // Calculate aggregated scores
-            const consensusValues: Record<string, number> = {};
-            Object.keys(consensusData.options).forEach(option => {
-                consensusValues[option] = 0;
-            });
-
-            allSubmissions.forEach(submission => {
-                Object.entries(submission.submission).forEach(([option, rank]) => {
-                    switch (rank) {
-                        case 1: consensusValues[option] += 4; break;
-                        case 2: consensusValues[option] += 3; break;
-                        case 3: consensusValues[option] += 2; break;
-                        case 4: consensusValues[option] += 1; break;
-                    }
+                // Initialize scores
+                const consensusValues: Record<string, number> = {};
+                const validOptions = new Set(Object.keys(consensusData.options));
+                validOptions.forEach((option) => {
+                    consensusValues[option] = 0;
                 });
-            });
 
-            // Sort entries by points (descending) and lex order for ties
-            const sortedEntries = Object.entries(consensusValues)
-                .sort(([aKey, aVal], [bKey, bVal]) =>
-                    bVal - aVal || aKey.localeCompare(bKey)
-                )
-                .map(([option, points]) => ({ option, points }));
+                // Aggregate scores
+                allSubmissions.forEach((submission) => {
+                    Object.entries(submission.submission).forEach(([option, rank]) => {
+                        if (validOptions.has(option)) {
+                            const scoreMap = {
+                                1: 4,
+                                2: 3,
+                                3: 2,
+                                4: 1
+                            };
+                            consensusValues[option] += scoreMap[rank as keyof typeof scoreMap] || 0;
+                        }
+                    });
+                });
 
-            // Find user's submission
-            const userSubmission = allSubmissions.find(sub => sub.metadata.user === user);
+                // Sort results: first by score (descending), then by option lexicographically
+                const sortedEntries = Object.entries(consensusValues)
+                    .sort(([aKey, aVal], [bKey, bVal]) => {
+                        // Tiebreaker: first by score, then lexicographically
+                        if (bVal !== aVal) return bVal - aVal;
+                        return aKey > bKey ? 1 : -1; // Lexicographic comparison
+                    })
+                    .map(([option, points]) => ({
+                        option,
+                        points,
+                        color: consensusData.options[option],
+                    }));
 
-            consensiList.push({
-                consensusNum: consensusData.consensusNum,
-                date: consensusData.metadata.date,
-                category: consensusData.category,
-                options: consensusData.options,
-                submission: userSubmission?.submission || {},
-                overall: sortedEntries,
-                numSubmissions: allSubmissions.length
-            });
+                // Find user submission
+                const userSubmission = allSubmissions.find((sub) => sub.metadata.user === user);
+
+                // Add consensus data to response list
+                consensiList.push({
+                    consensusNum: consensusData.consensusNum,
+                    date: consensusData.metadata.date,
+                    category: consensusData.category,
+                    options: consensusData.options,
+                    submission: userSubmission?.submission || {},
+                    overall: sortedEntries,
+                    numSubmissions: allSubmissions.length,
+                });
+
+            } catch (error) {
+                console.error(`Error processing consensus ${consensusData._id}:`, error);
+                continue; // Skip any consensus that throws an error
+            }
         }
 
-        // Check if any consensuses with submissions exist
-        if (consensiList.length === 0) {
-            return Response.json({ error: "No consensuses found with submissions." }, { status: 404 });
+        // Filter out any empty consensuses
+        const resolvedConsensiList = consensiList.filter(Boolean);
+
+        if (resolvedConsensiList.length === 0) {
+            return NextResponse.json({ error: "No consensuses found with submissions." }, { status: 404 });
         }
 
-        return Response.json(consensiList);
+        return NextResponse.json(resolvedConsensiList);
     } catch (error) {
-        return Response.json({ error: "error.message" }, { status: 500 });
+        console.error("Error getting Consensi List:", error);
+        return NextResponse.json({ error: "Error getting Consensi List" }, { status: 500 });
     }
 }
