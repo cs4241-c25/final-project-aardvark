@@ -26,6 +26,7 @@ export default function Profile() {
         setLoading(false);
       } catch (error) {
         setAdmin(false);
+        setLoading(false);
       }
     }
 
