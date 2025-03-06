@@ -3,15 +3,12 @@ import { useModal } from "@/context/ModalContext";
 import { useToast } from "@/context/ToastContext";
 import { ShareNetwork } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
 
 export default function StatsModal() {
   const { closeModal } = useModal();
   const { tiles, todaysConsensus, userData, bgColorMap } = useGameContext();
-  const { data: session } = useSession();
   const { showToast } = useToast();
   const sortedUserRanking = [...tiles].sort(
     (a, b) => (a.rank ?? 5) - (b.rank ?? 5)
@@ -102,7 +99,9 @@ export default function StatsModal() {
                 </div>
               ))
             : null}
-          <p className="text-center uppercase font-funnel md:text-base text-sm">Your Ranking</p>
+          <p className="text-center uppercase font-funnel md:text-base text-sm">
+            Your Ranking
+          </p>
         </div>
         <div className="flex flex-col gap-2 font-bold md:text-lg">
           <p className="py-1">1</p>
@@ -146,11 +145,11 @@ export default function StatsModal() {
         </div> */}
       </div>
       <div className="flex justify-center items-center mt-4">
-          <Button variant="secondary" onClick={copyShare}>
-            <ShareNetwork size={22} />
-            Share
-          </Button>
-        </div>
+        <Button variant="secondary" onClick={copyShare}>
+          <ShareNetwork size={22} />
+          Share
+        </Button>
+      </div>
     </Modal>
   );
 }
