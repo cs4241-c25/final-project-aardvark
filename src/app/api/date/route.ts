@@ -7,12 +7,9 @@ export async function GET(request: Request) {
   if (!session || !session.user?.email) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   const today = new Date();
-  const newDate = new Date(today.getTime() - 5 * 60 * 60 * 1000);
-
-  console.log(newDate.toISOString());
-
-  const dateString = getDateString(new Date());
+  const dateString = getDateString(
+    new Date(today.getTime() - 5 * 60 * 60 * 1000)
+  );
   return Response.json({ date: dateString });
 }
