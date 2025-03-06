@@ -12,17 +12,9 @@ import { Tile } from "@/lib/interfaces";
 
 export default function GameArea() {
   const containers: (1 | 2 | 3 | 4)[] = [1, 2, 3, 4];
-  const { tiles, setTiles, submitted } = useGameContext();
+  const { tiles, setTiles, submitted, animateTilesOnSubmit } = useGameContext();
 
   const [destination, setDestination] = useState<1 | 2 | 3 | 4 | null>(null);
-  const [animateOnSubmit, setAnimateOnSubmit] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (submitted) {
-      setAnimateOnSubmit(true);
-      setTimeout(() => setAnimateOnSubmit(false), 800);
-    }
-  }, [submitted]);
 
   const handleWordBankClick = (tile: Tile) => {
     setTiles((prevTiles) => {
@@ -82,7 +74,7 @@ export default function GameArea() {
               tile={tile}
               key={`${tile._id}-${containerId}`}
               handleClick={handleRankedTileClick}
-              animateOnSubmit={animateOnSubmit}
+              animateOnSubmit={animateTilesOnSubmit}
             />
           ) : (
             <EmptyRankedTile

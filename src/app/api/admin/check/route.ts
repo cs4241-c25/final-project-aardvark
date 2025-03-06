@@ -3,9 +3,6 @@ import { getServerSession } from "next-auth";
 export async function GET() {
   const session = await getServerSession();
 
-  console.log("session", session);
-  console.log("env", process.env.ARI_ADMIN);
-
   if (
     !session ||
     session.user?.image === "anonymous" ||

@@ -28,7 +28,9 @@ export interface ConsensiRecord {
   };
   category: string;
   consensusNum: number;
-  options: string[];
+  options: {
+    [id: string]: "blue" | "green" | "yellow" | "red"
+  };
 }
 
 export interface SuggestionRecord {

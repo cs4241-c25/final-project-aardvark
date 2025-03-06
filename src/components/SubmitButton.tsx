@@ -16,6 +16,7 @@ export default function SubmitButton() {
     setTodaysConsensus,
     userData,
     setUserData,
+    doSubmissionAnimation,
   } = useGameContext();
   const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
   const { openModal } = useModal();
@@ -23,6 +24,7 @@ export default function SubmitButton() {
   const handleClick = async () => {
     // prevent button spam
     setButtonDisabled(true);
+    doSubmissionAnimation();
 
     const ranking: Ranking = {
       [tiles[0].displayName]: tiles[0].rank!,

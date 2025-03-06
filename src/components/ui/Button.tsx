@@ -11,9 +11,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       <button
         ref={ref}
         className={clsx(
-          "px-4 py-2 rounded-full transition-colors disabled:opacity-55 flex gap-2 justify-center items-center font-funnel",
+          "px-4 py-2 rounded transition-all disabled:opacity-55 flex gap-2 justify-center items-center font-funnel",
           {
-            "bg-foreground text-background": variant === "primary",
+            "bg-foreground text-background hover:scale-105": variant === "primary",
             "border border-foreground text-foreground": variant === "secondary",
           },
           className

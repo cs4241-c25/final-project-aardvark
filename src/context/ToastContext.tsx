@@ -20,13 +20,16 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
 
   const showToast = (title: string, message: string, type: "default" | "error" = "default") => {
     setToast({ title, message, type });
-    setTimeout(() => setToast(null), 3000);
+    const timeout = setTimeout(() => setToast(null), 3000);
+    return () => clearTimeout(timeout)
   };
+
+  const closeToast = () => setToast(null);
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      {toast && <Toast title={toast.title} message={toast.message} type={toast.type} />}
+      {toast && <Toast title={toast.title} message={toast.message} type={toast.type} closeToast={closeToast} />}
     </ToastContext.Provider>
   )
 }
