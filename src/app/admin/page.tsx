@@ -51,7 +51,7 @@ const ConsensusEntryForm = () => {
         // unauthorized
         router.replace("/");
       });
-  }, []);
+  }, [session]);
 
   useEffect(() => {
     const setInitialConsensusNum = async () => {
