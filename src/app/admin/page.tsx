@@ -3,6 +3,7 @@ import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
 import { ModalProvider } from "@/context/ModalContext";
 import { ConsensiRecord, SuggestionRecord } from "@/lib/interfaces";
+import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -41,21 +42,16 @@ const ConsensusEntryForm = () => {
   };
 
   useEffect(() => {
-    if (
-      !session ||
-      session.user?.image === "anonymous" ||
-      (session.user?.email !== process.env.NEXT_PUBLIC_ARI_ADMIN &&
-        session.user?.email !== process.env.NEXT_PUBLIC_JACK_ADMIN &&
-        session.user?.email !== process.env.NEXT_PUBLIC_GUS_ADMIN &&
-        session.user?.email !== process.env.NEXT_PUBLIC_WALDEN_ADMIN &&
-        session.user?.email !== process.env.NEXT_PUBLIC_STEVE_ADMIN &&
-        session.user?.email !== process.env.NEXT_PUBLIC_BMO_ADMIN)
-    ) {
-      router.replace("/");
-    } else {
-      setUserAuthLoad(false);
-    }
-  }, [session]);
+    axios
+      .get("/api/admin/check")
+      .then((res) => {
+        setUserAuthLoad(false);
+      })
+      .catch((err) => {
+        // unauthorized
+        router.replace("/");
+      });
+  }, []);
 
   useEffect(() => {
     const setInitialConsensusNum = async () => {
