@@ -61,12 +61,7 @@ export default function Home() {
             </Button>
             <Button
               className="w-28"
-              onClick={() => {
-                // const userPlayed = userData.played ? "true" : "false";
-                // const guest = session?.user?.image === "anonymous" ? "true" : "false";
-                // router.push(`/play?userPlayed=${userPlayed}&guest=${guest}`);
-                router.push("/play")
-              }}
+              onClick={() => router.push("/play")}
             >
               {userData.played ? "See Stats" : "Play"}
             </Button>
