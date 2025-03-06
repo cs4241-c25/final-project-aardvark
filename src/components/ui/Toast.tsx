@@ -3,15 +3,18 @@
 import { XCircle } from "@phosphor-icons/react";
 import clsx from "clsx";
 import { motion } from "framer-motion";
+import { X } from "lucide-react";
 
 export default function Toast({
   title,
   message,
   type = "default",
+  closeToast,
 }: {
   title: string;
   message: string;
   type?: "default" | "error";
+  closeToast: () => void;
 }) {
   const bgColor = {
     default: "bg-neutral-800",
@@ -21,7 +24,7 @@ export default function Toast({
   return (
     <motion.div
       className={clsx(
-        "fixed bottom-5 right-5 px-3 py-2 text-white rounded shadow-lg z-50",
+        "fixed bottom-5 right-5 px-3 py-2 text-white rounded shadow-lg z-50 flex items-center",
         bgColor
       )}
       initial={{ opacity: 0, y: 20 }}
@@ -35,6 +38,9 @@ export default function Toast({
         </div>
         <p>{message}</p>
       </div>
+      <button className="hover:bg-neutral-700 rounded-full ml-2" onClick={closeToast}>
+        <X className="h-8 w-8 p-2" />
+      </button>
     </motion.div>
   );
 }
