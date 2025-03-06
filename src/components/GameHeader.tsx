@@ -3,14 +3,13 @@
 import { useGameContext } from "@/context/GameContext";
 import { ModalProvider, useModal } from "@/context/ModalContext";
 import {
-  ChartBar,
   ClockCounterClockwise,
   Question,
   UserCircle,
 } from "@phosphor-icons/react";
-import { Button, IconButton } from "./ui/Button";
-import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { Button, IconButton } from "./ui/Button";
 
 export default function GameHeader() {
   const { consensusTheme } = useGameContext();
@@ -35,6 +34,7 @@ export default function GameHeader() {
           <IconButton
             title="Archive"
             icon={<ClockCounterClockwise size={24} />}
+            onClick={() => router.push("/archive")}
           />
           {/* goes to consensus archive- TODO: create page */}
           {/* <IconButton
@@ -51,11 +51,18 @@ export default function GameHeader() {
           {session?.user?.image !== "anonymous" ? (
             <IconButton
               title="My Profile"
-              icon={<UserCircle size={24}
-              onClick={() => router.push("/profile")}
-            />} />
+              icon={
+                <UserCircle size={24} onClick={() => router.push("/profile")} />
+              }
+            />
           ) : (
-            <Button variant="secondary" className="ml-1" onClick={() => router.push("/login")}>Log In</Button>
+            <Button
+              variant="secondary"
+              className="ml-1"
+              onClick={() => router.push("/login")}
+            >
+              Log In
+            </Button>
           )}
         </div>
       </ModalProvider>
