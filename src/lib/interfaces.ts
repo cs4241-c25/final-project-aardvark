@@ -33,12 +33,26 @@ export interface ConsensiRecord {
   };
 }
 
+export interface ConsensiSuggestion {
+  _id?: ObjectId;
+  author: string | null;
+  category: string;
+  options: string[];
+  date: string;
+}
+
+export interface PromptSchema {
+  role: string,
+  content: string,
+}
+
 export interface SuggestionRecord {
   _id?: ObjectId;
   author: string | null;
   category: string;
   consensusNum: number;
-  options: string[];
+  options: { [id: string]: "blue" | "green" | "yellow" | "red"
+  };
   checked: string;
   date: string;
 }

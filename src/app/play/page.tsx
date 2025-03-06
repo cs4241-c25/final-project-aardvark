@@ -7,14 +7,13 @@ import ModalWrapper from "@/components/ModalWrapper";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
-import { ModalProvider } from "@/context/ModalContext";
-import { Ranking } from "@/lib/interfaces";
-import { useEffect, useState } from "react";
-import { useModal } from "@/context/ModalContext";
+import { ModalProvider, useModal } from "@/context/ModalContext";
 import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 function PlayContent() {
-  const { tiles, setTiles, submitted, userData, loading, todaysConsensus } = useGameContext();
+  const { tiles, setTiles, submitted, userData, loading, todaysConsensus } =
+    useGameContext();
   const { openModal } = useModal();
   const { data: session } = useSession();
 
