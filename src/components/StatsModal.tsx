@@ -44,8 +44,8 @@ export default function StatsModal() {
       Number(consensusTheme?.consensusNum)
     )} - ${consensusTheme?.category}\n\n`;
     let i = 1;
-    Object.entries(tileColorMap).forEach(([key, value]) => {
-      returnStr += `${i} ${emojiMap[value]} ${key}\n`;
+    sortedUserRanking.forEach((tile) => {
+      returnStr += `${i} ${emojiMap[tile.color]} ${tile.displayName}\n`;
       i++;
     });
     returnStr += `\nWhat do you think? Play here: https://consensus-game.vercel.app`;
