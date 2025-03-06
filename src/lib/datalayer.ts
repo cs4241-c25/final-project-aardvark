@@ -61,7 +61,7 @@ export class GameData extends DataLayer {
   }
 
   public async getTodaysRankings() {
-    const today = getDateString(new Date());
+    const today = getDateString();
     // console.log("TODAY", today);
     const collection = await this.getCollection();
     const submissions = await collection

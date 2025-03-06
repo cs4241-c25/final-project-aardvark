@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const today = getDateString(new Date());
+  const today = getDateString();
   const consensi = await consensiDataLayer.getTodaysConsensiByDate(today);
   return Response.json({ consensi });
 }
