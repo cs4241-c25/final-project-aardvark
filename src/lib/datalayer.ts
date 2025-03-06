@@ -1,7 +1,11 @@
 import { getDateString } from "@/utils/dateFormat";
+import { ObjectId } from "mongodb";
 import client from "./db";
-import {ConsensiRecord, ConsensiSuggestion, GameDataRecord} from "./interfaces";
-import { Collection, ObjectId } from "mongodb";
+import {
+  ConsensiRecord,
+  ConsensiSuggestion,
+  GameDataRecord,
+} from "./interfaces";
 
 export class DataLayer {
   private dbName = "consensus";
@@ -75,6 +79,11 @@ export class GameData extends DataLayer {
     const result = await collection.insertOne(gameData);
     return result;
   }
+
+  public async getByConsensusId(consensusId: string) {
+    const collection = await this.getCollection();
+    return collection.find({ consensusId: consensusId }).toArray();
+  }
 }
 
 export class Consensi extends DataLayer {
@@ -137,10 +146,12 @@ export class Consensi extends DataLayer {
 
   public async getNextDate() {
     const collection = await this.getCollection();
-    const latest = await collection.findOne({}, { sort: { "metadata.date": -1 } });
+    const latest = await collection.findOne(
+      {},
+      { sort: { "metadata.date": -1 } }
+    );
     return latest!.metadata.date;
   }
-
 
   public async getAllConsensiSortedByDate() {
     const collection = await this.getCollection();
@@ -162,8 +173,10 @@ export class Consensi extends DataLayer {
       .toArray();
   }
 
-
-
+  public async getAllConsensiSortedByConsensusNum() {
+    const collection = await this.getCollection();
+    return collection.find({}).sort({ consensusNum: 1 }).toArray();
+  }
 }
 
 export class Suggestion extends DataLayer {
@@ -177,17 +190,15 @@ export class Suggestion extends DataLayer {
     const collection = await this.getCollection();
 
     return collection.find({}).toArray();
-
   }
 
   public async removeSelection(id: ObjectId) {
     const collection = await this.getCollection();
     return collection.deleteOne({ _id: id });
-
   }
 
-    public async addNewSuggestion(suggestions: ConsensiSuggestion) {
-        const collection = await this.getCollection();
-        return await collection.insertOne(suggestions);
-    }
+  public async addNewSuggestion(suggestions: ConsensiSuggestion) {
+    const collection = await this.getCollection();
+    return await collection.insertOne(suggestions);
+  }
 }
