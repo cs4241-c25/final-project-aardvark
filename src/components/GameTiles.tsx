@@ -53,7 +53,7 @@ function RankedTile({
         bgColorMap.get(tile.color),
       )}
       onClick={() => handleClick(tile)}
-      disabled={submitted}
+      disabled={submitted === null || submitted}
     >
       {tile.displayName}
     </motion.button>

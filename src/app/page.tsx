@@ -61,13 +61,7 @@ export default function Home() {
             </Button>
             <Button
               className="w-28"
-              onClick={() => {
-                if (userData.played) {
-                  router.push("/stats");
-                } else {
-                  router.push("/play");
-                }
-              }}
+              onClick={() => router.push("/play")}
             >
               {userData.played ? "See Stats" : "Play"}
             </Button>

@@ -23,8 +23,8 @@ import { useToast } from "./ToastContext";
 interface GameContextType {
   tiles: Tile[];
   setTiles: Dispatch<SetStateAction<Tile[]>>;
-  submitted: boolean;
-  setSubmitted: Dispatch<SetStateAction<boolean>>;
+  submitted: boolean | null;
+  setSubmitted: Dispatch<SetStateAction<boolean | null>>;
   consensusTheme: ConsensiRecord | undefined;
   setConsensusTheme: Dispatch<SetStateAction<ConsensiRecord | undefined>>;
   todaysConsensus: TodaysConsensus | undefined;
@@ -33,6 +33,8 @@ interface GameContextType {
   setUserData: Dispatch<SetStateAction<UserData>>;
   loading: boolean;
   bgColorMap: Map<string, string>;
+  animateTilesOnSubmit: boolean;
+  doSubmissionAnimation: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -66,9 +68,15 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
     ["yellow", "bg-gameYellow"],
     ["red", "bg-gameRed"],
   ]);
-  const [submitted, setSubmitted] = useState<boolean>(false);
+  const [submitted, setSubmitted] = useState<boolean | null>(null);
+  const [animateTilesOnSubmit, setAnimateTilesOnSubmit] = useState(false);
   const [loading, setLoading] = useState<boolean>(false);
   const { showToast } = useToast();
+
+  const doSubmissionAnimation = () => {
+    setAnimateTilesOnSubmit(true);
+    setTimeout(() => setAnimateTilesOnSubmit(false), 800);
+  };
 
   const fetchUserSubmission = () => {
     // has the user played today?
@@ -81,6 +89,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           // user has played today
           const userSubmission: GameDataRecord = userSubmissionArr[0];
 
+          setSubmitted(true);
           setTiles((prevTiles) =>
             prevTiles.map((tile) => ({
               ...tile,
@@ -141,6 +150,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
           setLoading(false);
         } else {
           // user has not played today
+          setSubmitted(false);
           // check auth
           if (session?.user?.image === "anonymous") {
             // user is unauthenticated
@@ -186,10 +196,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
             return {
               ...tile,
               displayName: displayName,
-              color: color
-            }
+              color: color,
+            };
           })
-        )
+        );
         setLoading(false);
       })
       .catch(function (error) {
@@ -222,6 +232,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
         setUserData,
         loading,
         bgColorMap,
+        animateTilesOnSubmit,
+        doSubmissionAnimation,
       }}
     >
       {children}
