@@ -1,6 +1,9 @@
 "use client";
+import GameHeader from "@/components/GameHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ModalWrapper from "@/components/ModalWrapper";
 import { IconButton } from "@/components/ui/Button";
+import { ModalProvider } from "@/context/ModalContext";
 import { House } from "@phosphor-icons/react";
 import axios from "axios";
 import clsx from "clsx";
@@ -84,48 +87,53 @@ export default function ArchivePage() {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <main className="max-w-4xl mx-auto p-4">
-      <header className="flex justify-center items-center px-2 md:px-4 border-b border-inset py-2">
-        <IconButton
-          title="Play"
-          icon={<House size={24} />}
-          onClick={() => router.push("/play")}
-        />
-      </header>
+    <ModalProvider>
+      <ModalWrapper />
+      <GameHeader />
 
-      <h1 className="text-3xl font-bold mb-4">Consensus Archive</h1>
-
-      <div className="flex gap-4 mb-4">
-        <FilterInput
-          label="Search by Date:"
-          type="date"
-          value={searchDate}
-          onChange={(e) => setSearchDate(e.target.value)}
-        />
-        <FilterInput
-          label="Search by Category:"
-          type="text"
-          value={searchCategory}
-          onChange={(e) => setSearchCategory(e.target.value)}
-          placeholder="Enter category"
-        />
-      </div>
-
-      {filteredConsensi.length > 0 ? (
-        filteredConsensi.map((consensus) => (
-          <ConsensusItem
-            key={consensus.consensusNum.toString()}
-            consensus={consensus}
-            expanded={expanded}
-            toggleExpand={toggleExpand}
+      <main className="max-w-4xl mx-auto p-4">
+        <header className="flex justify-center items-center px-2 md:px-4 border-b border-inset py-2">
+          <IconButton
+            title="Play"
+            icon={<House size={24} />}
+            onClick={() => router.push("/play")}
           />
-        ))
-      ) : (
-        <p className="text-gray-500 text-center">
-          No results found for the selected filters.
-        </p>
-      )}
-    </main>
+        </header>
+
+        <h1 className="text-3xl font-bold mb-4">Consensus Archive</h1>
+
+        <div className="flex gap-4 mb-4">
+          <FilterInput
+            label="Search by Date:"
+            type="date"
+            value={searchDate}
+            onChange={(e) => setSearchDate(e.target.value)}
+          />
+          <FilterInput
+            label="Search by Category:"
+            type="text"
+            value={searchCategory}
+            onChange={(e) => setSearchCategory(e.target.value)}
+            placeholder="Enter category"
+          />
+        </div>
+
+        {filteredConsensi.length > 0 ? (
+          filteredConsensi.map((consensus) => (
+            <ConsensusItem
+              key={consensus.consensusNum.toString()}
+              consensus={consensus}
+              expanded={expanded}
+              toggleExpand={toggleExpand}
+            />
+          ))
+        ) : (
+          <p className="text-gray-500 text-center">
+            No results found for the selected filters.
+          </p>
+        )}
+      </main>
+    </ModalProvider>
   );
 }
 

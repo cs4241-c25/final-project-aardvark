@@ -7,6 +7,7 @@ import SessionProvider from "@/components/auth/SessionProvider";
 import { GameProvider } from "@/context/GameContext";
 import { ToastProvider } from "@/context/ToastContext";
 import { getServerSession } from "next-auth";
+import {ThemeProvider} from "@/components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,7 @@ export default async function RootLayout({
   const session = await getServerSession();
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
@@ -51,7 +52,10 @@ export default async function RootLayout({
           <AnonymousSessionProvider>
             <ToastProvider>
               <GameProvider>
-                {children}
+                <ThemeProvider attribute="class"
+                               defaultTheme="dark"
+                               enableSystem
+                               disableTransitionOnChange>{children}</ThemeProvider>
               </GameProvider>
             </ToastProvider>
           </AnonymousSessionProvider>

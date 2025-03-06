@@ -1,7 +1,11 @@
 import { getDateString } from "@/utils/dateFormat";
 import { ObjectId } from "mongodb";
 import client from "./db";
-import { ConsensiRecord, GameDataRecord } from "./interfaces";
+import {
+  ConsensiRecord,
+  ConsensiSuggestion,
+  GameDataRecord,
+} from "./interfaces";
 
 export class DataLayer {
   private dbName = "consensus";
@@ -80,7 +84,6 @@ export class GameData extends DataLayer {
     const collection = await this.getCollection();
     return collection.find({ consensusId: consensusId }).toArray();
   }
-
 }
 
 export class Consensi extends DataLayer {
@@ -141,6 +144,15 @@ export class Consensi extends DataLayer {
     return highestConsensus[0].consensusNum;
   }
 
+  public async getNextDate() {
+    const collection = await this.getCollection();
+    const latest = await collection.findOne(
+      {},
+      { sort: { "metadata.date": -1 } }
+    );
+    return latest!.metadata.date;
+  }
+
   public async getAllConsensiSortedByDate() {
     const collection = await this.getCollection();
     return collection.find({}).sort({ date: -1 }).toArray();
@@ -177,15 +189,16 @@ export class Suggestion extends DataLayer {
   public async getSuggestions() {
     const collection = await this.getCollection();
 
-    const result = await collection.find({}).toArray();
-
-    return result;
+    return collection.find({}).toArray();
   }
 
   public async removeSelection(id: ObjectId) {
     const collection = await this.getCollection();
-    const result = await collection.deleteOne({ _id: id });
+    return collection.deleteOne({ _id: id });
+  }
 
-    return result;
+  public async addNewSuggestion(suggestions: ConsensiSuggestion) {
+    const collection = await this.getCollection();
+    return await collection.insertOne(suggestions);
   }
 }
