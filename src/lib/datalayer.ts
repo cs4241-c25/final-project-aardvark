@@ -75,6 +75,12 @@ export class GameData extends DataLayer {
     const result = await collection.insertOne(gameData);
     return result;
   }
+
+  public async getByConsensusId(consensusId: string) {
+    const collection = await this.getCollection();
+    return collection.find({ consensusId: consensusId }).toArray();
+  }
+
 }
 
 export class Consensi extends DataLayer {
@@ -153,6 +159,11 @@ export class Consensi extends DataLayer {
       .find({ "metadata.date": { $gte: formattedTomorrow } })
       .sort({ "metadata.date": 1 })
       .toArray();
+  }
+
+  public async getAllConsensiSortedByConsensusNum() {
+    const collection = await this.getCollection();
+    return collection.find({}).sort({ consensusNum: 1 }).toArray();
   }
 }
 
