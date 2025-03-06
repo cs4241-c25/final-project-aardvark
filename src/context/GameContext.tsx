@@ -212,10 +212,17 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
       });
   };
 
+  // First fetch the consensus theme
   useEffect(() => {
     fetchTodaysConsensus();
-    fetchUserSubmission();
   }, []);
+
+  // Then fetch user submission only after consensus theme is loaded
+  useEffect(() => {
+    if (consensusTheme) {
+      fetchUserSubmission();
+    }
+  }, [consensusTheme]);
 
   return (
     <GameContext.Provider
