@@ -52,7 +52,6 @@ export default function Suggest() {
                     <CardContent>
                         <Form {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                                {/* Author Input */}
                                 <FormField
                                     control={form.control}
                                     name="author"
@@ -66,7 +65,6 @@ export default function Suggest() {
                                     )}
                                 />
 
-                                {/* Category Input */}
                                 <FormField
                                     control={form.control}
                                     name="category"
@@ -80,7 +78,6 @@ export default function Suggest() {
                                     )}
                                 />
 
-                                {/* Option 1 Input */}
                                 <FormField
                                     control={form.control}
                                     name="option1"
@@ -94,7 +91,6 @@ export default function Suggest() {
                                     )}
                                 />
 
-                                {/* Option 2 Input */}
                                 <FormField
                                     control={form.control}
                                     name="option2"
@@ -108,7 +104,6 @@ export default function Suggest() {
                                     )}
                                 />
 
-                                {/* Option 3 Input */}
                                 <FormField
                                     control={form.control}
                                     name="option3"
@@ -122,7 +117,6 @@ export default function Suggest() {
                                     )}
                                 />
 
-                                {/* Option 4 Input */}
                                 <FormField
                                     control={form.control}
                                     name="option4"
@@ -136,8 +130,7 @@ export default function Suggest() {
                                     )}
                                 />
 
-                                {/* Submit Button */}
-                                <Button type="submit" className="w-full bg-blue-500 text-white hover:bg-blue-600">
+                                <Button type="submit" className="w-full outline outline-1 outline-black">
                                     Submit Suggestion
                                 </Button>
                             </form>

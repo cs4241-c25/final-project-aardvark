@@ -67,7 +67,6 @@ export async function POST(request: Request) {
 
       const cleanedDate = nextDate.trim().replace(/\u200B/g, "");
 
-
       const latestDate = new Date(cleanedDate);
 
       latestDate.setDate(latestDate.getDate() + 1);

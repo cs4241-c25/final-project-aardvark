@@ -51,7 +51,8 @@ export interface SuggestionRecord {
   author: string | null;
   category: string;
   consensusNum: number;
-  options: string[];
+  options: { [id: string]: "blue" | "green" | "yellow" | "red"
+  };
   checked: string;
   date: string;
 }
