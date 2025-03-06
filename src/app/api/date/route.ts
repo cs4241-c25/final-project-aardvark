@@ -9,8 +9,9 @@ export async function GET(request: Request) {
   }
 
   const today = new Date();
-  console.log(today);
-  console.log(today.toISOString());
+  const newDate = new Date(today.getTime() - 5 * 60 * 60 * 1000);
+
+  console.log(newDate.toISOString());
 
   const dateString = getDateString(new Date());
   return Response.json({ date: dateString });
