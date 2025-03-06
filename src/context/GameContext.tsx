@@ -108,6 +108,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
                   // successfully calculated consensus
                   // set consensus in state
                   const consensusObj = response.data.consensusData;
+                  console.log(consensusObj);
                   setTodaysConsensus(consensusObj);
 
                   const userScore = getUserScore(userSubmission, consensusObj);
