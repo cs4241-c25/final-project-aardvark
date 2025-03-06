@@ -10,43 +10,33 @@ import { useGameContext } from "@/context/GameContext";
 import { ModalProvider } from "@/context/ModalContext";
 import { Ranking } from "@/lib/interfaces";
 import { useEffect, useState } from "react";
+import { useModal } from "@/context/ModalContext";
+import { useSession } from "next-auth/react";
 
-export default function Play() {
-  const { tiles, setTiles, submitted, userData, loading } = useGameContext();
-  const [localLoading, setLocalLoading] = useState(true);
+function PlayContent() {
+  const { tiles, setTiles, submitted, userData, loading, todaysConsensus } = useGameContext();
+  const { openModal } = useModal();
+  const { data: session } = useSession();
 
   useEffect(() => {
-    // Function to update tiles based on submission
-    const updateTiles = (submission: Ranking) => {
-      const updatedTiles = tiles.map((tile) => {
-        const displayName = Object.keys(submission).find(
-          (key) => submission[key] === tile._id + 1
-        );
-        return {
-          ...tile,
-          displayName: displayName || "",
-          rank: displayName ? submission[displayName] : undefined,
-        };
-      });
-
-      setTiles(updatedTiles);
-    };
-    if (userData.played) {
-      updateTiles(userData.played.submission);
-      // router.push("/stats");
+    if (submitted !== null) {
+      if (submitted && todaysConsensus) {
+        openModal("Statistics");
+      }
+      if (session && !submitted && session.user?.image === "anonymous") {
+        openModal("How to Play");
+      }
     }
-    setLocalLoading(false);
-  }, [userData]);
+  }, [submitted, todaysConsensus, session]);
 
   return (
     <div className="flex flex-col min-h-screen">
-      {loading || localLoading ? (
+      {loading ? (
         <div className="flex h-screen w-screen justify-center items-center">
           <LoadingSpinner />
         </div>
       ) : (
-        <ModalProvider>
-          <ModalWrapper />
+        <>
           <GameHeader />
           <div className="flex flex-col flex-grow items-center justify-center">
             <GameArea />
@@ -70,8 +60,17 @@ export default function Play() {
               <SubmitButton />
             </div>
           </div>
-        </ModalProvider>
+        </>
       )}
     </div>
+  );
+}
+
+export default function Play() {
+  return (
+    <ModalProvider>
+      <ModalWrapper />
+      <PlayContent />
+    </ModalProvider>
   );
 }

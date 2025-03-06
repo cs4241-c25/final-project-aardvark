@@ -53,7 +53,7 @@ export async function POST(request: Request) {
     consensus: sortedConsensus,
   };
 
-  console.log(consensusData);
+  // console.log(consensusData);
 
   return Response.json({ consensusData });
 }

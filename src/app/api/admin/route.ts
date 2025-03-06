@@ -10,12 +10,12 @@ export async function GET() {
   if (
     !session ||
     session.user?.image === "anonymous" ||
-    (session.user?.email !== process.env.NEXT_PUBLIC_ARI_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_JACK_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_GUS_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_WALDEN_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_STEVE_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_BMO_ADMIN)
+    (session.user?.email !== process.env.ARI_ADMIN &&
+      session.user?.email !== process.env.JACK_ADMIN &&
+      session.user?.email !== process.env.GUS_ADMIN &&
+      session.user?.email !== process.env.WALDEN_ADMIN &&
+      session.user?.email !== process.env.STEVE_ADMIN &&
+      session.user?.email !== process.env.BMO_ADMIN)
   ) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -38,12 +38,12 @@ export async function POST(request: Request) {
   if (
     !session ||
     session.user?.image === "anonymous" ||
-    (session.user?.email !== process.env.NEXT_PUBLIC_ARI_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_JACK_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_GUS_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_WALDEN_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_STEVE_ADMIN &&
-      session.user?.email !== process.env.NEXT_PUBLIC_BMO_ADMIN)
+    (session.user?.email !== process.env.ARI_ADMIN &&
+      session.user?.email !== process.env.JACK_ADMIN &&
+      session.user?.email !== process.env.GUS_ADMIN &&
+      session.user?.email !== process.env.WALDEN_ADMIN &&
+      session.user?.email !== process.env.STEVE_ADMIN &&
+      session.user?.email !== process.env.BMO_ADMIN)
   ) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -53,9 +53,9 @@ export async function POST(request: Request) {
     const consensusDate = data.metadata.date
 
     if(consensusDate != "null") {
-      console.log('date', consensusDate)
+      //console.log('date', consensusDate)
       const existingConsensus = await consensi.getTodaysConsensiByDate(consensusDate);
-      console.log('existing:', existingConsensus)
+      //console.log('existing:', existingConsensus)
       if (existingConsensus.length > 0) {
         return NextResponse.json(
             { error: "Consensus already scheduled for that day" },
