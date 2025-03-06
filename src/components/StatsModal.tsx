@@ -3,15 +3,12 @@ import { useModal } from "@/context/ModalContext";
 import { useToast } from "@/context/ToastContext";
 import { ShareNetwork } from "@phosphor-icons/react";
 import clsx from "clsx";
-import { useSession } from "next-auth/react";
-import Link from "next/link";
 import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
 
 export default function StatsModal() {
   const { closeModal } = useModal();
   const { tiles, todaysConsensus, userData, bgColorMap } = useGameContext();
-  const { data: session } = useSession();
   const { showToast } = useToast();
   const sortedUserRanking = [...tiles].sort(
     (a, b) => (a.rank ?? 5) - (b.rank ?? 5)
@@ -70,22 +67,22 @@ export default function StatsModal() {
       <div className="grid grid-cols-[1fr_auto_1fr] gap-x-4 gap-y-6 px-4 pt-8">
         <div className="flex justify-center items-center">
           <div className="text-center font-funnel">
-            <p className="font-bold text-6xl">
+            <p className="font-bold md:text-6xl text-4xl">
               {todaysConsensus
                 ? (((userData?.score ?? 0) / 24) * 100).toFixed(0)
                 : 0}
               %
             </p>
-            <p className="uppercase">Similarity Score</p>
+            <p className="uppercase md:text-base text-sm">Similarity Score</p>
           </div>
         </div>
         <div></div>
         <div className="flex justify-center items-center">
           <div className="text-center font-funnel">
-            <p className="font-bold text-6xl">
+            <p className="font-bold md:text-6xl text-4xl">
               {todaysConsensus?.numSubmissions || 0}
             </p>
-            <p className="uppercase">Plays Today</p>
+            <p className="uppercase md:text-base text-sm">Plays Today</p>
           </div>
         </div>
         <div className="flex flex-col gap-2">
@@ -94,7 +91,7 @@ export default function StatsModal() {
                 <div
                   key={tile._id}
                   className={clsx(
-                    "rounded py-1 text-center text-black uppercase font-bold font-funnel text-lg",
+                    "rounded py-1 text-center text-black uppercase font-bold font-funnel md:text-lg",
                     bgColorMap.get(tile.color)
                   )}
                 >
@@ -102,9 +99,11 @@ export default function StatsModal() {
                 </div>
               ))
             : null}
-          <p className="text-center uppercase font-funnel">Your Ranking</p>
+          <p className="text-center uppercase font-funnel md:text-base text-sm">
+            Your Ranking
+          </p>
         </div>
-        <div className="flex flex-col gap-2 font-bold text-lg">
+        <div className="flex flex-col gap-2 font-bold md:text-lg">
           <p className="py-1">1</p>
           <p className="py-1">2</p>
           <p className="py-1">3</p>
@@ -113,12 +112,12 @@ export default function StatsModal() {
         <div className="flex flex-col gap-2">
           {sortedConsensusKeys.length > 0
             ? sortedConsensusKeys.map((displayName) => {
-                const color = tileColorMap[displayName] || "bg-gray-300";
+                const color = tileColorMap[displayName];
                 return (
                   <div
                     key={displayName}
                     className={clsx(
-                      "rounded py-1 text-center text-black uppercase font-bold font-funnel text-lg",
+                      "rounded py-1 text-center text-black uppercase font-bold font-funnel md:text-lg",
                       bgColorMap.get(color)
                     )}
                   >
@@ -127,17 +126,11 @@ export default function StatsModal() {
                 );
               })
             : null}
-          <p className="text-center uppercase font-funnel">
+          <p className="text-center uppercase font-funnel md:text-base text-sm">
             {"Today's Consensus"}
           </p>
         </div>
-        <div className="flex justify-center items-center">
-          <Button variant="secondary" onClick={copyShare}>
-            <ShareNetwork size={22} />
-            Share
-          </Button>
-        </div>
-        <div></div>
+        {/* <div></div>
         <div className="flex justify-center items-center">
           {session && session?.user?.image !== "anonymous" ? (
             <Button variant="secondary">See Stats</Button>
@@ -149,7 +142,13 @@ export default function StatsModal() {
               to see more statistics!
             </p>
           )}
-        </div>
+        </div> */}
+      </div>
+      <div className="flex justify-center items-center mt-4">
+        <Button variant="secondary" onClick={copyShare}>
+          <ShareNetwork size={22} />
+          Share
+        </Button>
       </div>
     </Modal>
   );
