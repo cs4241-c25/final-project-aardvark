@@ -76,7 +76,7 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
   const doSubmissionAnimation = () => {
     setAnimateTilesOnSubmit(true);
     setTimeout(() => setAnimateTilesOnSubmit(false), 800);
-  }
+  };
 
   const fetchUserSubmission = () => {
     // has the user played today?
@@ -108,7 +108,6 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
                   // successfully calculated consensus
                   // set consensus in state
                   const consensusObj = response.data.consensusData;
-                  console.log(consensusObj);
                   setTodaysConsensus(consensusObj);
 
                   const userScore = getUserScore(userSubmission, consensusObj);
@@ -197,10 +196,10 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({
             return {
               ...tile,
               displayName: displayName,
-              color: color
-            }
+              color: color,
+            };
           })
-        )
+        );
         setLoading(false);
       })
       .catch(function (error) {
