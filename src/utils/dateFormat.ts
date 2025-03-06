@@ -1,4 +1,7 @@
-export function getDateString(date: Date) {
+export function getDateString() {
+  const today = new Date();
+  const date = new Date(today.getTime() - 5 * 60 * 60 * 1000);
+
   return (
     date.getFullYear() +
     "-" +
