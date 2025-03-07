@@ -36,7 +36,7 @@ function PlayContent() {
         </div>
       ) : (
         <>
-          <GameHeader />
+          <GameHeader showHowToPlay />
           <div className="flex flex-col flex-grow items-center justify-center">
             <GameArea />
             <div className="flex gap-16 justify-center mt-20">

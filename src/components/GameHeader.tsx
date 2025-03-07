@@ -11,10 +11,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button, IconButton } from "./ui/Button";
 
-export default function GameHeader() {
+export default function GameHeader({ showHowToPlay }: { showHowToPlay?: boolean }) {
   const { consensusTheme } = useGameContext();
   const formattedConsensusNum = (num: number) => String(num).padStart(3, "0");
-  const { openModal } = useModal();
   const router = useRouter();
   const { data: session } = useSession();
 
@@ -45,11 +44,13 @@ export default function GameHeader() {
             icon={<ChartBar size={24} />}
           /> */}
           {/* goes to statistics for today's consensus- TODO: create page */}
-          <IconButton
-            title="How to Play"
-            icon={<Question size={24} />}
-            onClick={() => openModal("How to Play")}
-          />
+          {showHowToPlay === true ? (
+            <IconButton
+              title="How to Play"
+              icon={<Question size={24} />}
+              onClick={() => useModal().openModal("How to Play")}
+            />
+            ) : null}
           {/* opens how to play modal- TODO: create modal */}
           {session?.user?.image !== "anonymous" ? (
             <IconButton
