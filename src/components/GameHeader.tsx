@@ -22,7 +22,7 @@ export default function GameHeader() {
     <header className="flex px-2 md:px-4 border-b border-inset py-2">
       <div className="md:flex items-center">
         <h1
-          className="font-funnel font-black text-2xl md:text-4xl md:border-r pr-4 cursor-pointer"
+          className="font-funnel font-black text-2xl md:text-4xl md:border-r border-inset pr-4 cursor-pointer"
           onClick={() => router.push("/play")}
         >
           Consensus
