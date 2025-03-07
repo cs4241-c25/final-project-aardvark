@@ -163,7 +163,7 @@ export class Consensi extends DataLayer {
 
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setHours(-5, 0, 0, 0);
 
     const formattedTomorrow = tomorrow.toISOString().slice(0, 10);
 
