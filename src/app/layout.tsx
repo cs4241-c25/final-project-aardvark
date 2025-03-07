@@ -53,15 +53,15 @@ export default async function RootLayout({
           <AnonymousSessionProvider>
             <ToastProvider>
               <GameProvider>
-                <ThemeProvider
+                {/* <ThemeProvider
                   attribute="class"
                   defaultTheme="dark"
                   enableSystem
                   disableTransitionOnChange
-                >
+                > */}
                   {children}
                   <Analytics />
-                </ThemeProvider>
+                {/* </ThemeProvider> */}
               </GameProvider>
             </ToastProvider>
           </AnonymousSessionProvider>
