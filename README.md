@@ -1,55 +1,41 @@
+# Consensus
+
+Consensus is a game that involves ranking 4 options and comparing your opinion against the worldwide average. After submitting the user can see their ranking, the worldwide average, and a similarity score representing how similar the user's response was to the average. Each day there is a new category and new options. Users can view past games, their submissions, and the consensus for that day through the archive, and they can submit new ideas for future categories and options by going through the profile page. The links are as follows:
+
+Production: https://consensus-game.vercel.app
+
+Staging: https://consensus-dev.vercel.app  --> Please use this link for doing any admin testing. The production version is live and being played by WPI students every day. To avoid disrupting their experience, it would be best to do testing here on the development database. 
+
+## Admin Instructions 
+Please post your Gmail in the Slack channel or DM it to Ari so we can whitelist you for admin access. Once that has been done, visit https://consensus-dev.vercel.app/admin either through the profile page or directly to that URL and you should be able to see the admin page. 
+
+## Tech Stack
+For our technology stack, we kept things rather simple. We used Next.js for the frontend, with TailwindCSS for styling, Framer Motion for animation and the Next API as our backend. For our database, we used MongoDB and deployed it on Mongo Atlas. The Next app was deployed on Vercel.
+
+## Challenges
+
+General Auth/Deployment challenges: Definitely faced/are facing some interesting challenges with expanding our authentication and securing our deployment but we have a good base and a plan to move forwards.
+
+Archive Page: When designing the archive page, it needed to have a very detailed route to retrieve all the necessary information about the user. A big challenge was ensuring that the colors and their word association were preserved along with the order of their ranking. After many tweaks, the API response sends a well-structured object to the frontend which correctly displays consensus submissions in the archive. 
+
+## Contributions
+
+Ariel Schechter: Set up NextAuth Authentication system including Google OAuth sign in and anonymous sessions. Built out all authentiaction logic, loading states, data retrieval for game logic. Managed dev and prod MongoDB instances on Atlas and deployed Consensus to Vercel with a staging environment and a production environment. Reviewed all PRs, ran SCRUM meetings and managed repositories. 
+
+Steve Stardellis: Implented the entirety of the archive page, which stores information about the user and each consensus. Users are able to see their submission for each consensus as well as see the overall consensus for that day. The user can filter by date or by text to search the database for records. If the user did not submit a consensus for a day, it still shows the overall consensus.
+
+James Walden: Developed a number of backend routes for a variety of functionalities and implimented the datalayer and many of its included functions. Created the user suggestion page as well as the admin dashboard, including the approval or denial of user suggestions. Implimented the AI generated Consensus framework to generate random consensus options or for a specific category and then apporve or deny them.
+
+Gustave Montana: Designed and implemented the entire front-end user interface for the play, profile, and landing pages. Built game logic for the play page. Built all components like toasts, modals, buttons, etc.
+
+John Thompson: Developed routes and frontend for submitting new Consensus categories and options to the database and to view the queue of upcoming games.
+
+## Project Video
+https://youtu.be/5Fn6AFAqMM0
+
 ## To run the app:
 
 npm install
 
 npm run dev
 
-# Final Project
-
-_Due at noon on the day of your team's assigned class presentation. Teams will be presenting
-during the last week of class on Tuesday, Thursday, and Friday (March 4, 6, 7)_
-
-For your final project, you'll implement a web application that exhibits understanding of the course materials.
-This project should provide an opportunity to both be creative and to pursue individual research and learning goals.
-
-## Final Project Description
-
-- Your project should consist of a complete Web application, exhibiting facets of the three main sections of the course material:
-- Static web page content and design. You should have a project with a well-designed user interface that is responsive, accessible, easily navigable, and features significant content.
-- Dynamic behavior implemented with JavaScript or Typescript.
-- Server-side programming using Node.js – either JavaScript or Typescript. Typically, this will take the form of some sort of persistent data (database), authentication, and possibly server-side computation.
-- A video (less than five minutes) where each group member explains some aspect of the project. An easy way to produce this video is for you all the group members to join a Zoom call that is recorded; each member can share their screen when they discuss the project or one member can "drive" the interface while other members narrate (this second option will probably work better.) The video should be posted on YouTube or some other accessible video hosting service. Make sure your video is less than five minutes, but long enough to successfully explain your project and show it in action. There is no minimum video length.
-
-## Project ideation
-
-I encourage you to identify projects that will have impact, either artistically or in terms of productivity. A few possibilities are
-
-1. AI/ML app. You may take an AI/ML that you have written in the past and create a full application out of it provided it satisfies all the project requirements. I will review the proposals to make sure the scope is significant enough for a final project.
-2. Mass General Brigham – The hospital is interested in providing visitors with directions to parking lots, building entrances, and information desks for multiple buildings. Integrated with the Google Maps API, these directions would guide visitors from their homes to the information desks of hospital buildings, and would guide visitors to locations between hospital buildings. Contact me if you would like more information.
-3. Boston Freedom Trail app for tourists.
-4. A generalized sightseeing app that permits tourist organizations to enter information in creating their own city walking tours.
-5. An application aimed at serving the WPI student body. For example, an app that would facilitate the formation and coordination of informal WPI student groups.
-6. An idea of your own!
-
-### Deliverables
-
-#### Turning in Your Project
-
-Push the final version of your term project to the GitHub repo you accepted for the assignment.
-
-Deploy your app, in the form of a webpage, to Glitch, Vercel, AWS, Heroku or some other service; it is critical that the application functions correctly wherever you post it.
-
-The README for your submitted repo should include
-
-1. A brief description of what you created, and a link to the project itself (two paragraphs of text)
-2. Any additional instructions that might be needed to fully use your project (login information etc.)
-3. An outline of the technologies you used and how you used them.
-4. What challenges you faced in completing the project.
-5. What each group member was responsible for designing / developing.
-6. A link to your project video.
-
-Think of 1,3, and 4 in particular in a similar vein to the design / tech achievements for A1—A4… make a case for why what you did was challenging and why your implementation deserves a grade of 100%.
-
-## FAQs
-
-- **Can I use XYZ framework?** You can use any web-based frameworks or tools available, but for your server programming you need to use Node.js. Your client-side scripting language should be either JavaScript or TypeScript. While the course staff is happy to help with frameworks used in the class, we can't guarantee we'll be able to assist you with other frameworks / databases; choose carefully!
