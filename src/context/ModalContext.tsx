@@ -1,3 +1,5 @@
+"use client"
+
 import { createContext, ReactNode, useContext, useState } from "react";
 
 type ModalType = "Statistics" | "How to Play" | null;

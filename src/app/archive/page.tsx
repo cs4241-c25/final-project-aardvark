@@ -3,7 +3,6 @@ import GameHeader from "@/components/GameHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ModalWrapper from "@/components/ModalWrapper";
 import { IconButton } from "@/components/ui/Button";
-import { ModalProvider } from "@/context/ModalContext";
 import { House } from "@phosphor-icons/react";
 import axios from "axios";
 import clsx from "clsx";
@@ -87,7 +86,7 @@ export default function ArchivePage() {
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
-    <ModalProvider>
+    <>
       <ModalWrapper />
       <GameHeader />
 
@@ -133,7 +132,7 @@ export default function ArchivePage() {
           </p>
         )}
       </main>
-    </ModalProvider>
+    </>
   );
 }
 

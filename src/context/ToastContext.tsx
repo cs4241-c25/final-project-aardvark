@@ -6,11 +6,11 @@ import Toast from "@/components/ui/Toast";
 type ToastContent = {
   title: string;
   message: string;
-  type?: "default" | "error";
+  type?: "default" | "error" | "success";
 };
 
 type ToastContextType = {
-  showToast: (title: string, message: string, type?: "default" | "error") => void;
+  showToast: (title: string, message: string, type?: "default" | "error" | "success") => void;
 };
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -18,7 +18,7 @@ const ToastContext = createContext<ToastContextType | undefined>(undefined);
 export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<ToastContent | null>(null);
 
-  const showToast = (title: string, message: string, type: "default" | "error" = "default") => {
+  const showToast = (title: string, message: string, type: "default" | "error" | "success" = "default") => {
     setToast({ title, message, type });
     const timeout = setTimeout(() => setToast(null), 3000);
     return () => clearTimeout(timeout)

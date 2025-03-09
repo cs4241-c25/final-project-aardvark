@@ -1,4 +1,5 @@
-// ModalWrapper.tsx
+"use client";
+
 import { useModal } from "../context/ModalContext";
 import StatsModal from "./StatsModal";
 import HowToPlay from "./HowToPlayModal";

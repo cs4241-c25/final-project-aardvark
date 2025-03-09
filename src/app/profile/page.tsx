@@ -2,7 +2,7 @@
 
 import LoadingSpinner from "@/components/LoadingSpinner";
 import { Button, IconButton } from "@/components/ui/Button";
-import { CaretLeft } from "@phosphor-icons/react";
+import { ChevronLeft } from "lucide-react";
 import axios from "axios";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -46,7 +46,7 @@ export default function Profile() {
               <IconButton
                 onClick={() => router.back()}
                 className="hover:bg-neutral-700"
-                icon={<CaretLeft />}
+                icon={<ChevronLeft />}
               />
               <h1 className="font-funnel font-bold uppercase">My Profile</h1>
             </div>

@@ -32,7 +32,7 @@ const Modal: React.FC<ModalProps> = ({ title, onClose, children, className }) =>
           {title && <h1 className="text-xl font-funnel font-bold">{title}</h1>}
           <button
             onClick={onClose}
-            className="rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 absolute right-0"
+            className="rounded-full hover:bg-gray-200 dark:hover:bg-neutral-700 absolute right-0 transition-colors"
           >
             <X className="h-8 w-8 p-2" />
           </button>

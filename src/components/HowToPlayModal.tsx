@@ -1,3 +1,5 @@
+"use client";
+
 import { useModal } from "@/context/ModalContext";
 import { CaretLeft, CaretRight, Circle } from "@phosphor-icons/react";
 import { useEffect, useState } from "react";

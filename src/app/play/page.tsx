@@ -7,11 +7,11 @@ import ModalWrapper from "@/components/ModalWrapper";
 import SubmitButton from "@/components/SubmitButton";
 import { Button } from "@/components/ui/Button";
 import { useGameContext } from "@/context/GameContext";
-import { ModalProvider, useModal } from "@/context/ModalContext";
+import { useModal } from "@/context/ModalContext";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 
-function PlayContent() {
+export default function Play() {
   const { tiles, setTiles, submitted, userData, loading, todaysConsensus } =
     useGameContext();
   const { openModal } = useModal();
@@ -62,14 +62,5 @@ function PlayContent() {
         </>
       )}
     </div>
-  );
-}
-
-export default function Play() {
-  return (
-    <ModalProvider>
-      <ModalWrapper />
-      <PlayContent />
-    </ModalProvider>
   );
 }

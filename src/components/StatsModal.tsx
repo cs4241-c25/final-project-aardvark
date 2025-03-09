@@ -1,7 +1,7 @@
 import { useGameContext } from "@/context/GameContext";
 import { useModal } from "@/context/ModalContext";
 import { useToast } from "@/context/ToastContext";
-import { ShareNetwork } from "@phosphor-icons/react";
+import { Share2 } from "lucide-react";
 import clsx from "clsx";
 import { Button } from "./ui/Button";
 import Modal from "./ui/Modal";
@@ -146,7 +146,7 @@ export default function StatsModal() {
       </div>
       <div className="flex justify-center items-center mt-4">
         <Button variant="secondary" onClick={copyShare}>
-          <ShareNetwork size={22} />
+          <Share2 size={22} />
           Share
         </Button>
       </div>

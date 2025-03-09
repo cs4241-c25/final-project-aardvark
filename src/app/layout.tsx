@@ -4,11 +4,12 @@ import "./globals.css";
 
 import AnonymousSessionProvider from "@/components/auth/AnonymousSessionProvider";
 import SessionProvider from "@/components/auth/SessionProvider";
-import { ThemeProvider } from "@/components/theme-provider";
 import { GameProvider } from "@/context/GameContext";
 import { ToastProvider } from "@/context/ToastContext";
+import { ModalProvider } from "@/context/ModalContext";
 import { Analytics } from "@vercel/analytics/next";
 import { getServerSession } from "next-auth";
+import ModalWrapper from "@/components/ModalWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -52,17 +53,13 @@ export default async function RootLayout({
         <SessionProvider session={session}>
           <AnonymousSessionProvider>
             <ToastProvider>
-              <GameProvider>
-                {/* <ThemeProvider
-                  attribute="class"
-                  defaultTheme="dark"
-                  enableSystem
-                  disableTransitionOnChange
-                > */}
+              <ModalProvider>
+                <GameProvider>
                   {children}
                   <Analytics />
-                {/* </ThemeProvider> */}
-              </GameProvider>
+                  <ModalWrapper />
+                </GameProvider>
+              </ModalProvider>
             </ToastProvider>
           </AnonymousSessionProvider>
         </SessionProvider>

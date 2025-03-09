@@ -13,19 +13,18 @@ export default function Toast({
 }: {
   title: string;
   message: string;
-  type?: "default" | "error";
+  type?: "default" | "error" | "success";
   closeToast: () => void;
 }) {
-  const bgColor = {
-    default: "bg-neutral-800",
-    error: "bg-red-500",
-  }[type];
-
   return (
     <motion.div
       className={clsx(
         "fixed bottom-5 right-5 px-3 py-2 text-white rounded shadow-lg z-50 flex items-center",
-        bgColor
+        {
+          "bg-neutral-800": type === "default",
+          "bg-red-500": type === "error",
+          "bg-green-500": type === "success",
+        }
       )}
       initial={{ opacity: 0, y: 20 }}
       exit={{ opacity: 0, y: 20 }}
@@ -38,7 +37,17 @@ export default function Toast({
         </div>
         <p>{message}</p>
       </div>
-      <button className="hover:bg-neutral-700 rounded-full ml-2" onClick={closeToast}>
+      <button
+        onClick={closeToast}
+        className={clsx(
+          "rounded-full ml-2 transition-colors",
+          {
+            "hover:bg-neutral-700": type === "default",
+            "hover:bg-red-600": type === "error",
+            "hover:bg-green-600": type === "success",
+          }
+        )}
+      >
         <X className="h-8 w-8 p-2" />
       </button>
     </motion.div>
