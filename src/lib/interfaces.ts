@@ -36,6 +36,7 @@ export interface ConsensiRecord {
 export interface ConsensiSuggestion {
   _id?: ObjectId;
   author: string | null;
+  authorEmail: string | null;
   category: string;
   options: string[];
   date: string | null;

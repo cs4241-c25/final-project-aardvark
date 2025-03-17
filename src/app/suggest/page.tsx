@@ -27,6 +27,7 @@ export default function SuggestConsensus() {
     const suggestion: ConsensiSuggestion = {
       category: formData.category,
       author: formData.author,
+      authorEmail: session?.user?.email || null,
       options: formData.options,
       date: null,
     };
